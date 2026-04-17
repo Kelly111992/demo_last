@@ -345,8 +345,17 @@ function getSystemPrompt() {
   return `Eres Chef IA, el asistente inteligente del restaurante "La Mesa Bonita" en Tlaquepaque, Jalisco.
 Eres cálido, amable y hablas en español mexicano casual.
 
-MENÚ: Birria $185, Arrachera $220, Pozole $145, Tacos x3 $95, Tostadas tinga $75, Enchiladas $110,
-Agua fresca $35, Michelada $85, Café olla $40, Flan $65, Churros $70.
+MENÚ (usa estos IDs exactos cuando agregues al carrito):
+1=Birria de res $185
+2=Arrachera a la parrilla $220
+3=Pozole rojo $145
+4=Orden de tacos (3) $95
+5=Tostadas de tinga $75
+6=Enchiladas verdes $110
+7=Agua fresca $35
+8=Michelada $85
+9=Flan napolitano $65
+10=Churros con chocolate $70
 
 Horarios: L-D 8am-11pm. Dirección: Juárez 234 Tlaquepaque.
 Domicilio desde $150, gratis +$400.
@@ -356,9 +365,17 @@ ESTADO ACTUAL DEL CLIENTE:
 - ${orderInfo}
 - ${reservationInfo}
 
-Si el cliente agrega items al carrito, confirma amablemente.
-Si el cliente confirma el pedido, genera un número de pedido y explica los tiempos.
-Respuestas cortas máx 3-4 oraciones.`;
+COMANDOS DE ACCIÓN (MUY IMPORTANTE):
+Cuando agregues algo al carrito, incluye AL FINAL del mensaje un comando así:
+[ADD:3] para agregar 1 Pozole
+[ADD:3,3] para agregar 2 Pozoles
+[ADD:2,4,7] para agregar Arrachera + Tacos + Agua
+[REMOVE:5] para quitar del carrito
+[CONFIRM] cuando el cliente confirma el pedido
+Estos comandos son invisibles para el cliente, el sistema los ejecutará.
+NUNCA digas "agregué X" sin incluir el comando [ADD:id] correspondiente.
+
+Respuestas cortas máx 3 oraciones. No repitas el estado del carrito a menos que te lo pidan.`;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -653,13 +670,45 @@ function updateOrderPrompt() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// PARSER DE COMANDOS DE LA IA — ejecuta acciones y devuelve texto limpio
+// ═══════════════════════════════════════════════════════════════════════════════
+function parseAICommands(reply) {
+  let clean = reply;
+
+  // [ADD:1,2,3] → agrega cada id al carrito
+  clean = clean.replace(/\[ADD:([0-9,\s]+)\]/gi, (_, ids) => {
+    ids.split(',').map(s => parseInt(s.trim())).filter(n => n > 0).forEach(id => {
+      addToCart(id, '');
+    });
+    return '';
+  });
+
+  // [REMOVE:id] → quita del carrito
+  clean = clean.replace(/\[REMOVE:([0-9,\s]+)\]/gi, (_, ids) => {
+    ids.split(',').map(s => parseInt(s.trim())).filter(n => n > 0).forEach(id => {
+      removeFromCart(id);
+    });
+    return '';
+  });
+
+  // [CONFIRM] → confirma el pedido
+  if (/\[CONFIRM\]/i.test(clean)) {
+    clean = clean.replace(/\[CONFIRM\]/gi, '');
+    if (state.cart.length > 0) confirmOrder();
+  }
+
+  return clean.trim();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // INICIALIZACIÓN
 // ═══════════════════════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-  // Inicializar MesaIA con system prompt dinámico
+  // Inicializar MesaIA con system prompt dinámico y parser de comandos
   MesaIA.init({
     system: getSystemPrompt,
-    welcomeMessage: `¡Bienvenido a **La Mesa Bonita**! 🌮\n\nSoy Chef IA. ¿En qué te ayudo hoy?\n\nPuedes:\n• Agregar items al carrito con el botón **+**\n• Filtrar por 🥦 Vegetariano | 🌾 Sin gluten | 🌶️ Picante\n• Hacer una reservación\n• Pedir para mesa, llevar o domicilio`
+    welcomeMessage: `¡Bienvenido a **La Mesa Bonita**! 🌮\n\nSoy Chef IA. ¿En qué te ayudo hoy?\n\nPuedes:\n• Agregar items al carrito con el botón **+**\n• Filtrar por 🥦 Vegetariano | 🌾 Sin gluten | 🌶️ Picante\n• Hacer una reservación\n• Pedir para mesa, llevar o domicilio`,
+    onReply: parseAICommands
   });
 
   // Bind de botones de agregar al carrito

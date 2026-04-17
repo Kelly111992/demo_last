@@ -59,9 +59,15 @@ const MesaIA = (() => {
       const reply = data.content[0].text;
       history.push({ role: 'assistant', content: reply });
 
+      // onReply puede transformar la respuesta (ej: ejecutar comandos y devolver texto limpio)
+      let displayText = reply;
+      if (onReplyCallback) {
+        const transformed = onReplyCallback(reply);
+        if (typeof transformed === 'string') displayText = transformed;
+      }
+
       removeTyping();
-      addBubble(reply, 'bot');
-      if (onReplyCallback) onReplyCallback(reply);
+      addBubble(displayText, 'bot');
 
     } catch (err) {
       removeTyping();
