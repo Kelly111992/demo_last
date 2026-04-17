@@ -48,7 +48,10 @@ const MesaIA = (() => {
         body: JSON.stringify({ messages: history, system: currentSystem }),
       });
 
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `HTTP ${res.status}`);
+      }
       const data = await res.json();
 
       if (data.error) throw new Error(data.error);
