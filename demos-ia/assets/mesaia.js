@@ -63,12 +63,7 @@ const MesaIA = (() => {
     } catch (err) {
       removeTyping();
       console.error('MesaIA error:', err);
-
-      if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
-        addBubble('⚠️ No puedo conectarme al servidor. Asegúrate de que <strong>server.js</strong> esté corriendo con <code>node server/server.js</code>', 'bot error');
-      } else {
-        addBubble('Ups, ocurrió un error. Intenta de nuevo 🙏', 'bot');
-      }
+      addBubble('⚠️ Error: ' + err.message, 'bot');
     }
 
     isLoading = false;
