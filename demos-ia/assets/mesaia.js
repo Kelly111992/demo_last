@@ -6,7 +6,9 @@
 const MesaIA = (() => {
 
   // ── Configuración ────────────────────────────
-  const API_URL = 'http://localhost:3000/api/chat';
+  const API_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:3000/api/chat'
+    : '/api/chat';
 
   // ── Estado ───────────────────────────────────
   let history = [];
