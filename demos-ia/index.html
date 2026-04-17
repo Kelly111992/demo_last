@@ -4,169 +4,650 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>mesaIA — Demos de Inteligencia Artificial</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--accent:#22c55e}
-body{background:#080c08;color:#e8f5e8;font-family:'Manrope',sans-serif;min-height:100vh;background-image:radial-gradient(ellipse at 20% 10%,rgba(34,197,94,0.07) 0%,transparent 50%),radial-gradient(ellipse at 80% 90%,rgba(34,197,94,0.04) 0%,transparent 50%)}
-.page{max-width:1120px;margin:0 auto;padding:60px 24px 80px}
-.hero{text-align:center;margin-bottom:60px;animation:fadeUp 0.6s ease}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.tag{display:inline-flex;align-items:center;gap:6px;background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);color:var(--accent);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:6px 18px;border-radius:20px;margin-bottom:28px}
-.tag-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-h1{font-family:'Syne',sans-serif;font-size:clamp(36px,6vw,66px);font-weight:800;line-height:1.04;letter-spacing:-2.5px;margin-bottom:20px;color:#f0fff0}
-h1 em{color:var(--accent);font-style:normal}
-.subtitle{font-size:16px;color:#4a7a4a;max-width:500px;margin:0 auto;line-height:1.7}
-.sector{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:#2a4a2a;letter-spacing:3px;text-transform:uppercase;margin:44px 0 16px;padding-left:2px}
-.sector:first-of-type{margin-top:0}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
-.card{background:#0d1710;border:1px solid #1a2e1f;border-radius:20px;padding:28px;cursor:pointer;transition:all 0.2s;text-decoration:none;display:block;position:relative;overflow:hidden}
-.card:hover{border-color:rgba(34,197,94,0.4);transform:translateY(-4px);box-shadow:0 24px 48px rgba(0,0,0,0.5)}
-.card-emoji{font-size:36px;margin-bottom:14px;display:block}
-.card-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#e8f5e8;margin-bottom:7px;letter-spacing:-0.3px}
-.card-desc{font-size:12.5px;color:#4a7a4a;line-height:1.65;margin-bottom:18px}
-.feats{display:flex;flex-direction:column;gap:5px;margin-bottom:20px}
-.feat{font-size:11.5px;color:#3a6a3a;display:flex;gap:7px;line-height:1.4}
-.feat::before{content:'✓';color:var(--accent);font-weight:800;font-size:10px;margin-top:2px;flex-shrink:0}
-.cta{display:flex;align-items:center;justify-content:space-between;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.18);border-radius:10px;padding:10px 16px;font-size:12.5px;font-weight:700;color:var(--accent);transition:all 0.15s}
-.card:hover .cta{background:rgba(34,197,94,0.15);border-color:rgba(34,197,94,0.35)}
-.footer{margin-top:60px;text-align:center;animation:fadeUp 0.6s ease 0.2s both}
-.footer p{font-size:13px;color:#2a4a2a;margin-bottom:12px}
-.cmd{display:inline-block;background:#0d1710;border:1px solid #1a2e1f;padding:10px 22px;border-radius:10px;color:#4a7a4a;font-size:13px;font-family:monospace}
-.cmd strong{color:var(--accent)}
+
+:root {
+  --bg: #06070a;
+  --surface: #0c0e14;
+  --surface2: #12151d;
+  --border: #1e2330;
+  --border-hover: #2e3550;
+  --text: #e2e8f0;
+  --text-muted: #4a5568;
+  --text-dim: #2d3748;
+  --c-gastro: #ff6b35;
+  --c-salud: #00c9a7;
+  --c-inmob: #4d9fff;
+  --c-serv: #ffd166;
+  --white: #f8fafc;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Archivo', sans-serif;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse 80% 40% at 10% 0%, rgba(77,159,255,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 100%, rgba(0,201,167,0.04) 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231e2330' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ── LAYOUT ── */
+.page { max-width: 1240px; margin: 0 auto; padding: 56px 24px 80px; }
+
+/* ── HERO ── */
+.hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 52px;
+  animation: fadeUp .55s ease both;
+}
+.hero-left { flex: 1; }
+
+.logo-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.logo-mark {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, #4d9fff 0%, #00c9a7 100%);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 16px; color: #06070a;
+}
+.logo-name {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 15px;
+  color: var(--white);
+  letter-spacing: -0.3px;
+}
+.logo-slash { color: var(--text-muted); margin: 0 2px; }
+.logo-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+h1 {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(34px, 5vw, 60px);
+  line-height: 1.0;
+  letter-spacing: -2px;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+h1 .accent-gastro { color: var(--c-gastro); }
+h1 .accent-salud  { color: var(--c-salud); }
+h1 .accent-inmob  { color: var(--c-inmob); }
+h1 .accent-serv   { color: var(--c-serv); }
+
+.subtitle {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.75;
+  max-width: 460px;
+  font-weight: 400;
+}
+
+.hero-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.stat-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 22px;
+  text-align: center;
+  min-width: 120px;
+}
+.stat-num {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 28px;
+  color: var(--white);
+  line-height: 1;
+  display: block;
+}
+.stat-label {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-top: 4px;
+  display: block;
+}
+
+/* ── FILTER TABS ── */
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  animation: fadeUp .55s ease .1s both;
+}
+.filter-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+  margin-right: 4px;
+}
+.filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'Archivo', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .18s;
+}
+.filter-btn .dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.filter-btn:hover, .filter-btn.active {
+  border-color: var(--border-hover);
+  color: var(--white);
+  background: var(--surface);
+}
+.filter-btn[data-sector="all"].active { border-color: #4a5568; }
+.filter-btn[data-sector="gastro"].active { border-color: var(--c-gastro); color: var(--c-gastro); }
+.filter-btn[data-sector="salud"].active  { border-color: var(--c-salud);  color: var(--c-salud);  }
+.filter-btn[data-sector="inmob"].active  { border-color: var(--c-inmob);  color: var(--c-inmob);  }
+.filter-btn[data-sector="serv"].active   { border-color: var(--c-serv);   color: var(--c-serv);   }
+
+/* ── GRID ── */
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  animation: fadeUp .55s ease .18s both;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 0;
+  cursor: pointer;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 50px rgba(0,0,0,.55);
+}
+
+.card[data-sector="gastro"] { --c: var(--c-gastro); }
+.card[data-sector="salud"]  { --c: var(--c-salud);  }
+.card[data-sector="inmob"]  { --c: var(--c-inmob);  }
+.card[data-sector="serv"]   { --c: var(--c-serv);   }
+
+.card:hover { border-color: color-mix(in srgb, var(--c) 40%, transparent); }
+
+/* color top stripe */
+.card-stripe {
+  height: 3px;
+  background: var(--c);
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.card-body {
+  padding: 22px 22px 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.card-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+.card-sector-tag {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--c);
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+  padding: 3px 8px;
+  border-radius: 5px;
+}
+
+.card-emoji { font-size: 28px; margin-bottom: 10px; display: block; }
+
+.card-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 15px;
+  color: var(--white);
+  margin-bottom: 8px;
+  letter-spacing: -0.3px;
+  line-height: 1.25;
+}
+.card-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-bottom: 16px;
+  flex: 1;
+}
+
+.feats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+.feat {
+  font-size: 11px;
+  color: #2d3748;
+  display: flex;
+  gap: 7px;
+  line-height: 1.4;
+  align-items: flex-start;
+}
+.feat::before {
+  content: '—';
+  color: var(--c);
+  font-weight: 700;
+  font-size: 10px;
+  margin-top: 1px;
+  flex-shrink: 0;
+  opacity: .7;
+}
+.card:hover .feat { color: #4a5568; }
+.card:hover .feat::before { opacity: 1; }
+
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--c) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c) 18%, transparent);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--c);
+  transition: all .15s;
+  margin-top: auto;
+}
+.card:hover .cta {
+  background: color-mix(in srgb, var(--c) 16%, transparent);
+  border-color: color-mix(in srgb, var(--c) 35%, transparent);
+}
+.cta-arrow {
+  font-size: 14px;
+  transition: transform .15s;
+}
+.card:hover .cta-arrow { transform: translateX(3px); }
+
+/* ── HIDDEN FILTER STATE ── */
+.card.hidden {
+  display: none;
+}
+
+/* ── DIVIDER ── */
+.grid-divider {
+  grid-column: 1 / -1;
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+  display: none;
+}
+
+/* ── FOOTER ── */
+.footer {
+  margin-top: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+  padding-top: 28px;
+  animation: fadeUp .55s ease .25s both;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.footer-text {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.footer-text strong { color: var(--white); font-weight: 600; }
+.cmd {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 9px 18px;
+  border-radius: 9px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.cmd .k { color: var(--c-inmob); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.demo-grid .card {
+  animation: fadeUp .4s ease both;
+}
+.demo-grid .card:nth-child(1)  { animation-delay: .08s; }
+.demo-grid .card:nth-child(2)  { animation-delay: .12s; }
+.demo-grid .card:nth-child(3)  { animation-delay: .16s; }
+.demo-grid .card:nth-child(4)  { animation-delay: .20s; }
+.demo-grid .card:nth-child(5)  { animation-delay: .24s; }
+.demo-grid .card:nth-child(6)  { animation-delay: .28s; }
+.demo-grid .card:nth-child(7)  { animation-delay: .32s; }
+.demo-grid .card:nth-child(8)  { animation-delay: .36s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .demo-grid { grid-template-columns: repeat(3, 1fr); }
+  .hero { flex-direction: column; }
+  .hero-stats { flex-direction: row; }
+}
+@media (max-width: 760px) {
+  .demo-grid { grid-template-columns: repeat(2, 1fr); }
+  h1 { font-size: 32px; letter-spacing: -1.5px; }
+}
+@media (max-width: 480px) {
+  .demo-grid { grid-template-columns: 1fr; }
+  .hero-stats { display: none; }
+}
 </style>
 </head>
 <body>
 <div class="page">
 
+  <!-- HERO -->
   <div class="hero">
-    <div class="tag"><span class="tag-dot"></span>8 demos con IA real · Listos para clientes</div>
-    <h1>Tu negocio,<br>con <em>inteligencia</em> artificial</h1>
-    <p class="subtitle">Elige cualquier demo y ve en vivo cómo la IA atiende clientes, agenda citas y vende — sin que estés presente.</p>
+    <div class="hero-left">
+      <div class="logo-bar">
+        <div class="logo-mark">m</div>
+        <span class="logo-name">mesa<span style="color:#4d9fff">IA</span></span>
+        <span class="logo-slash">/</span>
+        <span class="logo-sub">demos en vivo</span>
+      </div>
+      <h1>8 industrias.<br><span class="accent-inmob">Un</span> agente <span class="accent-salud">IA</span><br>para cada una.</h1>
+      <p class="subtitle">Elige cualquier demo y ve en tiempo real cómo la IA atiende clientes, agenda citas y vende — las 24 horas, sin intervención humana.</p>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-box">
+        <span class="stat-num">8</span>
+        <span class="stat-label">Demos</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num">4</span>
+        <span class="stat-label">Sectores</span>
+      </div>
+      <div class="stat-box">
+        <span class="stat-num">24/7</span>
+        <span class="stat-label">En vivo</span>
+      </div>
+    </div>
   </div>
 
-  <div class="sector">🍽️ Gastronomía</div>
-  <div class="grid">
-    <a class="card" href="demos/restaurante/index.html">
-      <span class="card-emoji">🍽️</span>
-      <div class="card-title">Restaurante & Menú Digital</div>
-      <div class="card-desc">Agente que toma pedidos, hace reservaciones y atiende a las 2am sin mesero.</div>
-      <div class="feats">
-        <div class="feat">Pedidos a domicilio automáticos</div>
-        <div class="feat">Reservaciones por chat 24/7</div>
-        <div class="feat">Menú lateral interactivo</div>
-        <div class="feat">Dashboard de ventas en vivo</div>
-      </div>
-      <div class="cta">Ver demo en vivo →</div>
-    </a>
+  <!-- FILTER TABS -->
+  <div class="filters">
+    <span class="filter-label">filtrar</span>
+    <button class="filter-btn active" data-sector="all">
+      Todos <span style="color:var(--text-dim);margin-left:2px">8</span>
+    </button>
+    <button class="filter-btn" data-sector="gastro">
+      <span class="dot" style="background:var(--c-gastro)"></span> Gastronomía
+    </button>
+    <button class="filter-btn" data-sector="salud">
+      <span class="dot" style="background:var(--c-salud)"></span> Salud &amp; Bienestar
+    </button>
+    <button class="filter-btn" data-sector="inmob">
+      <span class="dot" style="background:var(--c-inmob)"></span> Inmobiliario
+    </button>
+    <button class="filter-btn" data-sector="serv">
+      <span class="dot" style="background:var(--c-serv)"></span> Servicios
+    </button>
   </div>
 
-  <div class="sector">🏥 Salud & Bienestar</div>
-  <div class="grid">
-    <a class="card" href="demos/clinica/index.html">
-      <span class="card-emoji">🏥</span>
-      <div class="card-title">Clínica & Consultorio Médico</div>
-      <div class="card-desc">Agenda citas, informa precios y filtra urgencias sin intervención humana.</div>
-      <div class="feats">
-        <div class="feat">Agendado de citas en segundos</div>
-        <div class="feat">Catálogo de especialidades y precios</div>
-        <div class="feat">Agenda visual del día</div>
-        <div class="feat">Panel de estadísticas</div>
+  <!-- UNIFIED GRID -->
+  <div class="demo-grid">
+
+    <!-- 01 Restaurante -->
+    <a class="card" data-sector="gastro" href="demos/restaurante/index.html">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-num">01</span>
+          <span class="card-sector-tag">Gastronomía</span>
+        </div>
+        <span class="card-emoji">🍽️</span>
+        <div class="card-title">Restaurante &amp; Menú Digital</div>
+        <div class="card-desc">Agente que toma pedidos, hace reservaciones y atiende a las 2am sin mesero.</div>
+        <div class="feats">
+          <div class="feat">Pedidos a domicilio automáticos</div>
+          <div class="feat">Reservaciones por chat 24/7</div>
+          <div class="feat">Menú lateral interactivo</div>
+          <div class="feat">Dashboard de ventas en vivo</div>
+        </div>
+        <div class="cta">Ver demo en vivo <span class="cta-arrow">→</span></div>
       </div>
-      <div class="cta">Ver demo en vivo →</div>
     </a>
 
-    <a class="card" href="demos/gimnasio/index.html">
-      <span class="card-emoji">💪</span>
-      <div class="card-title">Gimnasio & Fitness</div>
-      <div class="card-desc">Coach IA que inscribe miembros, recomienda planes y llena las clases grupales.</div>
-      <div class="feats">
-        <div class="feat">Recomendación personalizada de plan</div>
-        <div class="feat">Inscripción y proceso de registro</div>
-        <div class="feat">Horario de clases en tiempo real</div>
-        <div class="feat">Métricas de asistencia y retención</div>
+    <!-- 02 Clínica -->
+    <a class="card" data-sector="salud" href="demos/clinica/index.html">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-num">02</span>
+          <span class="card-sector-tag">Salud</span>
+        </div>
+        <span class="card-emoji">🏥</span>
+        <div class="card-title">Clínica &amp; Consultorio Médico</div>
+        <div class="card-desc">Agenda citas, informa precios y filtra urgencias sin intervención humana.</div>
+        <div class="feats">
+          <div class="feat">Agendado de citas en segundos</div>
+          <div class="feat">Catálogo de especialidades y precios</div>
+          <div class="feat">Agenda visual del día</div>
+          <div class="feat">Panel de estadísticas</div>
+        </div>
+        <div class="cta">Ver demo en vivo <span class="cta-arrow">→</span></div>
       </div>
-      <div class="cta">Ver demo en vivo →</div>
     </a>
 
-    <a class="card" href="demos/salon/index.html">
-      <span class="card-emoji">✂️</span>
-      <div class="card-title">Salón de Belleza & Spa</div>
-      <div class="card-desc">Reserva servicios, muestra precios y llena la agenda sin llamadas telefónicas.</div>
-      <div class="feats">
-        <div class="feat">Catálogo completo de servicios</div>
-        <div class="feat">Agendado automático con estilista</div>
-        <div class="feat">Agenda visual del día</div>
-        <div class="feat">Dashboard de facturación</div>
+    <!-- 03 Gimnasio -->
+    <a class="card" data-sector="salud" href="demos/gimnasio/index.html">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-num">03</span>
+          <span class="card-sector-tag">Salud</span>
+        </div>
+        <span class="card-emoji">💪</span>
+        <div class="card-title">Gimnasio &amp; Fitness</div>
+        <div class="card-desc">Coach IA que inscribe miembros, recomienda planes y llena las clases grupales.</div>
+        <div class="feats">
+          <div class="feat">Recomendación personalizada de plan</div>
+          <div class="feat">Inscripción y registro automático</div>
+          <div class="feat">Horario de clases en tiempo real</div>
+          <div class="feat">Métricas de asistencia y retención</div>
+        </div>
+        <div class="cta">Ver demo en vivo <span class="cta-arrow">→</span></div>
       </div>
-      <div class="cta">Ver demo en vivo →</div>
     </a>
+
+    <!-- 04 Salón -->
+    <a class="card" data-sector="salud" href="demos/salon/index.html">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-num">04</span>
+          <span class="card-sector-tag">Bienestar</span>
+        </div>
+        <span class="card-emoji">✂️</span>
+        <div class="card-title">Salón de Belleza &amp; Spa</div>
+        <div class="card-desc">Reserva servicios, muestra precios y llena la agenda sin llamadas telefónicas.</div>
+        <div class="feats">
+          <div class="feat">Catálogo completo de servicios</div>
+          <div class="feat">Agendado automático con estilista</div>
+          <div class="feat">Agenda visual del día</div>
+          <div class="feat">Dashboard de facturación</div>
+        </div>
+        <div class="cta">Ver demo en vivo <span class="cta-arrow">→</span></div>
+      </div>
+    </a>
+
+    <!-- 05 Inmobiliaria -->
+    <a class="card" data-sector="inmob" href="demos/inmobiliaria/index.html">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-num">05</span>
+          <span class="card-sector-tag">Inmobiliario</span>
+        </div>
+        <span class="card-emoji">🏠</span>
+        <div class="card-title">Inmobiliaria &amp; Bienes Raíces</div>
+        <div class="card-desc">Califica leads automáticamente, muestra propiedades y agenda visitas sin agente.</div>
+        <div class="feats">
+          <div class="feat">Calificación de leads 24/7</div>
+          <div class="feat">Portafolio de propiedades interactivo</div>
+          <div class="feat">Agendado de visitas</div>
+          <div class="feat">Pipeline de prospectos calificados</div>
+        </div>
+        <div class="cta">Ver demo en vivo <span class="cta-arrow">→</span></div>
+      </div>
+    </a>
+
+    <!-- 06 Hotel -->
+    <a class="card" data-sector="inmob" href="demos/hotel/index.html">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-num">06</span>
+          <span class="card-sector-tag">Hotelería</span>
+        </div>
+        <span class="card-emoji">🏨</span>
+        <div class="card-title">Hotel &amp; Hospedaje Boutique</div>
+        <div class="card-desc">Concierge IA que reserva habitaciones, informa servicios y gestiona la estadía.</div>
+        <div class="feats">
+          <div class="feat">Reservaciones automáticas</div>
+          <div class="feat">Catálogo de habitaciones y tarifas</div>
+          <div class="feat">Gestión de check-in/out</div>
+          <div class="feat">Panel de ocupación del hotel</div>
+        </div>
+        <div class="cta">Ver demo en vivo <span class="cta-arrow">→</span></div>
+      </div>
+    </a>
+
+    <!-- 07 Taller -->
+    <a class="card" data-sector="serv" href="demos/taller/index.html">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-num">07</span>
+          <span class="card-sector-tag">Servicios</span>
+        </div>
+        <span class="card-emoji">🔧</span>
+        <div class="card-title">Taller Mecánico &amp; Automotriz</div>
+        <div class="card-desc">Diagnostica síntomas, da presupuestos y agenda citas — el mecánico que nunca duerme.</div>
+        <div class="feats">
+          <div class="feat">Diagnóstico por síntomas</div>
+          <div class="feat">Presupuestos instantáneos</div>
+          <div class="feat">Agendado de citas</div>
+          <div class="feat">Tracker de trabajos activos</div>
+        </div>
+        <div class="cta">Ver demo en vivo <span class="cta-arrow">→</span></div>
+      </div>
+    </a>
+
+    <!-- 08 Ventas -->
+    <a class="card" data-sector="serv" href="demos/ventas/index.html">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-num">08</span>
+          <span class="card-sector-tag">Comercial</span>
+        </div>
+        <span class="card-emoji">💼</span>
+        <div class="card-title">Agente Comercial de Ventas IA</div>
+        <div class="card-desc">Vendedor IA que califica prospectos, explica soluciones y agenda demos automáticamente.</div>
+        <div class="feats">
+          <div class="feat">Calificación automática de leads</div>
+          <div class="feat">Presentación de soluciones IA</div>
+          <div class="feat">Cotizaciones en segundos</div>
+          <div class="feat">Pipeline CRM visual</div>
+        </div>
+        <div class="cta">Ver demo en vivo <span class="cta-arrow">→</span></div>
+      </div>
+    </a>
+
   </div>
 
-  <div class="sector">🏠 Inmobiliario & Hotelería</div>
-  <div class="grid">
-    <a class="card" href="demos/inmobiliaria/index.html">
-      <span class="card-emoji">🏠</span>
-      <div class="card-title">Inmobiliaria & Bienes Raíces</div>
-      <div class="card-desc">Califica leads automáticamente, muestra propiedades y agenda visitas sin agente presente.</div>
-      <div class="feats">
-        <div class="feat">Calificación de leads 24/7</div>
-        <div class="feat">Portafolio de propiedades interactivo</div>
-        <div class="feat">Agendado de visitas</div>
-        <div class="feat">Pipeline de prospectos calificados</div>
-      </div>
-      <div class="cta">Ver demo en vivo →</div>
-    </a>
-
-    <a class="card" href="demos/hotel/index.html">
-      <span class="card-emoji">🏨</span>
-      <div class="card-title">Hotel & Hospedaje Boutique</div>
-      <div class="card-desc">Concierge IA que reserva habitaciones, informa servicios y gestiona la estadía.</div>
-      <div class="feats">
-        <div class="feat">Reservaciones automáticas</div>
-        <div class="feat">Catálogo de habitaciones y tarifas</div>
-        <div class="feat">Gestión de check-in/out</div>
-        <div class="feat">Panel de ocupación del hotel</div>
-      </div>
-      <div class="cta">Ver demo en vivo →</div>
-    </a>
-  </div>
-
-  <div class="sector">🔧 Servicios & Comercial</div>
-  <div class="grid">
-    <a class="card" href="demos/taller/index.html">
-      <span class="card-emoji">🔧</span>
-      <div class="card-title">Taller Mecánico & Automotriz</div>
-      <div class="card-desc">Diagnostica síntomas, da presupuestos y agenda citas — el mecánico que nunca duerme.</div>
-      <div class="feats">
-        <div class="feat">Diagnóstico por síntomas</div>
-        <div class="feat">Presupuestos instantáneos</div>
-        <div class="feat">Agendado de citas</div>
-        <div class="feat">Tracker de trabajos activos</div>
-      </div>
-      <div class="cta">Ver demo en vivo →</div>
-    </a>
-
-    <a class="card" href="demos/ventas/index.html">
-      <span class="card-emoji">💼</span>
-      <div class="card-title">Agente Comercial de Ventas IA</div>
-      <div class="card-desc">Vendedor IA que califica prospectos, explica soluciones y agenda demos automáticamente.</div>
-      <div class="feats">
-        <div class="feat">Calificación automática de leads</div>
-        <div class="feat">Presentación de soluciones IA</div>
-        <div class="feat">Cotizaciones en segundos</div>
-        <div class="feat">Pipeline CRM visual</div>
-      </div>
-      <div class="cta">Ver demo en vivo →</div>
-    </a>
-  </div>
-
+  <!-- FOOTER -->
   <div class="footer">
-    <p>Para que los chats funcionen, corre el servidor primero:</p>
-    <div class="cmd"><strong>cd</strong> server &nbsp;·&nbsp; <strong>node</strong> server.js</div>
+    <p class="footer-text">Para que los chats funcionen, <strong>corre el servidor primero</strong></p>
+    <div class="cmd"><span class="k">cd</span> server &nbsp;·&nbsp; <span class="k">node</span> server.js</div>
   </div>
 
 </div>
+
+<script>
+const btns = document.querySelectorAll('.filter-btn');
+const cards = document.querySelectorAll('.card');
+
+btns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    btns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const sector = btn.dataset.sector;
+    cards.forEach(card => {
+      if (sector === 'all' || card.dataset.sector === sector) {
+        card.classList.remove('hidden');
+        card.style.animation = 'none';
+        requestAnimationFrame(() => {
+          card.style.animation = '';
+        });
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  });
+});
+</script>
 </body>
 </html>
