@@ -6,7 +6,7 @@
 const https = require('https');
 
 const CONFIG = {
-  OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
+  OPENROUTER_API_KEY: (process.env.OPENROUTER_API_KEY || '').trim(),
   MODEL: process.env.MODEL || 'openrouter/auto',
   MAX_TOKENS: 800,
 };
