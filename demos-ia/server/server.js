@@ -1,5 +1,5 @@
 /**
- * mesaIA Backend — OpenRouter Free
+ * mesaIA Backend — Groq
  */
 
 const http = require('http');
@@ -8,9 +8,9 @@ const fs = require('fs');
 const path = require('path');
 
 const CONFIG = {
-  OPENROUTER_API_KEY: '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',
+  GROQ_API_KEY: process.env.GROQ_API_KEY || '',
   PORT: 3000,
-  MODEL: 'openai/gpt-oss-20b:free',
+  MODEL: 'llama-3.3-70b-versatile',
   MAX_TOKENS: 800,
 };
 
@@ -42,10 +42,10 @@ const server = http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const { messages, system } = JSON.parse(body);
-        console.log('\n📩 Mensaje:', messages[messages.length-1]?.content?.slice(0, 60));
-        callOpenRouter(messages, system, res);
+        console.log('\nMensaje:', messages[messages.length-1]?.content?.slice(0, 60));
+        callGroq(messages, system, res);
       } catch (e) {
-        console.error('❌ Error:', e.message);
+        console.error('Error:', e.message);
         res.writeHead(400, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'JSON inválido' }));
       }
@@ -68,7 +68,7 @@ const server = http.createServer((req, res) => {
   });
 });
 
-function callOpenRouter(messages, system, res) {
+function callGroq(messages, system, res) {
   const fullMessages = [
     { role: 'system', content: system || 'Eres un asistente útil.' },
     ...messages,
@@ -81,40 +81,37 @@ function callOpenRouter(messages, system, res) {
   });
 
   const options = {
-    hostname: 'openrouter.ai',
-    path: '/api/v1/chat/completions',
+    hostname: 'api.groq.com',
+    path: '/openai/v1/chat/completions',
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${CONFIG.OPENROUTER_API_KEY}`,
-      'HTTP-Referer': 'http://localhost:3000',
-      'X-Title': 'mesaIA Demos',
+      'Authorization': `Bearer ${CONFIG.GROQ_API_KEY}`,
       'Content-Length': Buffer.byteLength(payload),
     },
   };
 
-  console.log('🚀 Enviando a OpenRouter, modelo:', CONFIG.MODEL);
+  console.log('Enviando a Groq, modelo:', CONFIG.MODEL);
 
   const apiReq = https.request(options, (apiRes) => {
     let data = '';
     apiRes.on('data', chunk => data += chunk);
     apiRes.on('end', () => {
-      console.log('📥 Status:', apiRes.statusCode);
-      console.log('📄 Raw:', data.slice(0, 200));
+      console.log('Status:', apiRes.statusCode);
       try {
         const json = JSON.parse(data);
         if (json.error) {
-          console.error('❌ Error:', json.error.message);
+          console.error('Error:', json.error.message);
           res.writeHead(400, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ error: json.error.message }));
           return;
         }
         const text = json.choices?.[0]?.message?.content || '';
-        console.log('✅ Respuesta:', text.slice(0, 80));
+        console.log('Respuesta:', text.slice(0, 80));
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ content: [{ type: 'text', text }] }));
       } catch (e) {
-        console.error('❌ Error parseando:', e.message);
+        console.error('Error parseando:', e.message);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Error parseando respuesta' }));
       }
@@ -122,7 +119,7 @@ function callOpenRouter(messages, system, res) {
   });
 
   apiReq.on('error', (e) => {
-    console.error('❌ Error de red:', e.message);
+    console.error('Error de red:', e.message);
     res.writeHead(500, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'Error de red: ' + e.message }));
   });
@@ -132,10 +129,7 @@ function callOpenRouter(messages, system, res) {
 }
 
 server.listen(CONFIG.PORT, () => {
-  console.log('\n╔══════════════════════════════════════╗');
-  console.log('║   mesaIA Backend — OpenRouter Auto   ║');
-  console.log('╠══════════════════════════════════════╣');
-  console.log(`║  URL:    http://localhost:${CONFIG.PORT}        ║`);
-  console.log(`║  Modelo: ${CONFIG.MODEL.padEnd(28)}║`);
-  console.log('╚══════════════════════════════════════╝\n');
+  console.log('\nmesaIA Backend — Groq');
+  console.log('URL:    http://localhost:' + CONFIG.PORT);
+  console.log('Modelo: ' + CONFIG.MODEL + '\n');
 });

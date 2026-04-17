@@ -1,13 +1,13 @@
 /**
  * mesaIA — Vercel Serverless Function
- * Proxy hacia OpenRouter
+ * Proxy hacia Groq
  */
 
 const https = require('https');
 
 const CONFIG = {
-  OPENROUTER_API_KEY: (process.env.OPENROUTER_API_KEY || '').trim(),
-  MODEL: process.env.MODEL || 'openai/gpt-oss-20b:free',
+  GROQ_API_KEY: (process.env.GROQ_API_KEY || '').trim(),
+  MODEL: process.env.MODEL || 'llama-3.3-70b-versatile',
   MAX_TOKENS: 800,
 };
 
@@ -26,8 +26,8 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  if (!CONFIG.OPENROUTER_API_KEY) {
-    res.status(500).json({ error: 'OPENROUTER_API_KEY no configurada' });
+  if (!CONFIG.GROQ_API_KEY) {
+    res.status(500).json({ error: 'GROQ_API_KEY no configurada' });
     return;
   }
 
@@ -51,14 +51,12 @@ module.exports = async function handler(req, res) {
 
   return new Promise((resolve) => {
     const options = {
-      hostname: 'openrouter.ai',
-      path: '/api/v1/chat/completions',
+      hostname: 'api.groq.com',
+      path: '/openai/v1/chat/completions',
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${CONFIG.OPENROUTER_API_KEY}`,
-        'HTTP-Referer': 'https://mesaia.vercel.app',
-        'X-Title': 'mesaIA Demos',
+        'Authorization': `Bearer ${CONFIG.GROQ_API_KEY}`,
         'Content-Length': Buffer.byteLength(payload),
       },
     };
@@ -69,8 +67,6 @@ module.exports = async function handler(req, res) {
       apiRes.on('end', () => {
         try {
           const json = JSON.parse(data);
-          console.log('KEY_LEN=' + CONFIG.OPENROUTER_API_KEY.length + ' KEY_LAST6=' + CONFIG.OPENROUTER_API_KEY.slice(-6) + ' KEY_HASNL=' + (CONFIG.OPENROUTER_API_KEY.includes('\n') || CONFIG.OPENROUTER_API_KEY.includes('\r')) + ' MODEL=' + CONFIG.MODEL);
-          console.log('RAW=' + data);
           if (json.error) {
             res.status(400).json({ error: json.error.message });
             resolve();
@@ -80,7 +76,7 @@ module.exports = async function handler(req, res) {
           res.status(200).json({ content: [{ type: 'text', text }] });
           resolve();
         } catch (e) {
-          res.status(500).json({ error: 'Error parseando respuesta de OpenRouter' });
+          res.status(500).json({ error: 'Error parseando respuesta de Groq' });
           resolve();
         }
       });
