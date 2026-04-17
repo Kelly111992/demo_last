@@ -8,7 +8,7 @@ const fs = require('fs');
 const path = require('path');
 
 const CONFIG = {
-  OPENROUTER_API_KEY: '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',
+  OPENROUTER_API_KEY: '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',
   PORT: 3000,
   MODEL: 'openrouter/auto',
   MAX_TOKENS: 800,
