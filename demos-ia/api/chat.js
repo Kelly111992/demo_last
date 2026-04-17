@@ -69,6 +69,7 @@ module.exports = async function handler(req, res) {
       apiRes.on('end', () => {
         try {
           const json = JSON.parse(data);
+          console.log('OpenRouter status:', apiRes.statusCode, '| key prefix:', CONFIG.OPENROUTER_API_KEY.slice(0,20), '| model:', CONFIG.MODEL, '| raw:', data.slice(0,200));
           if (json.error) {
             res.status(400).json({ error: json.error.message });
             resolve();
