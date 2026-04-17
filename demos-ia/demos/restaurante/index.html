@@ -258,7 +258,7 @@ body{background:var(--bg);background-image:radial-gradient(ellipse at 20% 10%,rg
     <div class="dash-label">Tu pedido</div>
 
     <!-- Carrito -->
-    <div class="cart-section">
+    <div class="cart-section" id="cartContainer">
       <div class="cart-empty" id="cartEmpty">
         🛒 Tu carrito está vacío<br>
         <span style="opacity:0.7">Agrega items con el botón +</span>
@@ -445,15 +445,15 @@ function renderCart() {
 let pendingItemId = null;
 
 function promptAddToCart(itemId) {
-  pendingItemId = itemId;
-  const modal = document.getElementById('notesModal');
-  if (modal) {
-    modal.style.display = 'flex';
-    document.getElementById('notesInput').value = '';
-    document.getElementById('notesInput').focus();
-  } else {
-    // Si no hay modal, agregar directo
-    addToCart(itemId, '');
+  // Agregar directo al carrito — sin modal de notas
+  addToCart(itemId, '');
+
+  // Feedback visual: animar el ícono del carrito
+  const cartLabel = document.querySelector('.cart-label') || document.getElementById('cartContainer');
+  if (cartLabel) {
+    cartLabel.style.transition = 'transform 0.2s';
+    cartLabel.style.transform = 'scale(1.08)';
+    setTimeout(() => { cartLabel.style.transform = 'scale(1)'; }, 200);
   }
 }
 
