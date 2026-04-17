@@ -8,9 +8,9 @@ const fs = require('fs');
 const path = require('path');
 
 const CONFIG = {
-  OPENROUTER_API_KEY: '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',
+  OPENROUTER_API_KEY: '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',
   PORT: 3000,
-  MODEL: 'openrouter/auto',
+  MODEL: 'openai/gpt-oss-20b:free',
   MAX_TOKENS: 800,
 };
 

@@ -7,7 +7,7 @@ const https = require('https');
 
 const CONFIG = {
   OPENROUTER_API_KEY: (process.env.OPENROUTER_API_KEY || '').trim(),
-  MODEL: process.env.MODEL || 'openrouter/auto',
+  MODEL: process.env.MODEL || 'openai/gpt-oss-20b:free',
   MAX_TOKENS: 800,
 };
 
