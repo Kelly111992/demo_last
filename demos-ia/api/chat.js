@@ -69,7 +69,8 @@ module.exports = async function handler(req, res) {
       apiRes.on('end', () => {
         try {
           const json = JSON.parse(data);
-          console.log('OpenRouter status:', apiRes.statusCode, '| key prefix:', CONFIG.OPENROUTER_API_KEY.slice(0,20), '| model:', CONFIG.MODEL, '| raw:', data.slice(0,200));
+          console.log('KEY_LEN=' + CONFIG.OPENROUTER_API_KEY.length + ' KEY_LAST6=' + CONFIG.OPENROUTER_API_KEY.slice(-6) + ' KEY_HASNL=' + (CONFIG.OPENROUTER_API_KEY.includes('\n') || CONFIG.OPENROUTER_API_KEY.includes('\r')) + ' MODEL=' + CONFIG.MODEL);
+          console.log('RAW=' + data);
           if (json.error) {
             res.status(400).json({ error: json.error.message });
             resolve();
