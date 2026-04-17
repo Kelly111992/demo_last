@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PowerZone Gym — Agente IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/base.css">
+<style>
+:root{--bg:#04060f;--surface:#080c1a;--surface2:#0d1225;--accent:#3b82f6;--accent2:#60a5fa;--accent3:#f59e0b;--text:#e8eeff;--muted:#5a6a8a;--border:#111c35;--font-body:'IBM Plex Sans',sans-serif;--font-display:'Barlow Condensed',sans-serif;--bubble-bot:var(--surface);--avatar-user-bg:var(--surface2);--input-bg:var(--surface);--input-field-bg:var(--bg)}
+body{background:var(--bg);background-image:radial-gradient(ellipse at 100% 0%,rgba(59,130,246,0.08) 0%,transparent 50%)}
+.header{height:64px;background:rgba(4,6,15,0.95);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100}
+.logo{font-family:var(--font-display);font-size:28px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--text);display:flex;align-items:center;gap:10px}
+.logo-accent{color:var(--accent)}.logo-zone{color:var(--accent3)}
+.live-badge{display:flex;align-items:center;gap:6px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.25);color:var(--accent2);font-size:11px;font-weight:600;padding:4px 14px;border-radius:4px;letter-spacing:1px;text-transform:uppercase}
+.app{display:grid;grid-template-columns:270px 1fr 285px;height:calc(100vh - 64px)}
+.sidebar{background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:20px 0 40px}
+.sidebar-label{font-family:var(--font-display);font-size:13px;font-weight:800;color:var(--muted);letter-spacing:3px;text-transform:uppercase;padding:0 18px 16px}
+
+/* PLAN CARDS */
+.plan-card{margin:0 14px 10px;border:1px solid var(--border);border-radius:8px;overflow:hidden;cursor:pointer;transition:all 0.15s}
+.plan-card:hover{border-color:var(--accent);transform:translateX(3px)}
+.plan-card.selected{border-color:var(--accent);background:rgba(59,130,246,0.08)}
+.plan-img{width:100%;height:100px;object-fit:cover;filter:brightness(0.6)}
+.plan-card:hover .plan-img{filter:brightness(0.8)}
+.plan-overlay{padding:10px 14px;background:var(--surface2)}
+.plan-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.plan-name{font-family:var(--font-display);font-size:20px;font-weight:900;color:var(--text);text-transform:uppercase;letter-spacing:1px}
+.plan-price{font-family:var(--font-display);font-size:20px;font-weight:900;color:var(--accent);letter-spacing:-1px}
+.plan-price span{font-size:11px;font-weight:400;color:var(--muted)}
+.plan-features{display:flex;flex-direction:column;gap:3px}
+.plan-feat{font-size:10.5px;color:var(--muted);display:flex;align-items:center;gap:5px}
+.plan-feat::before{content:'▸';color:var(--accent);font-size:9px}
+.plan-tag{font-size:9px;font-weight:800;padding:2px 8px;border-radius:3px;letter-spacing:1px;text-transform:uppercase}
+.select-plan-btn{width:100%;margin-top:8px;padding:7px;background:var(--accent);border:none;border-radius:5px;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;cursor:pointer;letter-spacing:1px;text-transform:uppercase;transition:filter 0.15s}
+.select-plan-btn:hover{filter:brightness(1.15)}
+
+/* CLASES */
+.class-item{display:flex;align-items:center;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.14s;overflow:hidden;position:relative}
+.class-item:hover{background:var(--surface2)}
+.class-img{width:56px;height:48px;object-fit:cover;flex-shrink:0;filter:brightness(0.7)}
+.class-item:hover .class-img{filter:brightness(0.9)}
+.class-body{flex:1;padding:8px 10px}
+.class-name{font-size:12px;font-weight:600;color:var(--text)}
+.class-time{font-size:10.5px;color:var(--muted);margin-top:1px}
+.class-spots{font-size:11px;font-weight:700;color:var(--accent3);white-space:nowrap;padding-right:6px}
+.reserve-btn{font-size:10px;font-weight:700;padding:4px 8px;border-radius:4px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;transition:all 0.15s;white-space:nowrap;margin-right:8px}
+.reserve-btn:hover{background:var(--accent);color:#fff}
+.reserve-btn.booked{background:rgba(74,222,128,0.15);border-color:#4ade80;color:#4ade80;cursor:default}
+
+/* CHAT */
+.chat-main{display:flex;flex-direction:column;background:var(--bg)}
+.chat-header{padding:15px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;background:rgba(8,12,26,0.9)}
+.bot-avatar{width:44px;height:44px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;box-shadow:0 0 20px rgba(59,130,246,0.3)}
+.bot-name{font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--text);letter-spacing:1px;text-transform:uppercase}
+.bot-status{font-size:11px;color:var(--accent2);display:flex;align-items:center;gap:5px;margin-top:2px}
+.msg.bot .msg-bubble{border-color:var(--border)}
+.msg.user .msg-bubble{background:var(--accent)}
+
+/* DASHBOARD */
+.dashboard{background:var(--surface);border-left:1px solid var(--border);padding:20px;overflow-y:auto}
+.dash-label{font-family:var(--font-display);font-size:12px;font-weight:800;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+.stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px}
+.stat-val{font-family:var(--font-display);color:var(--accent);font-size:30px;font-weight:900;line-height:1}
+.stat-label{font-size:11px;color:var(--muted);margin-top:4px}
+.stat-delta{font-size:10px;color:#4ade80;margin-top:2px}
+.insight-card{background:linear-gradient(135deg,rgba(59,130,246,0.12),rgba(96,165,250,0.05));border:1px solid rgba(59,130,246,0.25);border-radius:8px;padding:16px;margin-top:6px}
+.insight-tag{font-family:var(--font-display);font-size:11px;color:var(--accent2);letter-spacing:2px;text-transform:uppercase;font-weight:800}
+.insight-title{font-family:var(--font-display);font-size:18px;font-weight:800;color:var(--text);margin-top:6px;line-height:1.2;text-transform:uppercase}
+.insight-sub{font-size:11px;color:var(--muted);margin-top:5px}
+
+/* IMC CARD */
+.imc-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}
+.imc-result{font-family:var(--font-display);font-size:36px;font-weight:900;color:var(--accent3);line-height:1}
+.imc-category{font-size:12px;font-weight:600;margin-top:4px}
+.imc-bar{height:8px;border-radius:4px;background:var(--border);margin-top:10px;position:relative;overflow:hidden}
+.imc-fill{height:100%;border-radius:4px;transition:width 0.5s ease}
+
+/* OBJETIVO BADGE */
+.goal-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:6px;font-family:var(--font-display);font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+
+/* CLASES RESERVADAS */
+.booked-class{background:var(--surface2);border:1px solid rgba(74,222,128,0.3);border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
+.bc-icon{font-size:18px}
+.bc-info{flex:1}
+.bc-name{font-size:12px;font-weight:600;color:var(--text)}
+.bc-time{font-size:10.5px;color:var(--muted);margin-top:1px}
+.bc-check{color:#4ade80;font-size:14px;font-weight:700}
+
+/* PLAN SEMANAL */
+.weekly-plan{margin-top:4px}
+.day-row{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:6px}
+.day-label{font-family:var(--font-display);font-size:11px;font-weight:800;color:var(--accent);letter-spacing:1px;text-transform:uppercase}
+.day-workout{font-size:11px;color:var(--text);margin-top:3px}
+
+/* SOCIO CARD */
+.member-card{background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(245,158,11,0.1));border:1px solid rgba(59,130,246,0.4);border-radius:12px;padding:16px;margin-bottom:12px}
+.member-number{font-family:var(--font-display);font-size:13px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.member-name{font-family:var(--font-display);font-size:22px;font-weight:900;color:var(--text);margin-top:4px;text-transform:uppercase}
+.member-plan{font-size:11px;color:var(--accent2);margin-top:3px}
+
+@media(max-width:768px){.sidebar,.dashboard{display:none}.app{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo"><span class="logo-accent">Power</span><span class="logo-zone">Zone</span> <span style="font-weight:400;font-size:16px;color:var(--muted);letter-spacing:1px">GYM</span></div>
+  <div class="live-badge"><span class="status-dot" style="width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;animation:pulse-dot 2s infinite"></span>Coach IA online</div>
+</header>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-label">Membresías</div>
+    <div class="plan-card" data-plan="starter" onclick="selectPlan('starter')">
+      <img class="plan-img" src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=300&h=120&fit=crop" alt="Starter">
+      <div class="plan-overlay">
+        <div class="plan-header"><div class="plan-name">Starter</div><div class="plan-price">$499<span>/mes</span></div></div>
+        <div class="plan-features">
+          <div class="plan-feat">Área de pesas y cardio</div>
+          <div class="plan-feat">Vestidores y casilleros</div>
+        </div>
+        <button class="select-plan-btn">Elegir Starter</button>
+      </div>
+    </div>
+    <div class="plan-card" data-plan="pro" style="border-color:rgba(59,130,246,0.4)" onclick="selectPlan('pro')">
+      <img class="plan-img" src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=300&h=120&fit=crop" alt="Pro">
+      <div class="plan-overlay">
+        <div class="plan-header">
+          <div><div class="plan-name">Pro</div><span class="plan-tag" style="background:rgba(59,130,246,0.2);color:var(--accent2)">⚡ Más popular</span></div>
+          <div class="plan-price">$799<span>/mes</span></div>
+        </div>
+        <div class="plan-features" style="margin-top:6px">
+          <div class="plan-feat">Todo Starter + clases grupales</div>
+          <div class="plan-feat">1 sesión/mes nutriólogo</div>
+        </div>
+        <button class="select-plan-btn">Elegir Pro</button>
+      </div>
+    </div>
+    <div class="plan-card" data-plan="elite" onclick="selectPlan('elite')">
+      <img class="plan-img" src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=300&h=120&fit=crop" alt="Elite">
+      <div class="plan-overlay">
+        <div class="plan-header">
+          <div><div class="plan-name">Elite</div><span class="plan-tag" style="background:rgba(245,158,11,0.15);color:var(--accent3)">🏆 VIP</span></div>
+          <div class="plan-price">$1,299<span>/mes</span></div>
+        </div>
+        <div class="plan-features" style="margin-top:6px">
+          <div class="plan-feat">4 sesiones PT personal/mes</div>
+          <div class="plan-feat">Nutrición + zona VIP</div>
+        </div>
+        <button class="select-plan-btn">Elegir Elite</button>
+      </div>
+    </div>
+
+    <div class="sidebar-label" style="margin-top:16px">Clases de hoy</div>
+    <div class="class-item" data-class="crossfit" data-spots="3">
+      <img class="class-img" src="https://images.unsplash.com/photo-1549476464-37392f717541?w=100&h=80&fit=crop" alt="CrossFit">
+      <div class="class-body"><div class="class-name">CrossFit Matutino</div><div class="class-time">6:00 AM · 1h · Coach Ramiro</div></div>
+      <button class="reserve-btn" onclick="reserveClass('crossfit','CrossFit Matutino','6:00 AM',3,this)">Reservar</button>
+      <div class="class-spots" id="spots-crossfit">3</div>
+    </div>
+    <div class="class-item" data-class="spinning" data-spots="0">
+      <img class="class-img" src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=100&h=80&fit=crop" alt="Spinning">
+      <div class="class-body"><div class="class-name">Spinning</div><div class="class-time">8:00 AM · 45min · Coach Laura</div></div>
+      <div class="class-spots" style="color:#ef4444;padding-right:8px">LLENO</div>
+    </div>
+    <div class="class-item" data-class="yoga" data-spots="8">
+      <img class="class-img" src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=100&h=80&fit=crop" alt="Yoga">
+      <div class="class-body"><div class="class-name">Yoga & Stretching</div><div class="class-time">10:00 AM · 1h · Coach Ana</div></div>
+      <button class="reserve-btn" onclick="reserveClass('yoga','Yoga & Stretching','10:00 AM',8,this)">Reservar</button>
+      <div class="class-spots" id="spots-yoga">8</div>
+    </div>
+    <div class="class-item" data-class="box" data-spots="5">
+      <img class="class-img" src="https://images.unsplash.com/photo-1594737625785-a6cbdabd333c?w=100&h=80&fit=crop" alt="Box">
+      <div class="class-body"><div class="class-name">Box & Cardio</div><div class="class-time">6:00 PM · 1h · Coach Mike</div></div>
+      <button class="reserve-btn" onclick="reserveClass('box','Box & Cardio','6:00 PM',5,this)">Reservar</button>
+      <div class="class-spots" id="spots-box">5</div>
+    </div>
+    <div class="class-item" data-class="zumba" data-spots="12">
+      <img class="class-img" src="https://images.unsplash.com/photo-1504609813442-a8924e83f76e?w=100&h=80&fit=crop" alt="Zumba">
+      <div class="class-body"><div class="class-name">Zumba</div><div class="class-time">7:00 PM · 1h · Coach Sofía</div></div>
+      <button class="reserve-btn" onclick="reserveClass('zumba','Zumba','7:00 PM',12,this)">Reservar</button>
+      <div class="class-spots" id="spots-zumba">12</div>
+    </div>
+  </aside>
+
+  <main class="chat-main">
+    <div class="chat-header">
+      <div class="bot-avatar"><span id="botAvatarEmoji">💪</span></div>
+      <div>
+        <div class="bot-name" id="chatHeaderName">Max — Tu Coach IA</div>
+        <div class="bot-status"><span class="status-dot" style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;animation:pulse-dot 2s infinite"></span>Online · Membresías, clases y planes</div>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="quick-replies" id="quickReplies">
+      <button class="qr-btn" onclick="sendQuick('Quiero bajar de peso')">🔥 Bajar peso</button>
+      <button class="qr-btn" onclick="sendQuick('Quiero ganar músculo')">💪 Ganar músculo</button>
+      <button class="qr-btn" onclick="sendQuick('Quiero mejorar mi resistencia')">🏃 Resistencia</button>
+      <button class="qr-btn" onclick="sendQuick('Solo quiero mantenerme saludable')">❤️ Salud general</button>
+    </div>
+    <div class="chat-input-area">
+      <textarea class="chat-input" id="chatInput" placeholder="Pregúntale a tu Coach IA..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" style="background:var(--accent);border-radius:8px" onclick="sendMessage()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+    </div>
+  </main>
+
+  <aside class="dashboard">
+    <div id="dashContent">
+      <div class="dash-label">Hoy en el gym</div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-val">187</div><div class="stat-label">Miembros activos</div><div class="stat-delta">↑ 12 este mes</div></div>
+        <div class="stat-card"><div class="stat-val">43</div><div class="stat-label">Asistencias hoy</div><div class="stat-delta">Pico: 7-9am</div></div>
+        <div class="stat-card"><div class="stat-val" id="streakVal">0</div><div class="stat-label">Tu racha (días)</div><div class="stat-delta" id="streakDelta">Empieza hoy 🔥</div></div>
+        <div class="stat-card"><div class="stat-val" id="classesVal">0</div><div class="stat-label">Clases este mes</div><div class="stat-delta" id="classesDelta">Reserve su primera</div></div>
+      </div>
+
+      <div class="dash-label" style="margin-top:16px">Tu objetivo</div>
+      <div id="goalSection">
+        <div style="text-align:center;padding:16px;color:var(--muted);font-size:12px">
+          Cuéntale a Max tu objetivo para empezar 💪
+        </div>
+      </div>
+
+      <div class="dash-label" style="margin-top:16px">IMC / Composición</div>
+      <div id="imcSection">
+        <div style="text-align:center;padding:16px;color:var(--muted);font-size:12px">
+          Dile tu peso y estatura a Max para calcular tu IMC
+        </div>
+      </div>
+
+      <div class="dash-label" style="margin-top:16px">Clases reservadas</div>
+      <div id="bookedClassesList">
+        <div style="text-align:center;padding:16px;color:var(--muted);font-size:12px">
+          Sin clases reservadas aún
+        </div>
+      </div>
+
+      <div class="dash-label" style="margin-top:16px">Plan semanal IA</div>
+      <div id="weeklyPlanSection">
+        <div style="text-align:center;padding:16px;color:var(--muted);font-size:12px">
+          Completa tu perfil para recibir tu plan personalizado
+        </div>
+      </div>
+
+      <div class="insight-card" style="margin-top:8px">
+        <div class="insight-tag">⚡ Insight IA</div>
+        <div class="insight-title">Enero es tu mes — 68% más leads</div>
+        <div class="insight-sub">Activa promo "Año Nuevo Cuerpo Nuevo" en diciembre</div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script src="../../assets/mesaia.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// ESTADO LOCAL — Demo Gimnasio
+// ═══════════════════════════════════════════════════════════════════
+let state = {
+  goal: null,          // 'peso' | 'musculo' | 'resistencia' | 'salud'
+  bmi: null,           // {weight, height, result, category}
+  plan: null,          // 'starter' | 'pro' | 'elite'
+  enrollment: null,    // {name, email, plan, memberId, confirmed}
+  bookedClasses: [],   // [{id, name, time}]
+  streak: 0,
+  points: 0
+};
+
+const GOAL_LABELS = {
+  peso: { label: 'Bajar de peso', icon: '🔥', color: '#ef4444' },
+  musculo: { label: 'Ganar músculo', icon: '💪', color: '#3b82f6' },
+  resistencia: { label: 'Mejorar resistencia', icon: '🏃', color: '#10b981' },
+  salud: { label: 'Salud general', icon: '❤️', color: '#f59e0b' }
+};
+
+const PLAN_LABELS = {
+  starter: { name: 'Starter', price: '$499/mes' },
+  pro: { name: 'Pro', price: '$799/mes' },
+  elite: { name: 'Elite', price: '$1,299/mes' }
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// SYSTEM PROMPT DINÁMICO
+// ═══════════════════════════════════════════════════════════════════
+function getSystemPrompt() {
+  const goalText = state.goal ? GOAL_LABELS[state.goal]?.label : 'no definido';
+  const imcText = state.bmi ? `IMC ${state.bmi.result} (${state.bmi.category})` : 'no calculado';
+  const planText = state.plan ? PLAN_LABELS[state.plan]?.name : 'ninguno';
+  const classesText = state.bookedClasses.length > 0
+    ? state.bookedClasses.map(c => c.name).join(', ')
+    : 'ninguna';
+  const enrolledText = state.enrollment ? `socio activo #${state.enrollment.memberId}` : 'prospecto';
+
+  return `Eres Max, Coach IA de "PowerZone Gym" en Guadalajara. Energético, motivador y profesional.
+Hablas en español mexicano casual. Usas emojis de gym con moderación.
+
+MEMBRESÍAS: Starter $499/mes (pesas+cardio), Pro $799/mes (todo+clases grupales+nutriólogo), Elite $1,299/mes (todo+4 sesiones PT+zona VIP).
+CLASES HOY: CrossFit 6am (3 lugares), Spinning 8am (LLENO), Yoga 10am (8 lugares), Box 6pm (5 lugares), Zumba 7pm (12 lugares).
+HORARIOS: L-V 5am-11pm, Sáb 6am-9pm, Dom 8am-4pm. Av. Vallarta 2345 GDL.
+PRIMER MES: 20% descuento.
+
+PERFIL DEL USUARIO ACTUAL:
+- Objetivo: ${goalText}
+- IMC: ${imcText}
+- Plan seleccionado: ${planText}
+- Clases reservadas: ${classesText}
+- Estado: ${enrolledText}
+
+FLUJOS QUE DEBES MANEJAR:
+1. Si el usuario da su objetivo (bajar peso/ganar músculo/resistencia/salud), guarda internamente y recomienda el plan ideal.
+2. Si el usuario da peso y estatura, calcula IMC y dile el resultado con recomendación.
+3. Para inscribir: solicita nombre + email + plan → confirma con número de socio.
+4. Para reservar clase: confirma y anota (el botón de la sidebar también lo hace).
+5. Para plan semanal: genera rutina de 5 días según el objetivo, formato: Lunes: ejercicio... etc.
+
+CUANDO DETECTES UN OBJETIVO en el mensaje, responde confirmando y pregunta si quiere calcular su IMC.
+CUANDO RECIBAS PESO Y ESTATURA, calcula IMC = peso/(estatura^2). Luego di: "Tu IMC es X. Categoría: [Normal/Sobrepeso/Obesidad]. Te recomiendo el plan [X]."
+CUANDO EL USUARIO QUIERA INSCRIBIRSE: pide nombre y email, luego confirma con un número de socio tipo PZ-2024-XXXX.
+RESPUESTAS: cortas y energéticas, máx 3-4 oraciones.`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// FUNCIONES DE FLUJO
+// ═══════════════════════════════════════════════════════════════════
+function selectPlan(planId) {
+  state.plan = planId;
+  document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`[data-plan="${planId}"]`).classList.add('selected');
+  MesaIA.send(`Quiero el plan ${PLAN_LABELS[planId].name} (${PLAN_LABELS[planId].price}). ¿Cómo me inscribo?`);
+}
+
+function reserveClass(id, name, time, spots, btn) {
+  if (state.bookedClasses.find(c => c.id === id)) return;
+
+  state.bookedClasses.push({ id, name, time });
+  state.streak = Math.max(state.streak, 1);
+  renderDashboard();
+
+  // Actualizar spots y botón
+  const spotsEl = document.getElementById(`spots-${id}`);
+  if (spotsEl) {
+    const newSpots = Math.max(0, spots - 1);
+    spotsEl.textContent = newSpots;
+  }
+  btn.textContent = '✓ Reservado';
+  btn.classList.add('booked');
+  btn.onclick = null;
+
+  MesaIA.send(`Reservé ${name} de las ${time}. ¡Listo!`);
+}
+
+function setGoal(goal) {
+  state.goal = goal;
+  renderDashboard();
+}
+
+function setBMI(weight, height) {
+  const h = height / 100;
+  const result = Math.round((weight / (h * h)) * 10) / 10;
+  let category = 'Normal';
+  let color = '#4ade80';
+  if (result < 18.5) { category = 'Bajo peso'; color = '#60a5fa'; }
+  else if (result >= 25 && result < 30) { category = 'Sobrepeso'; color = '#f59e0b'; }
+  else if (result >= 30) { category = 'Obesidad'; color = '#ef4444'; }
+
+  state.bmi = { weight, height, result, category, color };
+  renderDashboard();
+}
+
+function setEnrollment(name, email, memberId) {
+  state.enrollment = { name, email, plan: state.plan, memberId, confirmed: true };
+  renderDashboard();
+}
+
+function generateWeeklyPlan(goal) {
+  const plans = {
+    peso: [
+      { day: 'Lunes', workout: 'Cardio HIIT 30min + Pesas tren inferior' },
+      { day: 'Martes', workout: 'Spinning o Box 45min + Core' },
+      { day: 'Miércoles', workout: 'Descanso activo: Yoga o caminata 30min' },
+      { day: 'Jueves', workout: 'Pesas cuerpo completo + Cardio 20min' },
+      { day: 'Viernes', workout: 'CrossFit o Zumba 1h' }
+    ],
+    musculo: [
+      { day: 'Lunes', workout: 'Pecho + Tríceps (pesas pesadas)' },
+      { day: 'Martes', workout: 'Espalda + Bíceps + Jalones' },
+      { day: 'Miércoles', workout: 'Piernas: Sentadillas, Prensa, Lunges' },
+      { day: 'Jueves', workout: 'Hombros + Core + Trapecio' },
+      { day: 'Viernes', workout: 'Cuerpo completo: Circuito de fuerza' }
+    ],
+    resistencia: [
+      { day: 'Lunes', workout: 'CrossFit Matutino (6am) + Trote 20min' },
+      { day: 'Martes', workout: 'Spinning 45min (cuando haya lugar)' },
+      { day: 'Miércoles', workout: 'Box & Cardio 1h' },
+      { day: 'Jueves', workout: 'Circuito funcional + Escaladora 20min' },
+      { day: 'Viernes', workout: 'Zumba 1h + Estiramientos' }
+    ],
+    salud: [
+      { day: 'Lunes', workout: 'Yoga & Stretching 1h' },
+      { day: 'Martes', workout: 'Caminadora 30min + Pesas ligeras' },
+      { day: 'Miércoles', workout: 'Clase grupal de tu elección' },
+      { day: 'Jueves', workout: 'Yoga o Pilates + Meditación' },
+      { day: 'Viernes', workout: 'Zumba 1h (diversión + cardio suave)' }
+    ]
+  };
+  return plans[goal] || plans.salud;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDERIZADO DEL DASHBOARD
+// ═══════════════════════════════════════════════════════════════════
+function renderDashboard() {
+  // Streak y clases
+  document.getElementById('streakVal').textContent = state.streak || (state.enrollment ? 1 : 0);
+  document.getElementById('streakDelta').textContent = state.streak > 0 ? `¡Sigue así! 🔥` : 'Empieza hoy 🔥';
+  document.getElementById('classesVal').textContent = state.bookedClasses.length;
+  document.getElementById('classesDelta').textContent = state.bookedClasses.length > 0
+    ? `${state.bookedClasses.length} reservada${state.bookedClasses.length > 1 ? 's' : ''}`
+    : 'Reserve su primera';
+
+  // Objetivo
+  const goalSection = document.getElementById('goalSection');
+  if (state.goal) {
+    const g = GOAL_LABELS[state.goal];
+    goalSection.innerHTML = `
+      <div class="goal-badge" style="background:rgba(${hexToRgb(g.color)},0.15);border:1px solid ${g.color};color:${g.color}">
+        ${g.icon} ${g.label}
+      </div>
+      ${state.plan ? `<div style="font-size:11px;color:var(--accent2);margin-top:4px">Plan recomendado: <strong>${PLAN_LABELS[state.plan]?.name}</strong></div>` : ''}
+    `;
+  } else {
+    goalSection.innerHTML = `<div style="text-align:center;padding:16px;color:var(--muted);font-size:12px">Cuéntale a Max tu objetivo para empezar 💪</div>`;
+  }
+
+  // IMC
+  const imcSection = document.getElementById('imcSection');
+  if (state.bmi) {
+    const fillPct = Math.min(100, Math.max(5, ((state.bmi.result - 15) / 25) * 100));
+    imcSection.innerHTML = `
+      <div class="imc-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div class="imc-result">${state.bmi.result}</div>
+            <div class="imc-category" style="color:${state.bmi.color}">${state.bmi.category}</div>
+          </div>
+          <div style="text-align:right;font-size:11px;color:var(--muted)">
+            <div>${state.bmi.weight} kg</div>
+            <div>${state.bmi.height} cm</div>
+          </div>
+        </div>
+        <div class="imc-bar"><div class="imc-fill" style="width:${fillPct}%;background:${state.bmi.color}"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:4px">
+          <span>Bajo peso</span><span>Normal</span><span>Sobrepeso</span><span>Obesidad</span>
+        </div>
+      </div>
+    `;
+  } else {
+    imcSection.innerHTML = `<div style="text-align:center;padding:16px;color:var(--muted);font-size:12px">Dile tu peso y estatura a Max para calcular tu IMC</div>`;
+  }
+
+  // Clases reservadas
+  const bookedList = document.getElementById('bookedClassesList');
+  if (state.bookedClasses.length > 0) {
+    const icons = { crossfit: '🥊', yoga: '🧘', box: '🥊', zumba: '🕺', spinning: '🚴' };
+    bookedList.innerHTML = state.bookedClasses.map(c => `
+      <div class="booked-class">
+        <div class="bc-icon">${icons[c.id] || '💪'}</div>
+        <div class="bc-info">
+          <div class="bc-name">${c.name}</div>
+          <div class="bc-time">${c.time}</div>
+        </div>
+        <div class="bc-check">✓</div>
+      </div>
+    `).join('');
+  } else {
+    bookedList.innerHTML = `<div style="text-align:center;padding:16px;color:var(--muted);font-size:12px">Sin clases reservadas aún</div>`;
+  }
+
+  // Plan semanal
+  const weeklyPlanSection = document.getElementById('weeklyPlanSection');
+  if (state.goal) {
+    const plan = generateWeeklyPlan(state.goal);
+    weeklyPlanSection.innerHTML = `<div class="weekly-plan">${plan.map(d => `
+      <div class="day-row">
+        <div class="day-label">${d.day}</div>
+        <div class="day-workout">${d.workout}</div>
+      </div>
+    `).join('')}</div>`;
+  } else {
+    weeklyPlanSection.innerHTML = `<div style="text-align:center;padding:16px;color:var(--muted);font-size:12px">Completa tu perfil para recibir tu plan personalizado</div>`;
+  }
+
+  // Socio card (si está inscrito)
+  if (state.enrollment) {
+    const dashContent = document.getElementById('dashContent');
+    if (!document.getElementById('memberCard')) {
+      const memberEl = document.createElement('div');
+      memberEl.id = 'memberCard';
+      memberEl.className = 'member-card';
+      memberEl.style.marginBottom = '12px';
+      dashContent.insertBefore(memberEl, dashContent.firstChild);
+    }
+    document.getElementById('memberCard').innerHTML = `
+      <div class="member-number">Socio · ${state.enrollment.memberId}</div>
+      <div class="member-name">${state.enrollment.name}</div>
+      <div class="member-plan">Plan ${PLAN_LABELS[state.enrollment.plan]?.name || state.enrollment.plan} · Activo</div>
+    `;
+  }
+}
+
+function hexToRgb(hex) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? `${parseInt(result[1],16)},${parseInt(result[2],16)},${parseInt(result[3],16)}` : '59,130,246';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DETECTAR RESPUESTAS DEL BOT
+// ═══════════════════════════════════════════════════════════════════
+function onBotReply(reply) {
+  const lower = reply.toLowerCase();
+
+  // Detectar objetivo mencionado por el usuario
+  if (!state.goal) {
+    if (lower.includes('bajar') || lower.includes('peso') || lower.includes('adelgaz')) setGoal('peso');
+    else if (lower.includes('músculo') || lower.includes('musculo') || lower.includes('ganar masa')) setGoal('musculo');
+    else if (lower.includes('resistencia') || lower.includes('correr') || lower.includes('cardio')) setGoal('resistencia');
+    else if (lower.includes('salud') || lower.includes('mantener') || lower.includes('bienestar')) setGoal('salud');
+  }
+
+  // Detectar IMC calculado en respuesta del bot
+  const imcMatch = reply.match(/IMC\s+(?:es\s+)?(\d+\.?\d*)/i);
+  if (imcMatch && !state.bmi) {
+    // Intentar extraer peso/talla del contexto (no tenemos esos datos aquí, solo el resultado)
+    const imcVal = parseFloat(imcMatch[1]);
+    let category = 'Normal', color = '#4ade80';
+    if (imcVal < 18.5) { category = 'Bajo peso'; color = '#60a5fa'; }
+    else if (imcVal >= 25 && imcVal < 30) { category = 'Sobrepeso'; color = '#f59e0b'; }
+    else if (imcVal >= 30) { category = 'Obesidad'; color = '#ef4444'; }
+    state.bmi = { result: imcVal, category, color, weight: '?', height: '?' };
+    renderDashboard();
+  }
+
+  // Detectar número de socio asignado
+  const memberMatch = reply.match(/PZ-\d{4}-\d{4}/i);
+  if (memberMatch && !state.enrollment) {
+    state.enrollment = {
+      name: 'Nuevo Socio',
+      plan: state.plan || 'pro',
+      memberId: memberMatch[0],
+      confirmed: true
+    };
+    renderDashboard();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INICIALIZACIÓN
+// ═══════════════════════════════════════════════════════════════════
+MesaIA.init({
+  system: getSystemPrompt,
+  onReply: onBotReply,
+  welcomeMessage: `¡Bienvenido a **PowerZone Gym**! 💪\n\nSoy Max, tu Coach IA. Para empezar bien — ¿cuál es tu objetivo principal?\n\n🔥 **Bajar peso** · 💪 **Ganar músculo** · 🏃 **Resistencia** · ❤️ **Salud general**\n\nElige una opción o escríbeme directamente.`
+});
+</script>
+</body>
+</html>

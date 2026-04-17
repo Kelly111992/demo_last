@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studio Glam — Agente IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/base.css">
+<style>
+:root {
+  --bg:#fdf8f5;--surface:#ffffff;--surface2:#faf3ef;
+  --accent:#c4715a;--accent2:#e8a898;
+  --text:#2d1f1a;--muted:#9d8880;--border:#eeddd8;
+  --font-body:'Nunito',sans-serif;--font-display:'Playfair Display',serif;
+  --bubble-bot:#ffffff;--avatar-bot-bg:linear-gradient(135deg,#c4715a,#e8a898);
+  --avatar-user-bg:#faf3ef;--input-bg:#ffffff;--input-field-bg:#fdf8f5;
+}
+body{background:var(--bg)}
+.header{height:64px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100;box-shadow:0 2px 16px rgba(196,113,90,0.06)}
+.logo{font-family:var(--font-display);font-size:24px;font-weight:400;color:var(--text);display:flex;align-items:center;gap:10px;letter-spacing:0.5px}
+.logo em{color:var(--accent)}
+.logo-icon{font-size:22px}
+.live-badge{display:flex;align-items:center;gap:7px;background:#fdf0ed;border:1px solid #f0c4b8;color:var(--accent);font-size:11px;font-weight:600;padding:5px 14px;border-radius:20px;letter-spacing:0.5px}
+.status-dot{background:var(--accent);width:7px;height:7px;border-radius:50%;animation:pulse-dot 2s infinite;display:inline-block}
+.app{display:grid;grid-template-columns:270px 1fr 280px;height:calc(100vh - 64px)}
+
+/* SIDEBAR */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:22px 0 40px}
+.sidebar-label{font-family:var(--font-display);font-style:italic;font-size:13px;color:var(--muted);padding:0 20px 16px;letter-spacing:0.5px}
+
+/* ESTILISTAS */
+.stylist-section{padding:0 14px 12px;border-bottom:1px solid var(--border);margin-bottom:8px}
+.stylist-card{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.15s;margin-bottom:8px;background:var(--surface2)}
+.stylist-card:hover{border-color:var(--accent);background:#fdf0ed}
+.stylist-card.selected{border-color:var(--accent);background:#fdf0ed}
+.stylist-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.stylist-info{flex:1}
+.stylist-name{font-size:13px;font-weight:600;color:var(--text)}
+.stylist-spec{font-size:10.5px;color:var(--muted);margin-top:1px}
+.stylist-rating{font-size:11px;color:var(--accent);font-weight:600}
+
+/* SERVICIOS */
+.service-group{margin-bottom:4px}
+.group-name{font-size:9.5px;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;padding:10px 20px 6px}
+.svc-item{display:flex;align-items:center;gap:12px;padding:10px 20px;cursor:pointer;transition:all 0.14s;border-left:2px solid transparent;position:relative}
+.svc-item:hover{background:var(--surface2);border-left-color:var(--accent)}
+.svc-item.selected{background:#fdf0ed;border-left-color:var(--accent)}
+.svc-check{width:18px;height:18px;border-radius:4px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all 0.15s}
+.svc-item.selected .svc-check{background:var(--accent);border-color:var(--accent);color:#fff}
+.svc-icon{width:36px;height:36px;border-radius:50%;background:#fdf0ed;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.svc-info{flex:1}
+.svc-name{font-size:13px;font-weight:600;color:var(--text)}
+.svc-time{font-size:11px;color:var(--muted);margin-top:1px}
+.svc-price{font-size:13px;font-weight:700;color:var(--accent);white-space:nowrap}
+.sep{height:1px;background:var(--border);margin:8px 20px}
+
+/* CHAT */
+.chat-main{display:flex;flex-direction:column;background:var(--bg);background-image:radial-gradient(ellipse at 80% 10%,rgba(196,113,90,0.06) 0%,transparent 55%)}
+.chat-header{padding:15px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;background:#fff}
+.bot-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:0 4px 12px rgba(196,113,90,0.25)}
+.bot-name{font-family:var(--font-display);font-size:17px;color:var(--text);font-weight:600}
+.bot-status{font-size:11px;color:var(--accent);display:flex;align-items:center;gap:5px;margin-top:2px;font-weight:500}
+.msg.bot .msg-bubble{border-color:var(--border);box-shadow:0 1px 4px rgba(196,113,90,0.06)}
+.msg.user .msg-bubble{background:var(--accent)}
+.typing-dots{border-color:var(--border);box-shadow:0 1px 4px rgba(196,113,90,0.06)}
+.qr-btn:hover{background:#fdf0ed;border-color:var(--accent);color:var(--accent)}
+
+/* DASHBOARD */
+.dashboard{background:var(--surface);border-left:1px solid var(--border);padding:22px;overflow-y:auto}
+.dash-label{font-family:var(--font-display);font-style:italic;font-size:12px;color:var(--muted);margin-bottom:14px;letter-spacing:0.5px}
+.stat-card{background:var(--surface2);box-shadow:0 1px 4px rgba(196,113,90,0.06);border:1px solid var(--border)}
+.stat-val{color:var(--accent);font-family:var(--font-display);font-size:28px}
+.stat-delta{color:#16a34a}
+
+/* CONSTRUCTOR DE CITA */
+.appointment-builder{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}
+.appt-stylist-display{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.appt-stylist-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:16px}
+.appt-stylist-name{font-size:12px;font-weight:600;color:var(--text)}
+.appt-stylist-spec{font-size:10px;color:var(--muted)}
+.appt-services-list{margin-bottom:10px}
+.appt-svc-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid rgba(238,221,216,0.5)}
+.appt-svc-row:last-child{border-bottom:none}
+.appt-svc-name{color:var(--text)}
+.appt-svc-price{color:var(--accent);font-weight:600}
+.appt-totals{background:rgba(196,113,90,0.08);border-radius:8px;padding:10px;margin-top:8px}
+.total-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px}
+.total-row.big{font-size:14px;font-weight:700}
+.total-row.big .val{color:var(--accent);font-family:var(--font-display)}
+.book-btn{width:100%;margin-top:10px;padding:11px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-body);transition:filter 0.15s}
+.book-btn:hover{filter:brightness(1.1)}
+
+/* CONFIRMACIÓN DE CITA */
+.appt-confirmed{background:linear-gradient(135deg,#fdf0ed,#faf3ef);border:1px solid #f0c4b8;border-radius:12px;padding:14px;margin-bottom:12px}
+.appt-folio{font-family:var(--font-display);font-size:14px;font-weight:600;color:var(--accent);margin-bottom:8px}
+.appt-detail{font-size:11px;color:var(--text);line-height:1.8}
+
+/* LEALTAD */
+.loyalty-card{background:linear-gradient(135deg,#fdf0ed,#faf3ef);border:1px solid #f0c4b8;border-radius:12px;padding:14px;margin-bottom:8px}
+.loyalty-visits{font-family:var(--font-display);font-size:28px;font-weight:600;color:var(--accent);line-height:1}
+.loyalty-visits-label{font-size:10px;color:var(--muted);margin-top:3px}
+.loyalty-progress{height:8px;background:var(--border);border-radius:4px;margin:10px 0 6px;overflow:hidden}
+.loyalty-fill{height:100%;background:var(--accent);border-radius:4px}
+.loyalty-next{font-size:10.5px;color:var(--muted);font-family:var(--font-display);font-style:italic}
+
+/* PAQUETE NOVIA */
+.novia-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font-display);font-style:italic;letter-spacing:0.5px;margin-top:4px;display:flex;align-items:center;justify-content:center;gap:8px;transition:filter 0.15s}
+.novia-btn:hover{filter:brightness(1.08)}
+
+/* INSIGHT */
+.insight-card{background:linear-gradient(135deg,#fdf0ed,#faf3ef);border:1px solid #f0c4b8;border-radius:12px;padding:16px;margin-top:6px}
+.insight-tag{font-size:9.5px;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;font-weight:700}
+.insight-title{font-family:var(--font-display);font-size:15px;font-style:italic;color:var(--text);margin-top:7px;line-height:1.4;font-weight:400}
+.insight-sub{font-size:11px;color:var(--muted);margin-top:5px}
+
+@media(max-width:768px){.sidebar,.dashboard{display:none}.app{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo"><span class="logo-icon">✂️</span> Studio <em>Glam</em></div>
+  <div class="live-badge"><span class="status-dot"></span>Reservas 24/7</div>
+</header>
+
+<div class="app">
+  <aside class="sidebar">
+    <!-- Estilistas -->
+    <div class="sidebar-label">Nuestras estilistas</div>
+    <div class="stylist-section">
+      <div class="stylist-card" data-stylist="diana" onclick="selectStylist('diana','Diana Reyes','Colorimetría y balayage','5.0 ⭐')">
+        <div class="stylist-avatar">💇</div>
+        <div class="stylist-info">
+          <div class="stylist-name">Diana Reyes</div>
+          <div class="stylist-spec">Colorimetría & balayage</div>
+          <div class="stylist-rating">5.0 ⭐ · 8 años exp.</div>
+        </div>
+      </div>
+      <div class="stylist-card" data-stylist="valeria" onclick="selectStylist('valeria','Valeria Mora','Uñas y maquillaje','4.9 ⭐')">
+        <div class="stylist-avatar">💅</div>
+        <div class="stylist-info">
+          <div class="stylist-name">Valeria Mora</div>
+          <div class="stylist-spec">Uñas & maquillaje</div>
+          <div class="stylist-rating">4.9 ⭐ · 5 años exp.</div>
+        </div>
+      </div>
+      <div class="stylist-card" data-stylist="ana" onclick="selectStylist('ana','Ana López','Facial & spa holístico','5.0 ⭐')">
+        <div class="stylist-avatar">🧖</div>
+        <div class="stylist-info">
+          <div class="stylist-name">Ana López</div>
+          <div class="stylist-spec">Facial & spa</div>
+          <div class="stylist-rating">5.0 ⭐ · 7 años exp.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Servicios con checkbox -->
+    <div class="sidebar-label">Servicios</div>
+
+    <div class="group-name">Cabello</div>
+    <div class="svc-item" data-svc="corte" data-price="250" data-time="45" onclick="toggleService('corte','Corte de cabello',250,45)">
+      <div class="svc-check" id="check-corte"></div>
+      <img style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0" src="https://images.unsplash.com/photo-1560066984-138daaa4e993?w=80&h=80&fit=crop" alt="">
+      <div class="svc-info"><div class="svc-name">Corte de cabello</div><div class="svc-time">⏱ 45 min</div></div>
+      <div class="svc-price">$250</div>
+    </div>
+    <div class="svc-item" data-svc="tinte" data-price="850" data-time="150" onclick="toggleService('tinte','Tinte completo',850,150)">
+      <div class="svc-check" id="check-tinte"></div>
+      <img style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0" src="https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=80&h=80&fit=crop" alt="">
+      <div class="svc-info"><div class="svc-name">Tinte completo</div><div class="svc-time">⏱ 2.5 hrs</div></div>
+      <div class="svc-price">$850</div>
+    </div>
+    <div class="svc-item" data-svc="balayage" data-price="1400" data-time="180" onclick="toggleService('balayage','Balayage / Highlights',1400,180)">
+      <div class="svc-check" id="check-balayage"></div>
+      <img style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0" src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=80&h=80&fit=crop" alt="">
+      <div class="svc-info"><div class="svc-name">Balayage / Highlights</div><div class="svc-time">⏱ 3 hrs</div></div>
+      <div class="svc-price">$1,400</div>
+    </div>
+    <div class="svc-item" data-svc="keratina" data-price="1200" data-time="120" onclick="toggleService('keratina','Tratamiento keratina',1200,120)">
+      <div class="svc-check" id="check-keratina"></div>
+      <img style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0" src="https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=80&h=80&fit=crop" alt="">
+      <div class="svc-info"><div class="svc-name">Keratina</div><div class="svc-time">⏱ 2 hrs</div></div>
+      <div class="svc-price">$1,200</div>
+    </div>
+    <div class="svc-item" data-svc="peinado" data-price="350" data-time="60" onclick="toggleService('peinado','Peinado + secado',350,60)">
+      <div class="svc-check" id="check-peinado"></div>
+      <div class="svc-icon">🌊</div>
+      <div class="svc-info"><div class="svc-name">Peinado + secado</div><div class="svc-time">⏱ 1 hr</div></div>
+      <div class="svc-price">$350</div>
+    </div>
+
+    <div class="sep"></div>
+    <div class="group-name">Uñas</div>
+    <div class="svc-item" data-svc="manicure" data-price="280" data-time="60" onclick="toggleService('manicure','Manicure semipermanente',280,60)">
+      <div class="svc-check" id="check-manicure"></div>
+      <img style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0" src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=80&h=80&fit=crop" alt="">
+      <div class="svc-info"><div class="svc-name">Manicure semipermanente</div><div class="svc-time">⏱ 1 hr</div></div>
+      <div class="svc-price">$280</div>
+    </div>
+    <div class="svc-item" data-svc="pedicure" data-price="320" data-time="90" onclick="toggleService('pedicure','Pedicure spa',320,90)">
+      <div class="svc-check" id="check-pedicure"></div>
+      <div class="svc-icon">👣</div>
+      <div class="svc-info"><div class="svc-name">Pedicure spa</div><div class="svc-time">⏱ 1.5 hrs</div></div>
+      <div class="svc-price">$320</div>
+    </div>
+    <div class="svc-item" data-svc="acrilicas" data-price="580" data-time="120" onclick="toggleService('acrilicas','Uñas acrílicas',580,120)">
+      <div class="svc-check" id="check-acrilicas"></div>
+      <div class="svc-icon">💎</div>
+      <div class="svc-info"><div class="svc-name">Uñas acrílicas</div><div class="svc-time">⏱ 2 hrs</div></div>
+      <div class="svc-price">$580</div>
+    </div>
+
+    <div class="sep"></div>
+    <div class="group-name">Facial & Spa</div>
+    <div class="svc-item" data-svc="facial" data-price="650" data-time="60" onclick="toggleService('facial','Limpieza facial profunda',650,60)">
+      <div class="svc-check" id="check-facial"></div>
+      <img style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0" src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=80&h=80&fit=crop" alt="">
+      <div class="svc-info"><div class="svc-name">Limpieza facial profunda</div><div class="svc-time">⏱ 1 hr</div></div>
+      <div class="svc-price">$650</div>
+    </div>
+    <div class="svc-item" data-svc="masaje" data-price="550" data-time="60" onclick="toggleService('masaje','Masaje relajante',550,60)">
+      <div class="svc-check" id="check-masaje"></div>
+      <div class="svc-icon">🧖</div>
+      <div class="svc-info"><div class="svc-name">Masaje relajante</div><div class="svc-time">⏱ 1 hr</div></div>
+      <div class="svc-price">$550</div>
+    </div>
+    <div class="svc-item" data-svc="maquillaje" data-price="750" data-time="90" onclick="toggleService('maquillaje','Maquillaje social',750,90)">
+      <div class="svc-check" id="check-maquillaje"></div>
+      <div class="svc-icon">💄</div>
+      <div class="svc-info"><div class="svc-name">Maquillaje social</div><div class="svc-time">⏱ 1.5 hrs</div></div>
+      <div class="svc-price">$750</div>
+    </div>
+  </aside>
+
+  <main class="chat-main">
+    <div class="chat-header">
+      <div class="bot-avatar"><span id="botAvatarEmoji">✨</span></div>
+      <div>
+        <div class="bot-name">Luna — Tu asistente de belleza</div>
+        <div class="bot-status"><span class="status-dot"></span>Disponible · Agenda tu cita ahora</div>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages"></div>
+
+    <div class="quick-replies" id="quickReplies">
+      <button class="qr-btn" onclick="sendQuick('Quiero agendar un corte de cabello esta semana')">✂️ Agendar cita</button>
+      <button class="qr-btn" onclick="sendQuick('Me quiero hacer un balayage, ¿cuánto cuesta y cuánto tarda?')">🎨 Balayage</button>
+      <button class="qr-btn" onclick="sendQuick('Quiero hacer una consulta de color para mi cabello')">💬 Consulta color</button>
+      <button class="qr-btn" onclick="requestBridalPackage()">👰 Paquete Novia</button>
+    </div>
+
+    <div class="chat-input-area" style="background:#fff">
+      <textarea class="chat-input" id="chatInput" placeholder="¿En qué te podemos consentir hoy? ✨" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" style="background:var(--accent);border-radius:50%" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </main>
+
+  <aside class="dashboard">
+    <!-- Constructor de cita -->
+    <div class="dash-label">Tu cita en progreso</div>
+    <div id="appointmentBuilder">
+      <div style="text-align:center;padding:20px;color:var(--muted);font-size:12px;border:1px dashed var(--border);border-radius:10px;margin-bottom:12px">
+        Selecciona una estilista y servicios para comenzar
+      </div>
+    </div>
+
+    <!-- Lealtad -->
+    <div class="dash-label">Programa de lealtad</div>
+    <div class="loyalty-card">
+      <div class="loyalty-visits" id="loyaltyVisits">7</div>
+      <div class="loyalty-visits-label">visitas este año</div>
+      <div class="loyalty-progress"><div class="loyalty-fill" style="width:70%"></div></div>
+      <div class="loyalty-next">✨ 3 visitas más = Corte gratis (valor $250)</div>
+      <div style="margin-top:8px;font-size:11px;color:var(--muted)">350 puntos acumulados · Nivel Plata</div>
+    </div>
+
+    <!-- Paquete novia -->
+    <button class="novia-btn" onclick="requestBridalPackage()">
+      👰 Paquete Novia — desde $3,500
+    </button>
+
+    <div class="insight-card">
+      <div class="insight-tag">💡 Sugerencia</div>
+      <div class="insight-title">Los martes tienes 40% menos citas — ideal para promoción de balayage</div>
+      <div class="insight-sub">Una promo de 15% los martes podría llenar tu agenda completa</div>
+    </div>
+  </aside>
+</div>
+
+<script src="../../assets/mesaia.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// ESTADO LOCAL — Demo Salón
+// ═══════════════════════════════════════════════════════════════════
+let state = {
+  stylist: null,       // {id, name, specialty, rating}
+  services: [],        // [{id, name, price, time}]
+  totalTime: 0,
+  totalPrice: 0,
+  slot: null,          // {date, time}
+  appointment: null,   // {folio, confirmed}
+  loyalty: { visits: 7, points: 350, nextReward: 'Corte gratis a las 10 visitas' }
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// SYSTEM PROMPT DINÁMICO
+// ═══════════════════════════════════════════════════════════════════
+function getSystemPrompt() {
+  const stylistText = state.stylist ? state.stylist.name : 'no seleccionada';
+  const servicesText = state.services.length > 0
+    ? state.services.map(s => `${s.name} ($${s.price})`).join(', ')
+    : 'ninguno';
+  const totalText = state.totalPrice > 0 ? `$${state.totalPrice}` : '$0';
+  const timeText = state.totalTime > 0 ? `${Math.floor(state.totalTime/60)}h ${state.totalTime%60}min` : '0';
+  const apptText = state.appointment ? `folio ${state.appointment.folio}` : 'ninguna';
+
+  return `Eres Luna, la asistente virtual de "Studio Glam", salón de belleza premium en Guadalajara.
+Eres cálida, amigable y apasionada por la belleza. Hablas en español mexicano femenino y entusiasta.
+Haces sentir especial a cada clienta ✨
+
+SERVICIOS: Corte $250 (45min), Tinte $850 (2.5h), Balayage $1,400 (3h), Keratina $1,200 (2h), Peinado $350 (1h),
+Manicure $280 (1h), Pedicure $320 (1.5h), Acrílicas $580 (2h),
+Facial $650 (1h), Masaje $550 (1h), Maquillaje $750 (1.5h), Paquete Novia $3,500 (4h).
+
+ESTILISTAS: Diana R. (colorimetría/balayage), Valeria M. (uñas/maquillaje), Ana L. (facial/spa).
+HORARIOS: Lun-Sáb 9am-8pm, Dom 10am-4pm. Valet parking $30.
+SLOTS DISPONIBLES HOY: 10am, 11:30am, 1pm, 3pm, 5pm.
+LEALTAD: ${state.loyalty.visits} visitas, ${state.loyalty.points} puntos. ${state.loyalty.nextReward}.
+
+ESTADO ACTUAL DE LA CITA:
+- Estilista: ${stylistText}
+- Servicios: ${servicesText}
+- Tiempo total: ${timeText}
+- Total: ${totalText}
+- Cita agendada: ${apptText}
+
+FLUJOS:
+1. CONSULTA DE COLOR: Si la clienta pide consulta, haz 3 preguntas: tipo de cabello, tono actual, tono deseado → da recomendación técnica.
+2. AGENDAR: Confirma estilista, servicios, fecha y hora → genera folio tipo SG-XXXX.
+3. PAQUETE NOVIA: Pregunta fecha de boda, servicios deseados, si quiere prueba previa → da cotización completa.
+4. DESCUENTO: Si llevan 2+ servicios, ofrece 10% en el segundo.
+Respuestas cortas y entusiastas, máx 3 oraciones.`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// FUNCIONES PRINCIPALES
+// ═══════════════════════════════════════════════════════════════════
+function selectStylist(id, name, specialty, rating) {
+  state.stylist = { id, name, specialty, rating };
+  document.querySelectorAll('.stylist-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`[data-stylist="${id}"]`).classList.add('selected');
+  renderAppointmentBuilder();
+  MesaIA.send(`Quiero que me atienda ${name}, especialista en ${specialty}.`);
+}
+
+function toggleService(id, name, price, time) {
+  const idx = state.services.findIndex(s => s.id === id);
+  const item = document.querySelector(`[data-svc="${id}"]`);
+  const check = document.getElementById(`check-${id}`);
+
+  if (idx >= 0) {
+    state.services.splice(idx, 1);
+    item.classList.remove('selected');
+    check.textContent = '';
+  } else {
+    state.services.push({ id, name, price, time });
+    item.classList.add('selected');
+    check.textContent = '✓';
+  }
+
+  state.totalPrice = state.services.reduce((sum, s) => sum + s.price, 0);
+  state.totalTime = state.services.reduce((sum, s) => sum + s.time, 0);
+  renderAppointmentBuilder();
+}
+
+function requestBridalPackage() {
+  MesaIA.send('Quiero información sobre el paquete novia. Tengo una boda próximamente y me gustaría cotizar todos los servicios necesarios.');
+}
+
+function bookAppointment() {
+  if (!state.stylist || state.services.length === 0) return;
+  const svcs = state.services.map(s => s.name).join(', ');
+  MesaIA.send(`Quiero agendar mi cita con ${state.stylist.name} para los servicios: ${svcs}. Total: $${state.totalPrice}. ¿Qué horarios tienen disponibles?`);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDERIZADO DEL DASHBOARD
+// ═══════════════════════════════════════════════════════════════════
+function renderAppointmentBuilder() {
+  const container = document.getElementById('appointmentBuilder');
+  if (!state.stylist && state.services.length === 0) {
+    container.innerHTML = `<div style="text-align:center;padding:20px;color:var(--muted);font-size:12px;border:1px dashed var(--border);border-radius:10px;margin-bottom:12px">Selecciona una estilista y servicios para comenzar</div>`;
+    return;
+  }
+
+  if (state.appointment) {
+    container.innerHTML = `
+      <div class="appt-confirmed">
+        <div class="appt-folio">✓ Cita confirmada · ${state.appointment.folio}</div>
+        <div class="appt-detail">
+          ${state.stylist ? `<div>Estilista: <strong>${state.stylist.name}</strong></div>` : ''}
+          ${state.services.map(s => `<div>${s.name}</div>`).join('')}
+          ${state.slot ? `<div>${state.slot.date} a las ${state.slot.time}</div>` : ''}
+          <div style="margin-top:6px;color:var(--accent);font-weight:600">Total: $${state.totalPrice}</div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const timeLabel = state.totalTime > 0
+    ? `${Math.floor(state.totalTime/60)}h ${state.totalTime%60 > 0 ? state.totalTime%60+'min' : ''}`
+    : '0 min';
+
+  container.innerHTML = `
+    <div class="appointment-builder">
+      ${state.stylist ? `
+        <div class="appt-stylist-display">
+          <div class="appt-stylist-avatar">✨</div>
+          <div>
+            <div class="appt-stylist-name">${state.stylist.name}</div>
+            <div class="appt-stylist-spec">${state.stylist.specialty}</div>
+          </div>
+        </div>` : '<div style="font-size:11px;color:var(--muted);margin-bottom:10px">← Selecciona una estilista</div>'}
+      ${state.services.length > 0 ? `
+        <div class="appt-services-list">
+          ${state.services.map(s => `
+            <div class="appt-svc-row">
+              <span class="appt-svc-name">${s.name}</span>
+              <span class="appt-svc-price">$${s.price}</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="appt-totals">
+          <div class="total-row"><span>Tiempo total</span><span>${timeLabel}</span></div>
+          <div class="total-row big"><span>Total</span><span class="val">$${state.totalPrice}</span></div>
+        </div>
+        ${state.stylist ? `<button class="book-btn" onclick="bookAppointment()">Agendar mi cita →</button>` : ''}
+      ` : '<div style="font-size:11px;color:var(--muted)">← Selecciona los servicios que deseas</div>'}
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DETECTAR RESPUESTAS DEL BOT
+// ═══════════════════════════════════════════════════════════════════
+function onBotReply(reply) {
+  const folioMatch = reply.match(/SG-\d{4}/i);
+  if (folioMatch && !state.appointment && state.services.length > 0) {
+    state.appointment = { folio: folioMatch[0], confirmed: true };
+
+    // Extraer hora si está en la respuesta
+    const timeMatch = reply.match(/(\d{1,2}:\d{2}(?:am|pm)?)/i);
+    if (timeMatch) {
+      state.slot = { date: 'Próximamente', time: timeMatch[1] };
+    }
+    renderAppointmentBuilder();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INICIALIZACIÓN
+// ═══════════════════════════════════════════════════════════════════
+MesaIA.init({
+  system: getSystemPrompt,
+  onReply: onBotReply,
+  welcomeMessage: `¡Hola, bienvenida a **Studio Glam**! ✨\n\nSoy Luna, tu asistente. Puedo ayudarte a:\n\n• Elegir tu **estilista** y **servicios** (usa los checkboxes de la izquierda)\n• Agendar tu **cita** con el mejor horario\n• Hacer una **consulta de color** personalizada\n• Cotizar el **paquete novia** 👰\n\n¿En qué te puedo consentir hoy? 💅`
+});
+</script>
+</body>
+</html>

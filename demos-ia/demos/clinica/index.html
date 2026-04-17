@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clínica Salud+ — Agente IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/base.css">
+<style>
+:root {
+  --bg:       #f5f7fa;
+  --surface:  #ffffff;
+  --surface2: #eef1f6;
+  --accent:   #1a6fd4;
+  --accent2:  #0ea5e9;
+  --text:     #0f172a;
+  --muted:    #64748b;
+  --border:   #e2e8f0;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Instrument Serif', serif;
+  --bubble-bot: #ffffff;
+  --avatar-bot-bg: linear-gradient(135deg, #1a6fd4, #0ea5e9);
+  --avatar-user-bg: #eef1f6;
+  --input-bg: #ffffff;
+  --input-field-bg: #f8fafc;
+}
+
+body { background: var(--bg); }
+
+.header {
+  height: 64px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--accent);
+}
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, #1a6fd4, #0ea5e9);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.logo-text { color: var(--text); }
+.logo-text span { color: var(--accent); font-style: italic; }
+
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+.status-dot { background: #22c55e; }
+
+.app {
+  display: grid;
+  grid-template-columns: 270px 1fr 280px;
+  height: calc(100vh - 64px);
+}
+
+/* SIDEBAR */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 22px 0 30px;
+}
+
+.sidebar-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 0 20px 16px;
+}
+
+.service-card {
+  margin: 0 14px 8px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.14s;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.service-card:hover {
+  border-color: var(--accent);
+  background: #f0f6ff;
+  box-shadow: 0 2px 8px rgba(26,111,212,0.1);
+}
+
+.service-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: #eff6ff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.service-info { flex: 1; }
+.service-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.service-desc { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+.service-price { font-size: 12px; font-weight: 600; color: var(--accent); margin-top: 4px; }
+
+.cat-divider {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 14px 20px 6px;
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+
+/* CHAT */
+.chat-main {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+.chat-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #fff;
+}
+
+.bot-avatar {
+  width: 44px; height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #1a6fd4, #0ea5e9);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+
+.bot-name { font-weight: 600; font-size: 15px; color: var(--text); }
+.bot-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.bot-status { font-size: 11px; color: #16a34a; display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+
+.msg.bot .msg-bubble {
+  border-color: var(--border);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.typing-dots {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  border-color: var(--border);
+}
+
+/* DASHBOARD */
+.dashboard {
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.dash-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.appt-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 13px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.appt-time {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+  min-width: 44px;
+}
+.appt-info { flex: 1; min-width: 0; }
+.appt-name { font-size: 12px; font-weight: 600; color: var(--text); }
+.appt-type { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
+.appt-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.b-confirmed { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+.b-pending   { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+
+.stat-card { background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+.stat-val { color: var(--accent); }
+.stat-delta { color: #16a34a; }
+
+.insight-card {
+  background: linear-gradient(135deg, #eff6ff, #f0f9ff);
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 4px;
+}
+.insight-tag { font-size: 9.5px; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; }
+.insight-title { font-family: var(--font-display); font-size: 14px; color: var(--text); margin-top: 7px; line-height: 1.4; font-style: italic; }
+.insight-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">🏥</div>
+    <div class="logo-text">Clínica <span>Salud+</span></div>
+  </div>
+  <div class="live-badge"><span class="status-dot" style="width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse-dot 2s infinite;display:inline-block"></span>Agente IA activo</div>
+</header>
+
+<div class="app">
+
+  <!-- SERVICIOS -->
+  <aside class="sidebar">
+    <div class="sidebar-label">Servicios disponibles</div>
+
+    <div class="service-card">
+      <div class="service-icon">👩‍⚕️</div>
+      <div class="service-info">
+        <div class="service-name">Medicina General</div>
+        <div class="service-desc">Consulta, diagnóstico y prescripción</div>
+        <div class="service-price">$350 / consulta</div>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">🦷</div>
+      <div class="service-info">
+        <div class="service-name">Odontología</div>
+        <div class="service-desc">Limpieza, empastes y blanqueamiento</div>
+        <div class="service-price">Desde $400</div>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">🧪</div>
+      <div class="service-info">
+        <div class="service-name">Laboratorio</div>
+        <div class="service-desc">Análisis clínicos, resultados en 24h</div>
+        <div class="service-price">Desde $250</div>
+      </div>
+    </div>
+
+    <div class="cat-divider">Especialidades</div>
+
+    <div class="service-card">
+      <div class="service-icon">❤️</div>
+      <div class="service-info">
+        <div class="service-name">Cardiología</div>
+        <div class="service-desc">ECG, ecocardiograma, valoración</div>
+        <div class="service-price">$800 / consulta</div>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">🦴</div>
+      <div class="service-info">
+        <div class="service-name">Traumatología</div>
+        <div class="service-desc">Lesiones, fracturas y rehabilitación</div>
+        <div class="service-price">$650 / consulta</div>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">👁️</div>
+      <div class="service-info">
+        <div class="service-name">Oftalmología</div>
+        <div class="service-desc">Examen visual, lentes y cirugía</div>
+        <div class="service-price">$550 / consulta</div>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <div class="service-icon">🧠</div>
+      <div class="service-info">
+        <div class="service-name">Psicología</div>
+        <div class="service-desc">Terapia individual y en pareja</div>
+        <div class="service-price">$500 / sesión</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CHAT -->
+  <main class="chat-main">
+    <div class="chat-header">
+      <div class="bot-avatar"><span id="botAvatarEmoji">🏥</span></div>
+      <div>
+        <div class="bot-name">AsistenteIA — Clínica Salud+</div>
+        <div class="bot-status">
+          <span style="width:6px;height:6px;border-radius:50%;background:#22c55e;animation:pulse-dot 2s infinite;display:inline-block"></span>
+          En línea · Agenda tu cita en segundos
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages"></div>
+
+    <div class="quick-replies" id="quickReplies">
+      <button class="qr-btn" onclick="sendQuick('Quiero agendar una cita')">📅 Agendar cita</button>
+      <button class="qr-btn" onclick="sendQuick('¿Qué servicios tienen disponibles?')">🏥 Ver servicios</button>
+      <button class="qr-btn" onclick="sendQuick('¿Cuánto cuesta una consulta de medicina general?')">💰 Precios</button>
+      <button class="qr-btn" onclick="sendQuick('¿Cuáles son los horarios de atención?')">🕐 Horarios</button>
+      <button class="qr-btn" onclick="sendQuick('Necesito resultados de laboratorio')">🧪 Laboratorio</button>
+    </div>
+
+    <div class="chat-input-area" style="background:#fff">
+      <textarea class="chat-input" id="chatInput"
+        placeholder="Escribe tu consulta..."
+        rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" style="background:var(--accent)" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </main>
+
+  <!-- DASHBOARD -->
+  <aside class="dashboard">
+    <div class="dash-label">Hoy en la clínica</div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-val">18</div><div class="stat-label">Citas hoy</div><div class="stat-delta">↑ 3 vs ayer</div></div>
+      <div class="stat-card"><div class="stat-val">5</div><div class="stat-label">Pendientes</div><div class="stat-delta">Próximas 2h</div></div>
+      <div class="stat-card"><div class="stat-val">12</div><div class="stat-label">Chats IA</div><div class="stat-delta">100% atendidos</div></div>
+      <div class="stat-card"><div class="stat-val">4.8★</div><div class="stat-label">Satisfacción</div><div class="stat-delta">Muy bueno</div></div>
+    </div>
+
+    <div class="dash-label">Próximas citas</div>
+
+    <div class="appt-item">
+      <div class="appt-time">10:00</div>
+      <div class="appt-info"><div class="appt-name">María González</div><div class="appt-type">Medicina General</div></div>
+      <div class="appt-badge b-confirmed">Confirmada</div>
+    </div>
+    <div class="appt-item">
+      <div class="appt-time">10:30</div>
+      <div class="appt-info"><div class="appt-name">Roberto Sánchez</div><div class="appt-type">Cardiología</div></div>
+      <div class="appt-badge b-confirmed">Confirmada</div>
+    </div>
+    <div class="appt-item">
+      <div class="appt-time">11:00</div>
+      <div class="appt-info"><div class="appt-name">Laura Mendoza</div><div class="appt-type">Odontología</div></div>
+      <div class="appt-badge b-pending">En espera</div>
+    </div>
+    <div class="appt-item">
+      <div class="appt-time">11:30</div>
+      <div class="appt-info"><div class="appt-name">Carlos Ruiz</div><div class="appt-type">Laboratorio</div></div>
+      <div class="appt-badge b-confirmed">Confirmada</div>
+    </div>
+    <div class="appt-item">
+      <div class="appt-time">12:00</div>
+      <div class="appt-info"><div class="appt-name">Ana Flores</div><div class="appt-type">Psicología</div></div>
+      <div class="appt-badge b-pending">En espera</div>
+    </div>
+
+    <div style="margin-top:16px">
+      <div class="insight-card">
+        <div class="insight-tag">💡 Optimización IA</div>
+        <div class="insight-title">Martes y miércoles tienen 40% menos citas — ideal para promociones</div>
+        <div class="insight-sub">Podrías ofrecer descuento en consulta general esos días para balancear la carga</div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<script src="../../assets/mesaia.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// ESTADO LOCAL — Demo Clínica
+// ═══════════════════════════════════════════════════════════════════════════════
+let state = {
+  patient: null,      // {name, age, isNew, insurance}
+  specialty: null,    // especialidad seleccionada
+  doctor: null,       // doctor seleccionado
+  slot: null,         // {date, time}
+  appointment: null,  // {folio, confirmed}
+  labStatus: null,    // simulación de resultados
+  symptoms: [],       // síntomas para triaje
+  triageComplete: false
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// DATOS DE SERVICIOS Y DOCTORES
+// ═══════════════════════════════════════════════════════════════════════════════
+const SERVICES = {
+  'Medicina General': { price: 350, doctor: 'Dra. Sofía Ramírez', icon: '👩‍⚕️' },
+  'Odontología': { price: 400, doctor: 'Dr. Carlos Vega', icon: '🦷' },
+  'Laboratorio': { price: 250, doctor: 'Lab. Clínico', icon: '🧪' },
+  'Cardiología': { price: 800, doctor: 'Dr. Andrés López', icon: '❤️' },
+  'Traumatología': { price: 650, doctor: 'Dr. Marco Reyes', icon: '🦴' },
+  'Oftalmología': { price: 550, doctor: 'Dra. Patricia Cruz', icon: '👁️' },
+  'Psicología': { price: 500, doctor: 'Mtra. Isabel Mora', icon: '🧠' }
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SISTEMA PROMPT DINÁMICO
+// ═══════════════════════════════════════════════════════════════════════════════
+function getSystemPrompt() {
+  const patientInfo = state.patient
+    ? `Paciente: ${state.patient.name}, ${state.patient.isNew ? 'primera vez' : 'paciente recurrente'}, seguro: ${state.patient.insurance || 'ninguno'}`
+    : 'Paciente: no identificado';
+
+  const specialtyInfo = state.specialty
+    ? `Especialidad de interés: ${state.specialty}`
+    : 'Especialidad: no seleccionada';
+
+  const appointmentInfo = state.appointment
+    ? `Cita agendada: ${state.appointment.folio} - ${state.appointment.confirmed ? 'confirmada' : 'pendiente'}`
+    : 'Cita: ninguna';
+
+  const symptomsInfo = state.symptoms.length > 0
+    ? `Síntomas reportados: ${state.symptoms.join(', ')}`
+    : '';
+
+  return `Eres el asistente virtual de "Clínica Salud+" en Guadalajara, Jalisco, México.
+Eres profesional, empático y claro. Hablas en español formal pero accesible. NUNCA das diagnósticos médicos.
+
+SERVICIOS Y PRECIOS:
+- Medicina General: $350 (Dra. Sofía Ramírez)
+- Odontología: Desde $400 (Dr. Carlos Vega)
+- Laboratorio: Desde $250 (resultados en 24h)
+- Cardiología: $800 (Dr. Andrés López)
+- Traumatología: $650 (Dr. Marco Reyes)
+- Oftalmología: $550 (Dra. Patricia Cruz)
+- Psicología: $500/sesión (Mtra. Isabel Mora)
+
+HORARIOS: Lunes-Viernes 7am-8pm, Sábado 8am-3pm, Domingo cerrado
+DIRECCIÓN: Av. Patria 1250, Zapopan, Jalisco
+
+ESTADO ACTUAL DEL PACIENTE:
+- ${patientInfo}
+- ${specialtyInfo}
+- ${symptomsInfo}
+- ${appointmentInfo}
+
+Si el paciente menciona síntomas, haz 2-3 preguntas de triaje y sugiere la especialidad adecuada.
+Si el paciente quiere agendar cita, guía el proceso: especialidad → fecha → hora → datos.
+Al confirmar cita, genera folio tipo CSP-2024-XXXX y confirma los datos.
+Respuestas cortas (máx 3-4 oraciones).`;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TRIAJE INTELIGENTE
+// ═══════════════════════════════════════════════════════════════════════════════
+const TRIAGE_QUESTIONS = {
+  'dolor de cabeza': 'Medicina General',
+  'fiebre': 'Medicina General',
+  'tos': 'Medicina General',
+  'dolor de muela': 'Odontología',
+  'sangrado de encías': 'Odontología',
+  'dolor de pecho': 'Cardiología',
+  'palpitaciones': 'Cardiología',
+  'dolor de huesos': 'Traumatología',
+  'fractura': 'Traumatología',
+  'visión borrosa': 'Oftalmología',
+  'dolor de ojos': 'Oftalmología',
+  'ansiedad': 'Psicología',
+  'estrés': 'Psicología',
+  'tristeza': 'Psicología'
+};
+
+function suggestSpecialty(symptoms) {
+  for (const symptom of symptoms) {
+    const lower = symptom.toLowerCase();
+    for (const [key, specialty] of Object.entries(TRIAGE_QUESTIONS)) {
+      if (lower.includes(key)) return specialty;
+    }
+  }
+  return 'Medicina General';
+}
+
+function startTriage() {
+  MesaIA.send('Voy a hacerte unas preguntas para orientarte mejor. ¿Qué síntomas tienes?');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PERFIL DE PACIENTE
+// ═══════════════════════════════════════════════════════════════════════════════
+function setPatientProfile(data) {
+  state.patient = data;
+  renderPatientProfile();
+}
+
+function renderPatientProfile() {
+  const container = document.getElementById('patientProfile');
+  if (!container || !state.patient) return;
+
+  container.innerHTML = `
+    <div class="patient-card">
+      <div class="patient-name">${state.patient.name}</div>
+      <div class="patient-info">
+        ${state.patient.isNew ? '🆕 Primera vez' : '🔄 Paciente recurrente'}
+        ${state.patient.insurance ? `· ${state.patient.insurance}` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SLOTS DE DISPONIBILIDAD
+// ═══════════════════════════════════════════════════════════════════════════════
+const AVAILABLE_SLOTS = [
+  { time: '09:00', available: true },
+  { time: '09:30', available: false },
+  { time: '10:00', available: true },
+  { time: '10:30', available: true },
+  { time: '11:00', available: false },
+  { time: '11:30', available: true },
+  { time: '12:00', available: true },
+  { time: '12:30', available: true },
+  { time: '16:00', available: true },
+  { time: '16:30', available: false },
+  { time: '17:00', available: true },
+  { time: '17:30', available: true }
+];
+
+function renderAvailableSlots() {
+  const container = document.getElementById('slotsContainer');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="slots-label">Horarios disponibles hoy:</div>
+    <div class="slots-grid">
+      ${AVAILABLE_SLOTS.map(slot => `
+        <button class="slot-btn ${slot.available ? '' : 'unavailable'}"
+                ${!slot.available ? 'disabled' : ''}
+                onclick="selectSlot('${slot.time}')">
+          ${slot.time}
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+
+function selectSlot(time) {
+  state.slot = { date: 'hoy', time };
+
+  // Actualizar UI
+  document.querySelectorAll('.slot-btn').forEach(btn => {
+    btn.classList.remove('selected');
+    if (btn.textContent === time) btn.classList.add('selected');
+  });
+
+  MesaIA.send(`Quiero agendar cita para las ${time}`);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CONFIRMAR CITA CON FOLIO
+// ═══════════════════════════════════════════════════════════════════════════════
+function confirmAppointment() {
+  if (!state.specialty) {
+    alert('Por favor selecciona una especialidad');
+    return;
+  }
+  if (!state.slot) {
+    alert('Por favor selecciona un horario');
+    return;
+  }
+  if (!state.patient) {
+    alert('Por favor ingresa tus datos');
+    return;
+  }
+
+  const folio = `CSP-2024-${Math.floor(1000 + Math.random() * 9000)}`;
+
+  state.appointment = {
+    folio,
+    specialty: state.specialty,
+    slot: state.slot,
+    patient: state.patient.name,
+    confirmed: true
+  };
+
+  renderAppointment();
+
+  MesaIA.send(`Confirmo mi cita para ${state.specialty} hoy a las ${state.slot.time}. Mi nombre es ${state.patient.name}.`);
+}
+
+function renderAppointment() {
+  const container = document.getElementById('appointmentDisplay');
+  if (!container || !state.appointment) return;
+
+  container.innerHTML = `
+    <div class="appointment-card">
+      <div class="appointment-folio">📜 ${state.appointment.folio}</div>
+      <div class="appointment-details">
+        <div><strong>${state.appointment.specialty}</strong></div>
+        <div>📅 ${state.appointment.slot.date} · ⏰ ${state.appointment.slot.time}</div>
+        <div>👤 ${state.appointment.patient}</div>
+        <div class="appointment-status">✅ Confirmada</div>
+      </div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// RESULTADOS DE LABORATORIO
+// ═══════════════════════════════════════════════════════════════════════════════
+function checkLabResults() {
+  const statuses = ['En proceso', 'Listo para recoger', 'Entregado'];
+  const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+
+  state.labStatus = {
+    status: randomStatus,
+    date: new Date().toLocaleDateString('es-MX'),
+    tests: ['Biometría hemática', 'Química sanguínea', 'Perfil de lípidos']
+  };
+
+  renderLabResults();
+}
+
+function renderLabResults() {
+  const container = document.getElementById('labResults');
+  if (!container || !state.labStatus) return;
+
+  const isReady = state.labStatus.status === 'Listo para recoger';
+
+  container.innerHTML = `
+    <div class="lab-card ${isReady ? 'ready' : ''}">
+      <div class="lab-status-icon">${isReady ? '✅' : '🧪'}</div>
+      <div class="lab-info">
+        <div class="lab-status">${state.labStatus.status}</div>
+        <div class="lab-date">${state.labStatus.date}</div>
+        <div class="lab-tests">${state.labStatus.tests.length} exámenes</div>
+      </div>
+      ${isReady ? '<button class="lab-btn" onclick="alert(\'Puedes recoger tus resultados en mostrador o solicitar envío por WhatsApp\')">Ver resultados</button>' : ''}
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SELECCIONAR ESPECIALIDAD
+// ═══════════════════════════════════════════════════════════════════════════════
+function selectSpecialty(name) {
+  state.specialty = name;
+  state.doctor = SERVICES[name]?.doctor || null;
+
+  // Actualizar UI de servicios
+  document.querySelectorAll('.service-card').forEach(card => {
+    card.classList.remove('selected');
+    if (card.querySelector('.service-name')?.textContent === name) {
+      card.classList.add('selected');
+    }
+  });
+
+  // Mostrar slots disponibles
+  renderAvailableSlots();
+
+  MesaIA.send(`Me interesa la especialidad de ${name}`);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INICIALIZACIÓN
+// ═══════════════════════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  // Inicializar MesaIA con system prompt dinámico
+  MesaIA.init({
+    system: getSystemPrompt,
+    welcomeMessage: `Hola, bienvenido a **Clínica Salud+** 🏥\n\nSoy tu asistente virtual. Puedo ayudarte a:\n• Agendar una cita médica\n• Orientarte sobre qué especialidad necesitas\n• Consultar precios y horarios\n• Ver resultados de laboratorio\n\n¿En qué te puedo ayudar hoy?`
+  });
+
+  // Bind de clicks en servicios
+  document.querySelectorAll('.service-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const name = card.querySelector('.service-name').textContent;
+      selectSpecialty(name);
+    });
+  });
+
+  // Render inicial
+  renderAvailableSlots();
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// FUNCIONES GLOBALES PARA EL HTML
+// ═══════════════════════════════════════════════════════════════════════════════
+window.selectSpecialty = selectSpecialty;
+window.selectSlot = selectSlot;
+window.confirmAppointment = confirmAppointment;
+window.checkLabResults = checkLabResults;
+</script>
+</body>
+</html>

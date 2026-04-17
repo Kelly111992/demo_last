@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apex Realty — Agente Inmobiliario IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/base.css">
+<style>
+:root {
+  --bg:#09080a;--surface:#111013;--surface2:#1a1820;
+  --accent:#c9a84c;--accent2:#e8d48a;
+  --text:#f5f0e8;--muted:#7a7285;--border:#221f2a;
+  --font-body:'Outfit',sans-serif;--font-display:'Cormorant Garamond',serif;
+  --bubble-bot:#111013;--avatar-bot-bg:#c9a84c;--avatar-user-bg:#1a1820;
+  --input-bg:#111013;--input-field-bg:#09080a;
+}
+body{background:var(--bg);background-image:radial-gradient(ellipse at 50% 0%,rgba(201,168,76,0.06) 0%,transparent 60%)}
+.header{height:66px;background:rgba(9,8,10,0.95);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.logo{display:flex;align-items:baseline;gap:10px;font-family:var(--font-display);font-size:26px;font-weight:300;color:var(--text);letter-spacing:3px;text-transform:uppercase}
+.logo-dot{color:var(--accent);font-size:10px;align-self:center}
+.logo em{color:var(--accent);font-style:italic;font-weight:400}
+.live-badge{display:flex;align-items:center;gap:6px;border:1px solid rgba(201,168,76,0.3);color:var(--accent);font-size:10px;font-weight:600;padding:4px 14px;border-radius:2px;letter-spacing:2px;text-transform:uppercase}
+.status-dot{background:var(--accent);width:6px;height:6px;border-radius:50%;animation:pulse-dot 2s infinite;display:inline-block}
+.app{display:grid;grid-template-columns:285px 1fr 295px;height:calc(100vh - 66px)}
+
+/* SIDEBAR */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:24px 0 40px}
+.sidebar-label{font-family:var(--font-display);font-size:11px;font-weight:400;color:var(--muted);letter-spacing:3px;text-transform:uppercase;padding:0 22px 18px}
+
+/* FILTROS */
+.filter-bar{padding:0 14px 14px;border-bottom:1px solid var(--border);margin-bottom:8px}
+.filter-row{display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.filter-btn{font-size:10px;font-weight:600;padding:5px 10px;border-radius:3px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all 0.15s;letter-spacing:0.5px}
+.filter-btn.active{background:rgba(201,168,76,0.15);border-color:var(--accent);color:var(--accent)}
+.filter-label{font-size:9px;font-weight:600;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+
+/* PROPIEDADES */
+.prop-card{margin:0 14px 10px;border:1px solid var(--border);border-radius:4px;overflow:hidden;cursor:pointer;transition:all 0.2s;position:relative}
+.prop-card:hover{border-color:rgba(201,168,76,0.4)}
+.prop-card:hover .prop-name{color:var(--accent)}
+.prop-card.fav{border-color:rgba(201,168,76,0.5)}
+.prop-img{height:100px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:36px;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+.prop-img img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
+.prop-tag{position:absolute;top:8px;left:8px;background:var(--accent);color:#09080a;font-size:9px;font-weight:700;letter-spacing:1.5px;padding:3px 8px;text-transform:uppercase;z-index:1}
+.fav-btn{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(9,8,10,0.7);border:1px solid var(--border);color:var(--muted);font-size:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.15s;z-index:1}
+.fav-btn:hover{border-color:var(--accent);color:var(--accent)}
+.fav-btn.active{background:rgba(201,168,76,0.2);border-color:var(--accent);color:var(--accent)}
+.prop-body{padding:12px 14px}
+.prop-name{font-family:var(--font-display);font-size:15px;font-weight:600;color:var(--text);transition:color 0.15s}
+.prop-loc{font-size:10.5px;color:var(--muted);margin-top:3px}
+.prop-price{font-family:var(--font-display);font-size:18px;font-weight:600;color:var(--accent);margin-top:8px}
+.prop-details{display:flex;gap:12px;margin-top:6px}
+.prop-detail{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.prop-saved{font-size:9px;font-weight:700;color:var(--accent);background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.25);padding:2px 8px;border-radius:2px;margin-top:6px;display:inline-block}
+
+/* CHAT */
+.chat-main{display:flex;flex-direction:column;background:var(--bg);background-image:radial-gradient(ellipse at 50% 30%,rgba(201,168,76,0.04) 0%,transparent 60%)}
+.chat-header{padding:18px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px}
+.bot-avatar{width:46px;height:46px;border-radius:4px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;color:#09080a}
+.bot-name{font-family:var(--font-display);font-size:20px;font-weight:400;color:var(--text);letter-spacing:0.5px}
+.bot-status{font-size:10.5px;color:var(--accent);display:flex;align-items:center;gap:6px;margin-top:3px;letter-spacing:0.5px}
+.msg.bot .msg-bubble{border-color:var(--border);border-radius:2px 12px 12px 12px}
+.msg.user .msg-bubble{background:var(--accent);color:#09080a;border-radius:12px 2px 12px 12px}
+.typing-dots{border-color:var(--border);border-radius:2px 12px 12px 12px}
+
+/* DASHBOARD */
+.dashboard{background:var(--surface);border-left:1px solid var(--border);padding:24px;overflow-y:auto}
+.dash-label{font-family:var(--font-display);font-size:11px;font-weight:400;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px}
+.stat-card{background:var(--surface2);border-color:var(--border)}
+.stat-val{font-family:var(--font-display);color:var(--accent);font-size:30px;font-weight:600}
+.stat-delta{color:#4ade80}
+
+/* HIPOTECARIA */
+.mortgage-calc{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:14px;margin-bottom:12px}
+.mortgage-inputs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.mort-input-group label{display:block;font-size:9px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.mort-input{width:100%;padding:7px 10px;background:var(--bg);border:1px solid var(--border);border-radius:3px;color:var(--text);font-size:12px;font-family:var(--font-body);box-sizing:border-box}
+.mort-input:focus{outline:none;border-color:var(--accent)}
+.mort-result{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.25);border-radius:3px;padding:10px;text-align:center}
+.mort-monthly{font-family:var(--font-display);font-size:24px;font-weight:600;color:var(--accent)}
+.mort-label{font-size:10px;color:var(--muted);margin-top:3px}
+.calc-btn{width:100%;padding:8px;background:var(--accent);border:none;border-radius:3px;color:#09080a;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-body);margin-top:8px;letter-spacing:0.5px}
+
+/* FAVORITOS */
+.fav-item{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.fav-icon{font-size:20px;flex-shrink:0}
+.fav-info{flex:1;min-width:0}
+.fav-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fav-price{font-family:var(--font-display);font-size:13px;color:var(--accent)}
+
+/* VISITA */
+.visit-card{background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(232,212,138,0.05));border:1px solid rgba(201,168,76,0.3);border-radius:4px;padding:14px;margin-bottom:12px}
+.visit-folio{font-family:var(--font-display);font-size:13px;font-weight:600;color:var(--accent);letter-spacing:1px;margin-bottom:8px}
+.visit-detail{font-size:11px;color:var(--text);line-height:1.8}
+
+/* LEAD CARD */
+.lead-card{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:12px;margin-bottom:10px}
+.lead-name{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--text)}
+.lead-row{display:flex;justify-content:space-between;margin-top:5px;font-size:11px}
+.lead-row .key{color:var(--muted)}
+.lead-row .val{color:var(--accent);font-weight:500}
+
+/* INSIGHT */
+.insight-card{background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(232,212,138,0.05));border:1px solid rgba(201,168,76,0.25);border-radius:4px;padding:18px;margin-top:8px}
+.insight-tag{font-size:9px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;font-weight:600}
+.insight-title{font-family:var(--font-display);font-size:16px;font-style:italic;color:var(--text);margin-top:8px;line-height:1.4;font-weight:400}
+.insight-sub{font-size:11px;color:var(--muted);margin-top:6px}
+
+@media(max-width:768px){.sidebar,.dashboard{display:none}.app{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo">Apex <span class="logo-dot">◆</span> <em>Realty</em></div>
+  <div class="live-badge"><span class="status-dot"></span>Agente IA activo</div>
+</header>
+
+<div class="app">
+  <aside class="sidebar">
+    <!-- Filtros -->
+    <div class="sidebar-label" style="padding-bottom:8px">Filtrar propiedades</div>
+    <div class="filter-bar">
+      <div class="filter-label">Tipo</div>
+      <div class="filter-row" id="filterType">
+        <button class="filter-btn active" data-filter="tipo" data-val="todos" onclick="setFilter('tipo','todos',this)">Todos</button>
+        <button class="filter-btn" data-filter="tipo" data-val="casa" onclick="setFilter('tipo','casa',this)">Casa</button>
+        <button class="filter-btn" data-filter="tipo" data-val="depto" onclick="setFilter('tipo','depto',this)">Depto</button>
+        <button class="filter-btn" data-filter="tipo" data-val="preventa" onclick="setFilter('tipo','preventa',this)">Preventa</button>
+      </div>
+      <div class="filter-label">Zona</div>
+      <div class="filter-row" id="filterZone">
+        <button class="filter-btn active" data-filter="zona" data-val="todas" onclick="setFilter('zona','todas',this)">Todas</button>
+        <button class="filter-btn" data-filter="zona" data-val="zapopan" onclick="setFilter('zona','zapopan',this)">Zapopan</button>
+        <button class="filter-btn" data-filter="zona" data-val="gdl" onclick="setFilter('zona','gdl',this)">GDL</button>
+        <button class="filter-btn" data-filter="zona" data-val="tlajomulco" onclick="setFilter('zona','tlajomulco',this)">Tlajomulco</button>
+      </div>
+    </div>
+
+    <div id="propList">
+      <div class="prop-card" data-id="1" data-tipo="casa" data-zona="zapopan" data-precio="8500000">
+        <div class="prop-img" style="padding:0"><img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=280&h=100&fit=crop" alt=""><div class="prop-tag">Venta</div><button class="fav-btn" onclick="toggleFav(event,1,'Residencia Puerta de Hierro','$8,500,000','🏡')">♡</button></div>
+        <div class="prop-body">
+          <div class="prop-name">Residencia Puerta de Hierro</div>
+          <div class="prop-loc">📍 Zapopan, Jalisco</div>
+          <div class="prop-price">$8,500,000</div>
+          <div class="prop-details"><div class="prop-detail">🛏 4 rec.</div><div class="prop-detail">🚿 3 baños</div><div class="prop-detail">📐 380 m²</div></div>
+        </div>
+      </div>
+      <div class="prop-card" data-id="2" data-tipo="depto" data-zona="gdl" data-precio="3200000">
+        <div class="prop-img">🏢<div class="prop-tag">Venta</div><button class="fav-btn" onclick="toggleFav(event,2,'Departamento Providencia','$3,200,000','🏢')">♡</button></div>
+        <div class="prop-body">
+          <div class="prop-name">Departamento Providencia</div>
+          <div class="prop-loc">📍 Guadalajara, Jalisco</div>
+          <div class="prop-price">$3,200,000</div>
+          <div class="prop-details"><div class="prop-detail">🛏 2 rec.</div><div class="prop-detail">🚿 2 baños</div><div class="prop-detail">📐 95 m²</div></div>
+        </div>
+      </div>
+      <div class="prop-card" data-id="3" data-tipo="casa" data-zona="zapopan" data-precio="28000">
+        <div class="prop-img">🏠<div class="prop-tag" style="background:#4ade80;color:#09080a">Renta</div><button class="fav-btn" onclick="toggleFav(event,3,'Casa Valle Real','$28,000/mes','🏠')">♡</button></div>
+        <div class="prop-body">
+          <div class="prop-name">Casa Valle Real</div>
+          <div class="prop-loc">📍 Zapopan, Jalisco</div>
+          <div class="prop-price">$28,000/mes</div>
+          <div class="prop-details"><div class="prop-detail">🛏 3 rec.</div><div class="prop-detail">🚿 2.5 baños</div><div class="prop-detail">📐 240 m²</div></div>
+        </div>
+      </div>
+      <div class="prop-card" data-id="4" data-tipo="preventa" data-zona="zapopan" data-precio="4800000">
+        <div class="prop-img">🏗️<div class="prop-tag" style="background:#a78bfa;color:#fff">Preventa</div><button class="fav-btn" onclick="toggleFav(event,4,'Torre Andares Residencial','Desde $4,800,000','🏗️')">♡</button></div>
+        <div class="prop-body">
+          <div class="prop-name">Torre Andares Residencial</div>
+          <div class="prop-loc">📍 Zapopan, Jalisco</div>
+          <div class="prop-price">Desde $4,800,000</div>
+          <div class="prop-details"><div class="prop-detail">🛏 1-3 rec.</div><div class="prop-detail">🚿 1-2 baños</div><div class="prop-detail">📐 65-180 m²</div></div>
+        </div>
+      </div>
+      <div class="prop-card" data-id="5" data-tipo="casa" data-zona="tlajomulco" data-precio="2100000">
+        <div class="prop-img" style="padding:0"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=280&h=100&fit=crop" alt=""><div class="prop-tag">Venta</div><button class="fav-btn" onclick="toggleFav(event,5,'Casa Santa Anita','$2,100,000','🏡')">♡</button></div>
+        <div class="prop-body">
+          <div class="prop-name">Casa Santa Anita</div>
+          <div class="prop-loc">📍 Tlajomulco, Jalisco</div>
+          <div class="prop-price">$2,100,000</div>
+          <div class="prop-details"><div class="prop-detail">🛏 3 rec.</div><div class="prop-detail">🚿 2 baños</div><div class="prop-detail">📐 160 m²</div></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="chat-main">
+    <div class="chat-header">
+      <div class="bot-avatar"><span id="botAvatarEmoji">🏠</span></div>
+      <div>
+        <div class="bot-name">Valentina — Asesora Inmobiliaria IA</div>
+        <div class="bot-status"><span class="status-dot"></span>Disponible · Califica tu perfil en segundos</div>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages"></div>
+
+    <div class="quick-replies" id="quickReplies">
+      <button class="qr-btn" onclick="sendQuick('Busco casa para comprar en Zapopan, presupuesto 4 millones')">🏡 Comprar casa</button>
+      <button class="qr-btn" onclick="sendQuick('¿Tienen departamentos en renta en Guadalajara?')">🏢 Rentar depto</button>
+      <button class="qr-btn" onclick="sendQuick('Quiero invertir en inmuebles, ¿qué me recomiendas?')">💰 Invertir</button>
+      <button class="qr-btn" onclick="sendQuick('Quiero agendar una visita para ver una propiedad')">📅 Agendar visita</button>
+    </div>
+
+    <div class="chat-input-area">
+      <textarea class="chat-input" id="chatInput" placeholder="¿Qué tipo de propiedad buscas?" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" style="background:var(--accent);border-radius:4px" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24" style="fill:#09080a"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </main>
+
+  <aside class="dashboard">
+    <!-- Lead card -->
+    <div class="dash-label">Tu perfil de búsqueda</div>
+    <div id="leadCard">
+      <div style="text-align:center;padding:20px;color:var(--muted);font-size:12px;border:1px dashed var(--border);border-radius:4px;margin-bottom:14px">
+        Cuéntale a Valentina qué buscas para personalizar tu experiencia
+      </div>
+    </div>
+
+    <!-- Favoritos -->
+    <div class="dash-label">Propiedades guardadas</div>
+    <div id="favList">
+      <div style="text-align:center;padding:16px;color:var(--muted);font-size:12px">
+        Usa ♡ en las propiedades para guardarlas
+      </div>
+    </div>
+
+    <!-- Calculadora hipotecaria -->
+    <div class="dash-label" style="margin-top:8px">Calculadora hipotecaria</div>
+    <div class="mortgage-calc">
+      <div class="mortgage-inputs">
+        <div class="mort-input-group">
+          <label>Precio ($)</label>
+          <input type="number" class="mort-input" id="mortPrice" placeholder="3,500,000" step="100000">
+        </div>
+        <div class="mort-input-group">
+          <label>Enganche (%)</label>
+          <input type="number" class="mort-input" id="mortDown" placeholder="20" min="10" max="90">
+        </div>
+        <div class="mort-input-group">
+          <label>Plazo (años)</label>
+          <input type="number" class="mort-input" id="mortYears" placeholder="15" min="5" max="30">
+        </div>
+        <div class="mort-input-group">
+          <label>Tasa anual (%)</label>
+          <input type="number" class="mort-input" id="mortRate" placeholder="11.5" step="0.1">
+        </div>
+      </div>
+      <div id="mortResult" style="display:none" class="mort-result">
+        <div class="mort-monthly" id="mortMonthly"></div>
+        <div class="mort-label">mensualidad estimada</div>
+      </div>
+      <button class="calc-btn" onclick="calcMortgage()">Calcular mensualidad</button>
+    </div>
+
+    <!-- Visita agendada -->
+    <div id="visitSection"></div>
+
+    <div class="insight-card">
+      <div class="insight-tag">💡 Insight IA</div>
+      <div class="insight-title">Rodrigo Fuentes revisó 3 propiedades en 48h — listo para cerrar</div>
+      <div class="insight-sub">El agente ya agendó visita para el sábado. Probabilidad de cierre: 78%</div>
+    </div>
+  </aside>
+</div>
+
+<script src="../../assets/mesaia.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// ESTADO LOCAL — Demo Inmobiliaria
+// ═══════════════════════════════════════════════════════════════════
+let state = {
+  lead: null,       // {name, budget, timeline, purpose, zone}
+  filters: { tipo: 'todos', zona: 'todas' },
+  favorites: [],    // [{id, name, price, icon}]
+  mortgage: null,   // {price, down, years, monthly}
+  visit: null       // {property, agent, date, folio}
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// SYSTEM PROMPT DINÁMICO
+// ═══════════════════════════════════════════════════════════════════
+function getSystemPrompt() {
+  const leadText = state.lead
+    ? `${state.lead.name || 'Anónimo'}, presupuesto: ${state.lead.budget || 'no especificado'}, zona: ${state.lead.zone || 'no especificada'}, propósito: ${state.lead.purpose || 'no definido'}`
+    : 'no calificado';
+  const favsText = state.favorites.length > 0
+    ? state.favorites.map(f => f.name).join(', ')
+    : 'ninguna';
+  const visitText = state.visit
+    ? `${state.visit.property}, ${state.visit.date}, con ${state.visit.agent}`
+    : 'ninguna';
+
+  return `Eres Valentina, asesora inmobiliaria IA de "Apex Realty" en Guadalajara, Jalisco.
+Eres sofisticada, empática y muy conocedora del mercado inmobiliario ZMG.
+Hablas en español profesional pero cálido.
+
+PORTAFOLIO:
+VENTA: Casa Puerta de Hierro $8.5M (4rec/3baños/380m²/Zapopan), Depto Providencia $3.2M (2rec/95m²/GDL), Casa Santa Anita $2.1M (3rec/160m²/Tlajomulco)
+RENTA: Casa Valle Real $28,000/mes (3rec/240m²/Zapopan)
+PREVENTA: Torre Andares desde $4.8M (1-3rec, 65-180m²/Zapopan)
++80 propiedades en portafolio — estas son ejemplos destacados.
+
+ZONAS: Zapopan, Guadalajara, Tlaquepaque, Tlajomulco, San Pedro, Tonalá.
+PROCESO: Calificación → Búsqueda → Visitas → Negociación → Escrituración (30-90 días).
+CRÉDITOS: Infonavit, Fovissste, bancario, puente.
+
+ROI PARA INVERSORES: Plusvalía en ZMG: 8-12% anual promedio. Renta mensual potencial: 0.6-0.8% del valor de la propiedad.
+
+PERFIL DEL LEAD ACTUAL:
+- ${leadText}
+- Propiedades en favoritos: ${favsText}
+- Visita agendada: ${visitText}
+
+FLUJOS:
+1. CALIFICACIÓN: Si no hay lead, haz 4 preguntas: nombre, presupuesto, zona preferida, ¿comprar/rentar/invertir?
+2. HIPOTECARIA: Si preguntan mensualidad, da un estimado rápido. Fórmula: P * r * (1+r)^n / ((1+r)^n - 1), donde r=tasa_mensual.
+3. COMPARADOR: Si comparan 2 props, presenta tabla en el chat.
+4. VISITA: Solicita: propiedad, nombre, fecha, hora → confirma con asesor asignado.
+5. ROI: Para inversores: plusvalía + renta potencial + años de recuperación.
+Respuestas cortas y elegantes, máx 3 oraciones.`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// FILTROS
+// ═══════════════════════════════════════════════════════════════════
+function setFilter(type, val, btn) {
+  state.filters[type] = val;
+  // Actualizar botones
+  document.querySelectorAll(`[data-filter="${type}"]`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterProperties();
+}
+
+function filterProperties() {
+  document.querySelectorAll('.prop-card').forEach(card => {
+    const tipo = card.dataset.tipo;
+    const zona = card.dataset.zona;
+    const showTipo = state.filters.tipo === 'todos' || tipo === state.filters.tipo;
+    const showZona = state.filters.zona === 'todas' || zona === state.filters.zona;
+    card.style.display = (showTipo && showZona) ? 'block' : 'none';
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// FAVORITOS
+// ═══════════════════════════════════════════════════════════════════
+function toggleFav(e, id, name, price, icon) {
+  e.stopPropagation();
+  const btn = e.currentTarget;
+  const idx = state.favorites.findIndex(f => f.id === id);
+  if (idx >= 0) {
+    state.favorites.splice(idx, 1);
+    btn.classList.remove('active');
+    btn.textContent = '♡';
+  } else {
+    state.favorites.push({ id, name, price, icon });
+    btn.classList.add('active');
+    btn.textContent = '♥';
+    // Marcar tarjeta
+    btn.closest('.prop-card').classList.add('fav');
+    MesaIA.send(`Guardé "${name}" en mis favoritos.`);
+  }
+  renderFavorites();
+}
+
+function renderFavorites() {
+  const favList = document.getElementById('favList');
+  if (state.favorites.length === 0) {
+    favList.innerHTML = `<div style="text-align:center;padding:16px;color:var(--muted);font-size:12px">Usa ♡ en las propiedades para guardarlas</div>`;
+    return;
+  }
+  favList.innerHTML = state.favorites.map(f => `
+    <div class="fav-item">
+      <div class="fav-icon">${f.icon}</div>
+      <div class="fav-info">
+        <div class="fav-name">${f.name}</div>
+        <div class="fav-price">${f.price}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// CALCULADORA HIPOTECARIA
+// ═══════════════════════════════════════════════════════════════════
+function calcMortgage() {
+  const price = parseFloat(document.getElementById('mortPrice').value) || 3500000;
+  const downPct = parseFloat(document.getElementById('mortDown').value) || 20;
+  const years = parseFloat(document.getElementById('mortYears').value) || 15;
+  const annualRate = parseFloat(document.getElementById('mortRate').value) || 11.5;
+
+  const principal = price * (1 - downPct / 100);
+  const r = annualRate / 100 / 12;
+  const n = years * 12;
+  const monthly = principal * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+
+  state.mortgage = { price, downPct, years, monthly: Math.round(monthly) };
+
+  document.getElementById('mortResult').style.display = 'block';
+  document.getElementById('mortMonthly').textContent = `$${Math.round(monthly).toLocaleString('es-MX')}`;
+
+  MesaIA.send(`Para una propiedad de $${price.toLocaleString('es-MX')} con ${downPct}% de enganche a ${years} años, ¿qué me recomiendas?`);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDERIZADO DEL LEAD
+// ═══════════════════════════════════════════════════════════════════
+function renderLead() {
+  const container = document.getElementById('leadCard');
+  if (!state.lead) return;
+  container.innerHTML = `
+    <div class="lead-card">
+      <div class="lead-name">${state.lead.name || 'Cliente'}</div>
+      ${state.lead.budget ? `<div class="lead-row"><span class="key">Presupuesto</span><span class="val">${state.lead.budget}</span></div>` : ''}
+      ${state.lead.zone ? `<div class="lead-row"><span class="key">Zona</span><span class="val">${state.lead.zone}</span></div>` : ''}
+      ${state.lead.purpose ? `<div class="lead-row"><span class="key">Propósito</span><span class="val">${state.lead.purpose}</span></div>` : ''}
+    </div>
+  `;
+}
+
+function renderVisit() {
+  const container = document.getElementById('visitSection');
+  if (!state.visit) return;
+  container.innerHTML = `
+    <div class="dash-label" style="margin-top:8px">Visita agendada</div>
+    <div class="visit-card">
+      <div class="visit-folio">📅 ${state.visit.folio}</div>
+      <div class="visit-detail">
+        <div><strong>${state.visit.property}</strong></div>
+        <div>${state.visit.date}</div>
+        <div>Asesor: ${state.visit.agent}</div>
+      </div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DETECTAR RESPUESTAS DEL BOT
+// ═══════════════════════════════════════════════════════════════════
+function onBotReply(reply) {
+  // Detectar nombre en respuesta (si el bot lo repite)
+  if (!state.lead) {
+    const lower = reply.toLowerCase();
+    if (lower.includes('presupuesto') || lower.includes('zona') || lower.includes('buscar')) {
+      state.lead = { name: 'Cliente' };
+      renderLead();
+    }
+  }
+
+  // Detectar visita confirmada
+  const folioMatch = reply.match(/AR-\d{5}/i) || reply.match(/APX-\d{4}/i);
+  if (folioMatch && !state.visit) {
+    state.visit = {
+      property: state.favorites[0]?.name || 'Propiedad de interés',
+      agent: 'Carlos Mendoza',
+      date: 'Próximamente',
+      folio: folioMatch[0]
+    };
+    renderVisit();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INICIALIZACIÓN
+// ═══════════════════════════════════════════════════════════════════
+MesaIA.init({
+  system: getSystemPrompt,
+  onReply: onBotReply,
+  welcomeMessage: `Bienvenido a **Apex Realty** 🏠\n\nSoy Valentina, tu asesora inmobiliaria. Tengo acceso a más de **80 propiedades** en la ZMG — casas, departamentos, preventa e inversión.\n\nPuedes filtrar las propiedades en la izquierda, guardar tus favoritas con ♡, o calcular tu mensualidad hipotecaria.\n\n¿Estás buscando comprar, rentar o invertir?`
+});
+</script>
+</body>
+</html>

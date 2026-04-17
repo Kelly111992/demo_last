@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hotel Cielo — Concierge IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/base.css">
+<style>
+:root {
+  --bg:#f7f4f0;--surface:#ffffff;--surface2:#f0ece7;
+  --accent:#1a5f6a;--accent2:#2d8a98;--accent3:#c9a84c;
+  --text:#1a1612;--muted:#8a8078;--border:#e0d8d0;
+  --font-body:'Jost',sans-serif;--font-display:'Libre Baskerville',serif;
+  --bubble-bot:#ffffff;--avatar-bot-bg:linear-gradient(135deg,#1a5f6a,#2d8a98);
+  --avatar-user-bg:#f0ece7;--input-bg:#ffffff;--input-field-bg:#f7f4f0;
+}
+body{background:var(--bg)}
+.header{height:68px;background:var(--accent);border-bottom:none;display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(26,95,106,0.2)}
+.logo{font-family:var(--font-display);font-size:22px;font-weight:400;color:#fff;letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:14px}
+.logo-star{color:var(--accent3);font-size:14px}
+.logo-sub{font-size:10px;font-weight:400;letter-spacing:3px;color:rgba(255,255,255,0.6);font-family:var(--font-body);margin-top:2px}
+.live-badge{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.9);font-size:10px;font-weight:500;padding:5px 14px;border-radius:2px;letter-spacing:2px;text-transform:uppercase}
+.status-dot{background:#4ade80;width:6px;height:6px;border-radius:50%;animation:pulse-dot 2s infinite;display:inline-block}
+.app{display:grid;grid-template-columns:275px 1fr 290px;height:calc(100vh - 68px)}
+
+/* SIDEBAR */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:24px 0 40px}
+.sidebar-label{font-family:var(--font-display);font-size:11px;font-weight:400;font-style:italic;color:var(--muted);letter-spacing:2px;text-transform:uppercase;padding:0 20px 18px}
+.room-card{margin:0 14px 10px;border:1px solid var(--border);border-radius:6px;overflow:hidden;cursor:pointer;transition:all 0.2s}
+.room-card:hover{border-color:var(--accent);box-shadow:0 4px 16px rgba(26,95,106,0.1)}
+.room-card.selected{border-color:var(--accent);background:rgba(26,95,106,0.04)}
+.room-preview{height:90px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:38px;border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.room-preview img{width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0}
+.room-stars{position:absolute;bottom:6px;right:8px;font-size:9px;color:var(--accent3);letter-spacing:1px;z-index:1}
+.room-body{padding:11px 14px}
+.room-name{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--text)}
+.room-desc{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.4}
+.room-price{font-family:var(--font-display);font-size:17px;font-weight:700;color:var(--accent);margin-top:6px}
+.room-price span{font-size:11px;font-weight:400;color:var(--muted);font-family:var(--font-body)}
+.room-avail{font-size:10px;font-weight:600;color:#16a34a;margin-top:3px}
+.select-room-btn{width:100%;margin-top:8px;padding:7px;background:var(--accent);border:none;border-radius:4px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:0.5px;transition:filter 0.15s;font-family:var(--font-body)}
+.select-room-btn:hover{filter:brightness(1.1)}
+
+/* SELECTOR DE FECHAS */
+.date-selector{padding:0 14px 14px}
+.date-inputs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.date-input-group label{display:block;font-size:9.5px;font-weight:600;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px}
+.date-input{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:4px;font-size:12px;color:var(--text);background:var(--surface2);font-family:var(--font-body);box-sizing:border-box}
+.date-input:focus{outline:none;border-color:var(--accent)}
+.nights-display{margin-top:8px;text-align:center;padding:8px;background:rgba(26,95,106,0.08);border-radius:4px;font-size:12px;color:var(--accent);font-weight:600;font-family:var(--font-display)}
+
+/* PROGRAMA DE LEALTAD */
+.loyalty-section{padding:0 14px 14px;border-top:1px solid var(--border);margin-top:6px}
+.loyalty-tier{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.tier-gold{background:rgba(201,168,76,0.15);color:var(--accent3);border:1px solid rgba(201,168,76,0.3)}
+.loyalty-points{font-family:var(--font-display);font-size:22px;font-weight:700;color:var(--text)}
+.loyalty-label{font-size:10.5px;color:var(--muted)}
+.loyalty-bar{height:6px;background:var(--border);border-radius:3px;margin-top:8px;overflow:hidden}
+.loyalty-fill{height:100%;background:var(--accent3);border-radius:3px}
+.loyalty-next{font-size:10px;color:var(--muted);margin-top:4px}
+
+/* CHAT */
+.chat-main{display:flex;flex-direction:column;background:var(--bg)}
+.chat-header{padding:16px 26px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.bot-avatar{width:46px;height:46px;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.bot-name{font-family:var(--font-display);font-size:17px;font-weight:700;color:var(--text)}
+.bot-status{font-size:11px;color:var(--accent2);display:flex;align-items:center;gap:5px;margin-top:3px}
+.bot-sub{font-size:10.5px;color:var(--muted);margin-top:1px;letter-spacing:0.5px}
+.msg.bot .msg-bubble{border-color:var(--border);box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.msg.user .msg-bubble{background:var(--accent)}
+.typing-dots{border-color:var(--border);box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+.qr-btn:hover{background:#f0f7f8;border-color:var(--accent);color:var(--accent)}
+
+/* DASHBOARD */
+.dashboard{background:var(--surface);border-left:1px solid var(--border);padding:24px;overflow-y:auto}
+.dash-label{font-family:var(--font-display);font-size:11px;font-style:italic;color:var(--muted);letter-spacing:1px;margin-bottom:14px}
+.stat-card{background:var(--surface2);box-shadow:0 1px 3px rgba(0,0,0,0.04);border:1px solid var(--border);border-radius:10px;padding:14px}
+.stat-val{font-family:var(--font-display);color:var(--accent);font-size:28px;font-weight:700;line-height:1}
+.stat-label{font-size:11px;color:var(--muted);margin-top:4px}
+.stat-delta{font-size:10px;color:#16a34a;margin-top:2px}
+
+/* RESERVACIÓN EN PROGRESO */
+.booking-card{background:linear-gradient(135deg,rgba(26,95,106,0.06),rgba(45,138,152,0.04));border:1px solid rgba(26,95,106,0.2);border-radius:8px;padding:16px;margin-bottom:12px}
+.booking-folio{font-family:var(--font-display);font-size:13px;font-weight:700;color:var(--accent);letter-spacing:1px;margin-bottom:10px}
+.booking-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:12px}
+.booking-row:last-child{border-bottom:none;font-weight:700;padding-top:8px}
+.booking-row .label{color:var(--muted)}
+.booking-row .value{color:var(--text);font-weight:500}
+.booking-total{color:var(--accent)!important;font-family:var(--font-display);font-size:16px}
+
+/* EXTRAS */
+.extras-section{margin-bottom:12px}
+.extra-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;margin-bottom:6px;cursor:pointer;transition:all 0.15s}
+.extra-item:hover{border-color:var(--accent)}
+.extra-item.selected{background:rgba(26,95,106,0.08);border-color:var(--accent)}
+.extra-check{width:18px;height:18px;border-radius:4px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all 0.15s}
+.extra-item.selected .extra-check{background:var(--accent);border-color:var(--accent);color:#fff}
+.extra-info{flex:1}
+.extra-name{font-size:12px;font-weight:500;color:var(--text)}
+.extra-price{font-size:10.5px;color:var(--accent);font-weight:600}
+
+/* CONCIERGE */
+.concierge-section{margin-top:12px}
+.concierge-btn{width:100%;padding:9px;border:1px solid var(--border);background:var(--surface2);border-radius:6px;color:var(--text);font-size:12px;cursor:pointer;text-align:left;transition:all 0.15s;display:flex;align-items:center;gap:8px;margin-bottom:6px;font-family:var(--font-body)}
+.concierge-btn:hover{border-color:var(--accent);background:rgba(26,95,106,0.05)}
+
+/* INSIGHT */
+.insight-card{background:linear-gradient(135deg,#f0f7f8,#f7f4f0);border:1px solid rgba(26,95,106,0.2);border-radius:8px;padding:18px;margin-top:8px}
+.insight-tag{font-size:9px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;font-weight:600}
+.insight-title{font-family:var(--font-display);font-size:15px;font-style:italic;color:var(--text);margin-top:8px;line-height:1.4;font-weight:400}
+.insight-sub{font-size:11px;color:var(--muted);margin-top:5px}
+
+@media(max-width:768px){.sidebar,.dashboard{display:none}.app{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div>
+    <div class="logo"><span class="logo-star">✦</span> Hotel Cielo <span class="logo-star">✦</span></div>
+    <div class="logo-sub">Boutique · Guadalajara</div>
+  </div>
+  <div class="live-badge"><span class="status-dot"></span>Concierge IA</div>
+</header>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-label">Tipos de habitación</div>
+
+    <div class="room-card" data-room="estandar" data-price="1200" onclick="selectRoom('estandar',1200,'Habitación Estándar')">
+      <div class="room-preview"><img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=280&h=100&fit=crop" alt="Estándar"><div class="room-stars">★★★★</div></div>
+      <div class="room-body">
+        <div class="room-name">Habitación Estándar</div>
+        <div class="room-desc">Cama queen, AC, TV, WiFi, vista jardín</div>
+        <div class="room-price">$1,200 <span>/noche</span></div>
+        <div class="room-avail">✓ 4 disponibles</div>
+        <button class="select-room-btn">Seleccionar</button>
+      </div>
+    </div>
+
+    <div class="room-card" data-room="deluxe" data-price="2400" onclick="selectRoom('deluxe',2400,'Suite Deluxe')">
+      <div class="room-preview">🏨<div class="room-stars">★★★★★</div></div>
+      <div class="room-body">
+        <div class="room-name">Suite Deluxe</div>
+        <div class="room-desc">Cama king, sala, jacuzzi, vista a la ciudad</div>
+        <div class="room-price">$2,400 <span>/noche</span></div>
+        <div class="room-avail">✓ 2 disponibles</div>
+        <button class="select-room-btn">Seleccionar</button>
+      </div>
+    </div>
+
+    <div class="room-card" data-room="presidencial" data-price="4800" onclick="selectRoom('presidencial',4800,'Suite Presidencial')">
+      <div class="room-preview">🌅<div class="room-stars">★★★★★</div></div>
+      <div class="room-body">
+        <div class="room-name">Suite Presidencial</div>
+        <div class="room-desc">2 recámaras, sala comedor, terraza privada</div>
+        <div class="room-price">$4,800 <span>/noche</span></div>
+        <div class="room-avail">✓ 1 disponible</div>
+        <button class="select-room-btn">Seleccionar</button>
+      </div>
+    </div>
+
+    <div class="room-card" data-room="familiar" data-price="1850" onclick="selectRoom('familiar',1850,'Habitación Familiar')">
+      <div class="room-preview">👥<div class="room-stars">★★★★</div></div>
+      <div class="room-body">
+        <div class="room-name">Habitación Familiar</div>
+        <div class="room-desc">2 camas queen, área de juegos, jardín</div>
+        <div class="room-price">$1,850 <span>/noche</span></div>
+        <div class="room-avail">✓ 3 disponibles</div>
+        <button class="select-room-btn">Seleccionar</button>
+      </div>
+    </div>
+
+    <!-- Selector de fechas -->
+    <div class="sidebar-label" style="margin-top:16px;padding-bottom:10px">Fechas de estancia</div>
+    <div class="date-selector">
+      <div class="date-inputs">
+        <div class="date-input-group">
+          <label>Check-in</label>
+          <input type="date" class="date-input" id="checkinDate" onchange="updateDates()">
+        </div>
+        <div class="date-input-group">
+          <label>Check-out</label>
+          <input type="date" class="date-input" id="checkoutDate" onchange="updateDates()">
+        </div>
+      </div>
+      <div id="nightsDisplay" style="display:none" class="nights-display"></div>
+    </div>
+
+    <!-- Lealtad -->
+    <div class="loyalty-section">
+      <div class="sidebar-label" style="padding:0 0 10px">Programa Gold</div>
+      <div class="loyalty-tier tier-gold">🏅 Gold Member</div>
+      <div style="display:flex;align-items:baseline;gap:6px;margin-bottom:4px">
+        <div class="loyalty-points" id="loyaltyPoints">1,240</div>
+        <div class="loyalty-label">puntos</div>
+      </div>
+      <div class="loyalty-bar"><div class="loyalty-fill" style="width:62%"></div></div>
+      <div class="loyalty-next">760 pts para Platinum · Late checkout gratis</div>
+    </div>
+  </aside>
+
+  <main class="chat-main">
+    <div class="chat-header">
+      <div class="bot-avatar"><span id="botAvatarEmoji">🏨</span></div>
+      <div>
+        <div class="bot-name">Sofía — Concierge IA</div>
+        <div class="bot-status"><span class="status-dot" style="width:6px;height:6px;border-radius:50%;background:#4ade80;display:inline-block;animation:pulse-dot 2s infinite"></span>Disponible · Reservas y servicios</div>
+        <div class="bot-sub">Hotel Cielo Boutique · Guadalajara</div>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages"></div>
+
+    <div class="quick-replies" id="quickReplies">
+      <button class="qr-btn" onclick="sendQuick('Quiero reservar una habitación para este fin de semana')">🛏️ Reservar cuarto</button>
+      <button class="qr-btn" onclick="sendQuick('¿Qué tipos de habitaciones tienen y cuánto cuestan?')">🏨 Ver habitaciones</button>
+      <button class="qr-btn" onclick="sendQuick('¿Qué servicios adicionales ofrecen?')">✨ Extras & Servicios</button>
+      <button class="qr-btn" onclick="sendQuick('¿Tienen disponibilidad para una boda o evento?')">💍 Eventos</button>
+    </div>
+
+    <div class="chat-input-area" style="background:#fff">
+      <textarea class="chat-input" id="chatInput" placeholder="¿En qué le puedo ayudar, estimado huésped?" rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" style="background:var(--accent);border-radius:6px" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </main>
+
+  <aside class="dashboard">
+    <!-- Reservación en progreso -->
+    <div class="dash-label">Tu reservación</div>
+    <div id="bookingProgress">
+      <div style="text-align:center;padding:20px;color:var(--muted);font-size:12px;border:1px dashed var(--border);border-radius:8px;margin-bottom:12px">
+        Selecciona una habitación y fechas para comenzar
+      </div>
+    </div>
+
+    <!-- Extras -->
+    <div class="dash-label">Extras & Upgrades</div>
+    <div class="extras-section">
+      <div class="extra-item" data-extra="desayuno" data-price-per-night="380" onclick="toggleExtra('desayuno')">
+        <div class="extra-check" id="check-desayuno"></div>
+        <div class="extra-info"><div class="extra-name">🍳 Desayuno buffet</div><div class="extra-price">+$380/noche</div></div>
+      </div>
+      <div class="extra-item" data-extra="spa" data-price="850" onclick="toggleExtra('spa')">
+        <div class="extra-check" id="check-spa"></div>
+        <div class="extra-info"><div class="extra-name">💆 Acceso Spa</div><div class="extra-price">+$850</div></div>
+      </div>
+      <div class="extra-item" data-extra="traslado" data-price="650" onclick="toggleExtra('traslado')">
+        <div class="extra-check" id="check-traslado"></div>
+        <div class="extra-info"><div class="extra-name">🚗 Transfer aeropuerto</div><div class="extra-price">+$650</div></div>
+      </div>
+      <div class="extra-item" data-extra="decoracion" data-price="1200" onclick="toggleExtra('decoracion')">
+        <div class="extra-check" id="check-decoracion"></div>
+        <div class="extra-info"><div class="extra-name">🌹 Decoración romántica</div><div class="extra-price">+$1,200</div></div>
+      </div>
+    </div>
+
+    <!-- Concierge -->
+    <div class="dash-label" id="conciergeLabel" style="display:none">Servicios Concierge</div>
+    <div class="concierge-section" id="conciergeSection" style="display:none">
+      <button class="concierge-btn" onclick="requestConcierge('Room service')">🍽️ Room service</button>
+      <button class="concierge-btn" onclick="requestConcierge('Taxi o transporte')">🚕 Taxi / Transporte</button>
+      <button class="concierge-btn" onclick="requestConcierge('Tour por la ciudad')">🗺️ Tour ciudad</button>
+      <button class="concierge-btn" onclick="requestConcierge('Servicio de lavandería')">👔 Lavandería</button>
+    </div>
+
+    <div class="insight-card">
+      <div class="insight-tag">✦ Insight concierge</div>
+      <div class="insight-title">El puente del 15 de sept. ya está al 90% — sube tarifas ahora</div>
+      <div class="insight-sub">Quedan 2 habitaciones libres. Dynamic pricing automático disponible</div>
+    </div>
+  </aside>
+</div>
+
+<script src="../../assets/mesaia.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// ESTADO LOCAL — Demo Hotel
+// ═══════════════════════════════════════════════════════════════════
+let state = {
+  dates: null,         // {checkin, checkout, nights}
+  room: null,          // {id, name, pricePerNight}
+  guests: 1,
+  extras: [],          // ['desayuno','spa','traslado','decoracion']
+  loyalty: { points: 1240, tier: 'Gold' },
+  reservation: null    // {folio, total, confirmed}
+};
+
+const EXTRAS_CONFIG = {
+  desayuno: { name: 'Desayuno buffet', perNight: true, price: 380 },
+  spa: { name: 'Spa', perNight: false, price: 850 },
+  traslado: { name: 'Transfer aeropuerto', perNight: false, price: 650 },
+  decoracion: { name: 'Decoración romántica', perNight: false, price: 1200 }
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// SYSTEM PROMPT DINÁMICO
+// ═══════════════════════════════════════════════════════════════════
+function getSystemPrompt() {
+  const datesText = state.dates
+    ? `${state.dates.checkin} al ${state.dates.checkout} (${state.dates.nights} noches)`
+    : 'no seleccionadas';
+  const roomText = state.room ? state.room.name : 'no seleccionada';
+  const extrasText = state.extras.length > 0
+    ? state.extras.map(e => EXTRAS_CONFIG[e]?.name).join(', ')
+    : 'ninguno';
+  const totalText = calculateTotal() > 0 ? `$${calculateTotal().toLocaleString('es-MX')}` : 'no calculado';
+  const reservationText = state.reservation
+    ? `folio ${state.reservation.folio}, confirmada`
+    : 'ninguna';
+
+  return `Eres Sofía, la concierge virtual de "Hotel Cielo Boutique" en Guadalajara, Jalisco.
+Eres elegante, sofisticada y muy hospitalaria. Hablas en español formal y cálido.
+Tratas a cada huésped con atención personalizada ("Con gusto", "Para nosotros es un placer").
+
+HABITACIONES:
+- Estándar: $1,200/noche (cama queen, AC, TV, WiFi, vista jardín) — 4 disponibles
+- Suite Deluxe: $2,400/noche (king, sala, jacuzzi, vista ciudad) — 2 disponibles
+- Suite Presidencial: $4,800/noche (2 recámaras, sala comedor, terraza) — 1 disponible
+- Familiar: $1,850/noche (2 queens, jardín) — 3 disponibles
+
+EXTRAS: Desayuno +$380/noche, Spa +$850, Transfer aeropuerto +$650, Decoración romántica +$1,200.
+CHECK-IN: 3pm | CHECK-OUT: 12pm. Cancelación gratis 48h antes.
+POLÍTICAS: Mascotas permitidas en Estándar/Familiar con depósito $500. No fumadores.
+EVENTOS Y BODAS: Salón hasta 150 personas, paquetes desde $45,000.
+UBICACIÓN: Av. Américas 1450, Guadalajara · 20 min del aeropuerto.
+
+ESTADO ACTUAL DE LA RESERVACIÓN:
+- Fechas: ${datesText}
+- Habitación: ${roomText}
+- Extras seleccionados: ${extrasText}
+- Total estimado: ${totalText}
+- Nivel de lealtad: ${state.loyalty.tier} con ${state.loyalty.points} puntos
+- Reservación: ${reservationText}
+
+FLUJOS:
+1. Para confirmar reservación: necesitas nombre completo, email. Genera folio tipo HCB-XXXXX y confirma.
+2. Si preguntan por servicios durante estadía: muestra el panel de concierge.
+3. Respuestas cortas y elegantes, máx 3 oraciones.
+4. Siempre ofrece extras relevantes (spa para parejas, transfer si vuela).`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// FUNCIONES PRINCIPALES
+// ═══════════════════════════════════════════════════════════════════
+function selectRoom(id, price, name) {
+  state.room = { id, name, pricePerNight: price };
+  document.querySelectorAll('.room-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`[data-room="${id}"]`).classList.add('selected');
+  renderBooking();
+  MesaIA.send(`Me interesa la ${name} a $${price.toLocaleString('es-MX')}/noche.`);
+}
+
+function updateDates() {
+  const checkin = document.getElementById('checkinDate').value;
+  const checkout = document.getElementById('checkoutDate').value;
+  if (!checkin || !checkout) return;
+
+  const d1 = new Date(checkin + 'T12:00:00');
+  const d2 = new Date(checkout + 'T12:00:00');
+  const nights = Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
+
+  if (nights <= 0) return;
+
+  state.dates = {
+    checkin: d1.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' }),
+    checkout: d2.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' }),
+    nights
+  };
+
+  document.getElementById('nightsDisplay').style.display = 'block';
+  document.getElementById('nightsDisplay').textContent = `${nights} noche${nights > 1 ? 's' : ''}`;
+  renderBooking();
+}
+
+function toggleExtra(extraId) {
+  const idx = state.extras.indexOf(extraId);
+  if (idx >= 0) {
+    state.extras.splice(idx, 1);
+    document.querySelector(`[data-extra="${extraId}"]`).classList.remove('selected');
+    document.getElementById(`check-${extraId}`).textContent = '';
+  } else {
+    state.extras.push(extraId);
+    document.querySelector(`[data-extra="${extraId}"]`).classList.add('selected');
+    document.getElementById(`check-${extraId}`).textContent = '✓';
+  }
+  renderBooking();
+}
+
+function calculateTotal() {
+  if (!state.room) return 0;
+  const nights = state.dates?.nights || 1;
+  let total = state.room.pricePerNight * nights;
+  state.extras.forEach(e => {
+    const cfg = EXTRAS_CONFIG[e];
+    if (cfg) total += cfg.perNight ? cfg.price * nights : cfg.price;
+  });
+  return total;
+}
+
+function requestConcierge(service) {
+  MesaIA.send(`Necesito ${service} en mi habitación, por favor.`);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDERIZADO DEL DASHBOARD
+// ═══════════════════════════════════════════════════════════════════
+function renderBooking() {
+  const container = document.getElementById('bookingProgress');
+  if (!state.room && !state.dates) return;
+
+  const nights = state.dates?.nights || 0;
+  const total = calculateTotal();
+
+  let rows = '';
+  if (state.room) {
+    rows += `<div class="booking-row"><span class="label">${state.room.name}</span><span class="value">$${state.room.pricePerNight.toLocaleString('es-MX')}/noche</span></div>`;
+  }
+  if (state.dates) {
+    rows += `<div class="booking-row"><span class="label">Fechas</span><span class="value">${state.dates.checkin} → ${state.dates.checkout}</span></div>`;
+    rows += `<div class="booking-row"><span class="label">Noches</span><span class="value">${state.dates.nights}</span></div>`;
+  }
+  state.extras.forEach(e => {
+    const cfg = EXTRAS_CONFIG[e];
+    if (cfg) {
+      const price = cfg.perNight ? cfg.price * (nights || 1) : cfg.price;
+      rows += `<div class="booking-row"><span class="label">+ ${cfg.name}</span><span class="value">$${price.toLocaleString('es-MX')}</span></div>`;
+    }
+  });
+
+  if (state.reservation) {
+    container.innerHTML = `
+      <div class="booking-card" style="border-color:rgba(26,95,106,0.4);background:linear-gradient(135deg,rgba(26,95,106,0.08),rgba(45,138,152,0.04))">
+        <div class="booking-folio">✓ ${state.reservation.folio}</div>
+        ${rows}
+        <div class="booking-row"><span class="label">Total</span><span class="value booking-total">$${total.toLocaleString('es-MX')}</span></div>
+        <div style="margin-top:10px;font-size:11px;color:var(--accent2)">Confirmación enviada por email ✉️</div>
+      </div>
+    `;
+    // Mostrar concierge si hay reservación
+    document.getElementById('conciergeLabel').style.display = 'block';
+    document.getElementById('conciergeSection').style.display = 'block';
+  } else if (state.room || state.dates) {
+    container.innerHTML = `
+      <div class="booking-card">
+        ${rows}
+        ${total > 0 ? `<div class="booking-row"><span class="label">Total estimado</span><span class="value booking-total">$${total.toLocaleString('es-MX')}</span></div>` : ''}
+        ${(state.room && state.dates) ? `<button onclick="confirmBooking()" style="width:100%;margin-top:10px;padding:10px;background:var(--accent);border:none;border-radius:4px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-body)">Confirmar reservación</button>` : '<div style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center">Selecciona habitación y fechas para continuar</div>'}
+      </div>
+    `;
+  }
+}
+
+function confirmBooking() {
+  if (!state.room || !state.dates) return;
+  state.reservation = {
+    folio: `HCB-${Math.floor(10000 + Math.random() * 90000)}`,
+    total: calculateTotal(),
+    confirmed: true
+  };
+  renderBooking();
+  MesaIA.send(`Confirmo la reservación: ${state.room.name}, ${state.dates.checkin} al ${state.dates.checkout} (${state.dates.nights} noches). ${state.extras.length > 0 ? 'Con extras: ' + state.extras.map(e => EXTRAS_CONFIG[e]?.name).join(', ') + '.' : ''} Total: $${state.reservation.total.toLocaleString('es-MX')}.`);
+}
+
+function onBotReply(reply) {
+  const folioMatch = reply.match(/HCB-\d{5}/i);
+  if (folioMatch && !state.reservation && state.room) {
+    state.reservation = {
+      folio: folioMatch[0],
+      total: calculateTotal(),
+      confirmed: true
+    };
+    renderBooking();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INICIALIZACIÓN
+// ═══════════════════════════════════════════════════════════════════
+// Set default dates (today + 2 days)
+const today = new Date();
+const checkinDefault = new Date(today);
+checkinDefault.setDate(today.getDate() + 1);
+const checkoutDefault = new Date(today);
+checkoutDefault.setDate(today.getDate() + 3);
+document.getElementById('checkinDate').value = checkinDefault.toISOString().split('T')[0];
+document.getElementById('checkoutDate').value = checkoutDefault.toISOString().split('T')[0];
+updateDates();
+
+MesaIA.init({
+  system: getSystemPrompt,
+  onReply: onBotReply,
+  welcomeMessage: `Bienvenido a **Hotel Cielo Boutique** 🏨✦\n\nSoy Sofía, su concierge personal. Es un placer atenderle.\n\nPuedo ayudarle con **reservaciones**, información sobre nuestras **habitaciones y servicios**, o cualquier consulta durante su estadía.\n\n¿En qué le puedo servir?`
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flujos propuestos — mesaIA</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0d1117; color: #e6edf3; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; padding: 32px 24px 60px; min-height: 100vh; }
+  h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; color: #f0f6fc; }
+  .subtitle { font-size: 14px; color: #8b949e; margin-bottom: 32px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+  .demo-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.18s; }
+  .demo-card:hover { border-color: #58a6ff; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+  .demo-card.selected { border-color: #3fb950; background: #0d2017; }
+  .demo-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .demo-emoji { font-size: 28px; }
+  .demo-title { font-size: 16px; font-weight: 700; color: #f0f6fc; }
+  .demo-type { font-size: 11px; color: #8b949e; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+  .flow-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .flow-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #c9d1d9; line-height: 1.4; }
+  .flow-dot { width: 6px; height: 6px; border-radius: 50%; background: #58a6ff; flex-shrink: 0; margin-top: 5px; }
+  .flow-dot.green { background: #3fb950; }
+  .flow-dot.orange { background: #f0883e; }
+  .flow-dot.purple { background: #bc8cff; }
+  .flow-dot.pink { background: #f778ba; }
+  .flow-dot.yellow { background: #e3b341; }
+  .flow-dot.teal { background: #39c5cf; }
+  .flow-dot.red { background: #f85149; }
+  .section-label { font-size: 11px; font-weight: 700; color: #8b949e; letter-spacing: 2px; text-transform: uppercase; margin: 28px 0 14px; border-top: 1px solid #21262d; padding-top: 20px; }
+  .approve-row { display: flex; justify-content: center; gap: 12px; margin-top: 36px; }
+  .btn { padding: 12px 28px; border-radius: 8px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+  .btn-approve { background: #238636; color: #fff; }
+  .btn-approve:hover { background: #2ea043; }
+  .btn-modify { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
+  .btn-modify:hover { background: #30363d; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase; margin-left: 6px; vertical-align: middle; }
+  .tag-new { background: rgba(63,185,80,0.15); color: #3fb950; border: 1px solid rgba(63,185,80,0.3); }
+  .tag-ux { background: rgba(88,166,255,0.15); color: #58a6ff; border: 1px solid rgba(88,166,255,0.3); }
+  .tag-data { background: rgba(188,140,255,0.15); color: #bc8cff; border: 1px solid rgba(188,140,255,0.3); }
+</style>
+</head>
+<body>
+<h2>Flujos de negocio reales — las 8 demos</h2>
+<p class="subtitle">Cada demo recibe lógica de estado, formularios interactivos y flujos completos. Revisa lo planeado para cada una.</p>
+
+<div class="grid">
+
+  <!-- RESTAURANTE -->
+  <div class="demo-card">
+    <div class="demo-header">
+      <div class="demo-emoji">🍽️</div>
+      <div>
+        <div class="demo-title">La Mesa Bonita</div>
+        <div class="demo-type">Restaurante · Tlaquepaque</div>
+      </div>
+    </div>
+    <ul class="flow-list">
+      <li class="flow-item"><div class="flow-dot orange"></div><span><strong>Carrito funcional</strong> — agregar/quitar platillos, ver subtotal en tiempo real <span class="tag tag-new">nuevo</span></span></li>
+      <li class="flow-item"><div class="flow-dot orange"></div><span><strong>Tipo de pedido</strong> — comer aquí / llevar / a domicilio con captura de dirección</span></li>
+      <li class="flow-item"><div class="flow-dot orange"></div><span><strong>Personalización de platillos</strong> — sin cilantro, extra picante, comentarios especiales</span></li>
+      <li class="flow-item"><div class="flow-dot orange"></div><span><strong>Simulación de estatus</strong> — Recibido → Preparando → Listo (con timer)</span></li>
+      <li class="flow-item"><div class="flow-dot orange"></div><span><strong>Filtros dietéticos</strong> — vegetariano, sin gluten, nivel de picante <span class="tag tag-ux">UX</span></span></li>
+      <li class="flow-item"><div class="flow-dot orange"></div><span><strong>Reservación con detalles</strong> — fecha, hora, número de personas, ocasión especial</span></li>
+    </ul>
+  </div>
+
+  <!-- CLINICA -->
+  <div class="demo-card">
+    <div class="demo-header">
+      <div class="demo-emoji">🏥</div>
+      <div>
+        <div class="demo-title">Clínica Salud+</div>
+        <div class="demo-type">Clínica médica · Guadalajara</div>
+      </div>
+    </div>
+    <ul class="flow-list">
+      <li class="flow-item"><div class="flow-dot"></div><span><strong>Flujo de cita completo</strong> — especialidad → doctor → fecha → confirmación con folio <span class="tag tag-new">nuevo</span></span></li>
+      <li class="flow-item"><div class="flow-dot"></div><span><strong>Triaje inteligente</strong> — el bot recoge síntomas y sugiere la especialidad correcta</span></li>
+      <li class="flow-item"><div class="flow-dot"></div><span><strong>Slots de disponibilidad</strong> — horarios reales con disponibilidad visual por doctor</span></li>
+      <li class="flow-item"><div class="flow-dot"></div><span><strong>Datos del paciente</strong> — nombre, edad, seguro médico, primera vez vs. paciente frecuente</span></li>
+      <li class="flow-item"><div class="flow-dot"></div><span><strong>Expediente rápido</strong> — historial de citas previas visible en sidebar <span class="tag tag-data">datos</span></span></li>
+      <li class="flow-item"><div class="flow-dot"></div><span><strong>Resultados de lab</strong> — simulación de entrega/consulta de resultados con estatus</span></li>
+    </ul>
+  </div>
+
+  <!-- GIMNASIO -->
+  <div class="demo-card">
+    <div class="demo-header">
+      <div class="demo-emoji">💪</div>
+      <div>
+        <div class="demo-title">PowerZone Gym</div>
+        <div class="demo-type">Gimnasio · Guadalajara</div>
+      </div>
+    </div>
+    <ul class="flow-list">
+      <li class="flow-item"><div class="flow-dot green"></div><span><strong>Quiz de objetivos</strong> — bajar peso / ganar músculo / resistencia → recomendación personalizada <span class="tag tag-new">nuevo</span></span></li>
+      <li class="flow-item"><div class="flow-dot green"></div><span><strong>Calculadora IMC</strong> — peso, estatura → análisis + plan sugerido con el bot</span></li>
+      <li class="flow-item"><div class="flow-dot green"></div><span><strong>Inscripción paso a paso</strong> — plan → datos personales → método de pago → activación</span></li>
+      <li class="flow-item"><div class="flow-dot green"></div><span><strong>Reserva de clases</strong> — clica en clase → reservar lugar → confirmación con código QR</span></li>
+      <li class="flow-item"><div class="flow-dot green"></div><span><strong>Tracker de progreso</strong> — semanas activo, clases tomadas, racha actual <span class="tag tag-data">datos</span></span></li>
+      <li class="flow-item"><div class="flow-dot green"></div><span><strong>Plan de entrenamiento</strong> — IA genera rutina semanal personalizada descargable</span></li>
+    </ul>
+  </div>
+
+  <!-- HOTEL -->
+  <div class="demo-card">
+    <div class="demo-header">
+      <div class="demo-emoji">🏨</div>
+      <div>
+        <div class="demo-title">Hotel Cielo Boutique</div>
+        <div class="demo-type">Hotel luxury · Guadalajara</div>
+      </div>
+    </div>
+    <ul class="flow-list">
+      <li class="flow-item"><div class="flow-dot teal"></div><span><strong>Selector de fechas</strong> — check-in / check-out con cálculo dinámico de noches y precio total <span class="tag tag-new">nuevo</span></span></li>
+      <li class="flow-item"><div class="flow-dot teal"></div><span><strong>Comparador de habitaciones</strong> — vista lado a lado con amenidades, fotos y precio</span></li>
+      <li class="flow-item"><div class="flow-dot teal"></div><span><strong>Extras & upgrades</strong> — desayuno, spa, traslado aeropuerto, decoración romántica</span></li>
+      <li class="flow-item"><div class="flow-dot teal"></div><span><strong>Panel de concierge</strong> — solicitudes durante la estadía: room service, taxi, tours <span class="tag tag-ux">UX</span></span></li>
+      <li class="flow-item"><div class="flow-dot teal"></div><span><strong>Programa de lealtad</strong> — puntos acumulados, nivel (Silver/Gold/Platinum), beneficios</span></li>
+      <li class="flow-item"><div class="flow-dot teal"></div><span><strong>Reserva de restaurante</strong> — mesa en el restaurante del hotel, menú degustación</span></li>
+    </ul>
+  </div>
+
+  <!-- INMOBILIARIA -->
+  <div class="demo-card">
+    <div class="demo-header">
+      <div class="demo-emoji">🏡</div>
+      <div>
+        <div class="demo-title">Apex Realty</div>
+        <div class="demo-type">Inmobiliaria · GDL</div>
+      </div>
+    </div>
+    <ul class="flow-list">
+      <li class="flow-item"><div class="flow-dot yellow"></div><span><strong>Buscador con filtros</strong> — zona, precio, recámaras, tipo → resultados dinámicos <span class="tag tag-new">nuevo</span></span></li>
+      <li class="flow-item"><div class="flow-dot yellow"></div><span><strong>Calculadora hipotecaria</strong> — precio + enganche + plazo → mensualidad estimada</span></li>
+      <li class="flow-item"><div class="flow-dot yellow"></div><span><strong>Calificación de lead</strong> — el bot recoge: presupuesto, plazo, zona preferida, uso (vivir/invertir)</span></li>
+      <li class="flow-item"><div class="flow-dot yellow"></div><span><strong>Comparador de propiedades</strong> — hasta 3 propiedades lado a lado con métricas clave <span class="tag tag-ux">UX</span></span></li>
+      <li class="flow-item"><div class="flow-dot yellow"></div><span><strong>Agendar visita</strong> — selecciona propiedad → asesor disponible → fecha → confirmación</span></li>
+      <li class="flow-item"><div class="flow-dot yellow"></div><span><strong>ROI estimado</strong> — para inversores: plusvalía esperada, renta potencial, recuperación</span></li>
+    </ul>
+  </div>
+
+  <!-- SALON -->
+  <div class="demo-card">
+    <div class="demo-header">
+      <div class="demo-emoji">💇</div>
+      <div>
+        <div class="demo-title">Studio Glam</div>
+        <div class="demo-type">Salón de belleza · Guadalajara</div>
+      </div>
+    </div>
+    <ul class="flow-list">
+      <li class="flow-item"><div class="flow-dot pink"></div><span><strong>Selección de estilista</strong> — perfil, especialidad, calificación, disponibilidad <span class="tag tag-new">nuevo</span></span></li>
+      <li class="flow-item"><div class="flow-dot pink"></div><span><strong>Calendario de citas</strong> — horarios disponibles por estilista, duración del servicio</span></li>
+      <li class="flow-item"><div class="flow-dot pink"></div><span><strong>Constructor de paquetes</strong> — combina servicios, ve el precio total y tiempo estimado</span></li>
+      <li class="flow-item"><div class="flow-dot pink"></div><span><strong>Consulta de color IA</strong> — tipo de cabello + tono deseado → recomendación técnica del bot</span></li>
+      <li class="flow-item"><div class="flow-dot pink"></div><span><strong>Tarjeta de lealtad</strong> — visitas acumuladas, siguiente recompensa, puntos canjeables <span class="tag tag-data">datos</span></span></li>
+      <li class="flow-item"><div class="flow-dot pink"></div><span><strong>Paquete novia</strong> — flujo especial para boda con cotización completa y agenda</span></li>
+    </ul>
+  </div>
+
+  <!-- TALLER -->
+  <div class="demo-card">
+    <div class="demo-header">
+      <div class="demo-emoji">🔧</div>
+      <div>
+        <div class="demo-title">AutoPro Taller</div>
+        <div class="demo-type">Mecánica automotriz · Guadalajara</div>
+      </div>
+    </div>
+    <ul class="flow-list">
+      <li class="flow-item"><div class="flow-dot red"></div><span><strong>Perfil de vehículo</strong> — marca, modelo, año, km, placas → contexto para el bot <span class="tag tag-new">nuevo</span></span></li>
+      <li class="flow-item"><div class="flow-dot red"></div><span><strong>Diagnóstico guiado</strong> — cuestionario de síntomas → servicios recomendados con precios</span></li>
+      <li class="flow-item"><div class="flow-dot red"></div><span><strong>Cotizador interactivo</strong> — selecciona servicios → presupuesto detallado + tiempo estimado</span></li>
+      <li class="flow-item"><div class="flow-dot red"></div><span><strong>Agendado con mecánico</strong> — disponibilidad real, asignación de especialista, confirmación</span></li>
+      <li class="flow-item"><div class="flow-dot red"></div><span><strong>Historial del vehículo</strong> — servicios previos, próximos mantenimientos, alertas <span class="tag tag-data">datos</span></span></li>
+      <li class="flow-item"><div class="flow-dot red"></div><span><strong>Tracker de servicio</strong> — estatus en tiempo real: Recibido → Diagnóstico → En taller → Listo</span></li>
+    </ul>
+  </div>
+
+  <!-- VENTAS -->
+  <div class="demo-card">
+    <div class="demo-header">
+      <div class="demo-emoji">🚀</div>
+      <div>
+        <div class="demo-title">VentasIA Pro</div>
+        <div class="demo-type">Agente comercial IA · B2B</div>
+      </div>
+    </div>
+    <ul class="flow-list">
+      <li class="flow-item"><div class="flow-dot purple"></div><span><strong>Assessment por industria</strong> — el bot califica necesidades según tipo de negocio <span class="tag tag-new">nuevo</span></span></li>
+      <li class="flow-item"><div class="flow-dot purple"></div><span><strong>Calculadora de ROI</strong> — ahorro en tiempo, costo de implementación, payback estimado</span></li>
+      <li class="flow-item"><div class="flow-dot purple"></div><span><strong>Configurador de solución</strong> — tipo de agente + módulos → propuesta de precio personalizada</span></li>
+      <li class="flow-item"><div class="flow-dot purple"></div><span><strong>Casos de éxito dinámicos</strong> — filtrados por industria + tamaño de empresa del lead</span></li>
+      <li class="flow-item"><div class="flow-dot purple"></div><span><strong>Generador de propuesta</strong> — resumen PDF descargable con solución + inversión + plazos <span class="tag tag-data">datos</span></span></li>
+      <li class="flow-item"><div class="flow-dot purple"></div><span><strong>Agenda de demo</strong> — selección de fecha + hora + nombre del contacto + confirmación</span></li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="approve-row">
+  <button class="btn btn-approve" onclick="document.title='APPROVED'">✅ Aprobado — proceder con este plan</button>
+  <button class="btn btn-modify" onclick="document.title='MODIFY'">✏️ Quiero ajustar algo</button>
+</div>
+
+</body>
+</html>

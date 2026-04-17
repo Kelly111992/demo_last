@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutoPro Taller — Agente IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Red+Hat+Display:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/base.css">
+<style>
+:root {
+  --bg:#0a0a0a;--surface:#111111;--surface2:#1a1a1a;
+  --accent:#f97316;--accent2:#fb923c;
+  --text:#f5f5f5;--muted:#737373;--border:#262626;
+  --font-body:'Red Hat Display',sans-serif;--font-display:'Bebas Neue',sans-serif;
+  --bubble-bot:#111111;--avatar-bot-bg:#f97316;--avatar-user-bg:#1a1a1a;
+  --input-bg:#111111;--input-field-bg:#0a0a0a;
+}
+body{background:var(--bg);background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23262626' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.header{height:64px;background:#0a0a0a;border-bottom:3px solid var(--accent);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100}
+.logo{font-family:var(--font-display);font-size:32px;letter-spacing:3px;color:var(--text);display:flex;align-items:center;gap:12px;line-height:1}
+.logo-accent{color:var(--accent)}
+.logo-tag{font-family:var(--font-body);font-size:10px;font-weight:500;color:var(--muted);letter-spacing:3px;text-transform:uppercase;align-self:flex-end;margin-bottom:3px}
+.live-badge{display:flex;align-items:center;gap:6px;background:rgba(249,115,22,0.12);border:1px solid rgba(249,115,22,0.35);color:var(--accent);font-size:11px;font-weight:700;padding:5px 14px;border-radius:3px;letter-spacing:1.5px;text-transform:uppercase}
+.status-dot{background:var(--accent);width:7px;height:7px;border-radius:50%;animation:pulse-dot 2s infinite;display:inline-block}
+.app{display:grid;grid-template-columns:270px 1fr 285px;height:calc(100vh - 64px)}
+
+/* SIDEBAR */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:20px 0 40px}
+.sidebar-label{font-family:var(--font-display);font-size:16px;letter-spacing:3px;color:var(--muted);padding:0 18px 16px}
+
+/* TARJETA DEL VEHÍCULO */
+.vehicle-card{margin:0 14px 12px;border:1px solid var(--border);border-radius:6px;padding:14px;background:var(--surface2)}
+.vehicle-card.filled{border-color:rgba(249,115,22,0.4);background:rgba(249,115,22,0.05)}
+.vehicle-empty{text-align:center;padding:8px;color:var(--muted);font-size:12px}
+.vehicle-icon{font-size:28px;text-align:center;margin-bottom:8px}
+.vehicle-name{font-family:var(--font-display);font-size:22px;color:var(--text);letter-spacing:1px}
+.vehicle-detail{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.8}
+.vehicle-plates{font-size:11px;font-weight:700;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-top:4px}
+
+/* HISTORIAL */
+.history-section{padding:0 14px 12px;border-top:1px solid var(--border);margin-top:6px}
+.history-label{font-family:var(--font-display);font-size:13px;letter-spacing:2px;color:var(--muted);padding:12px 0 8px}
+.history-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.history-item:last-child{border-bottom:none}
+.hist-date{font-size:10px;color:var(--muted);min-width:50px}
+.hist-svc{font-size:11px;color:var(--text);flex:1}
+.hist-price{font-family:var(--font-display);font-size:12px;color:var(--accent)}
+
+/* SERVICIOS */
+.service-row{display:flex;align-items:center;gap:12px;padding:11px 18px;border-bottom:1px solid var(--border);cursor:pointer;transition:all 0.13s;position:relative}
+.service-row:hover{background:var(--surface2);border-left:3px solid var(--accent);padding-left:15px}
+.service-row.selected{background:rgba(249,115,22,0.08);border-left:3px solid var(--accent);padding-left:15px}
+.svc-check{width:18px;height:18px;border-radius:3px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--accent);transition:all 0.15s}
+.service-row.selected .svc-check{background:var(--accent);border-color:var(--accent);color:#fff}
+.svc-num{font-family:var(--font-display);font-size:22px;color:var(--border);min-width:28px;transition:color 0.13s}
+.service-row.selected .svc-num{color:var(--accent)}
+.svc-body{flex:1}
+.svc-name{font-size:13px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:0.5px}
+.svc-desc{font-size:11px;color:var(--muted);margin-top:2px}
+.svc-time{font-size:10px;color:var(--muted);margin-top:1px}
+.svc-price{font-family:var(--font-display);font-size:18px;color:var(--accent);letter-spacing:1px;white-space:nowrap}
+
+/* CHAT */
+.chat-main{display:flex;flex-direction:column;background:var(--bg)}
+.chat-header{padding:15px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;background:var(--surface)}
+.bot-avatar{width:44px;height:44px;border-radius:6px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;color:var(--bg)}
+.bot-name{font-family:var(--font-display);font-size:22px;color:var(--text);letter-spacing:2px}
+.bot-status{font-size:11px;color:var(--accent);display:flex;align-items:center;gap:5px;margin-top:2px;font-weight:600;letter-spacing:0.5px}
+.msg.bot .msg-bubble{border-color:var(--border);border-radius:3px 12px 12px 12px}
+.msg.user .msg-bubble{background:var(--accent);color:#fff;border-radius:12px 3px 12px 12px}
+.typing-dots{border-color:var(--border);border-radius:3px 12px 12px 12px}
+
+/* DASHBOARD */
+.dashboard{background:var(--surface);border-left:1px solid var(--border);padding:20px;overflow-y:auto}
+.dash-label{font-family:var(--font-display);font-size:14px;letter-spacing:3px;color:var(--muted);margin-bottom:14px}
+.stat-card{background:var(--surface2);border:1px solid var(--border)}
+.stat-val{font-family:var(--font-display);color:var(--accent);font-size:32px;letter-spacing:1px}
+.stat-delta{color:#4ade80}
+
+/* COTIZADOR */
+.quote-section{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:14px;margin-bottom:12px}
+.quote-item{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:11px}
+.quote-item:last-child{border-bottom:none;padding-top:8px;font-weight:700}
+.quote-name{color:var(--text)}
+.quote-price{font-family:var(--font-display);font-size:14px;color:var(--accent)}
+.quote-total{font-family:var(--font-display);font-size:20px;color:var(--accent)}
+.quote-empty{text-align:center;padding:16px;color:var(--muted);font-size:12px}
+.confirm-quote-btn{width:100%;margin-top:10px;padding:10px;background:var(--accent);border:none;border-radius:4px;color:#fff;font-family:var(--font-display);font-size:16px;letter-spacing:2px;cursor:pointer;transition:filter 0.15s}
+.confirm-quote-btn:hover{filter:brightness(1.1)}
+
+/* TRACKER DE SERVICIO */
+.service-tracker{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:14px;margin-top:4px}
+.tracker-title-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.tracker-folio{font-family:var(--font-display);font-size:14px;color:var(--text);letter-spacing:1px}
+.tracker-badge{font-size:9px;font-weight:700;padding:3px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:1px}
+.tracker-stages{display:flex;align-items:center;gap:0;margin-top:8px}
+.t-stage{display:flex;flex-direction:column;align-items:center;flex:1;position:relative}
+.t-stage:not(:last-child)::after{content:'';position:absolute;top:16px;left:50%;width:100%;height:2px;background:var(--border);z-index:0}
+.t-stage.done::after{background:var(--accent)}
+.t-dot{width:32px;height:32px;border-radius:50%;background:var(--surface);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.3s;z-index:1;position:relative}
+.t-stage.done .t-dot{background:var(--accent);border-color:var(--accent)}
+.t-stage.active .t-dot{background:rgba(249,115,22,0.2);border-color:var(--accent);animation:pulse-dot 1.5s infinite}
+.t-label{font-size:9px;color:var(--muted);text-align:center;margin-top:4px;max-width:52px;line-height:1.2}
+.t-stage.done .t-label,.t-stage.active .t-label{color:var(--text);font-weight:600}
+
+/* CITA */
+.appt-card{background:rgba(249,115,22,0.08);border:1px solid rgba(249,115,22,0.3);border-radius:6px;padding:14px;margin-bottom:12px}
+.appt-folio{font-family:var(--font-display);font-size:16px;color:var(--accent);letter-spacing:2px;margin-bottom:8px}
+.appt-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid rgba(249,115,22,0.15)}
+.appt-row:last-child{border-bottom:none}
+.appt-row .key{color:var(--muted)}
+.appt-row .val{color:var(--text);font-weight:500}
+
+/* INSIGHT */
+.insight-card{background:linear-gradient(135deg,rgba(249,115,22,0.1),rgba(251,146,60,0.05));border:1px solid rgba(249,115,22,0.25);border-radius:6px;padding:16px;margin-top:6px}
+.insight-tag{font-family:var(--font-display);font-size:12px;color:var(--accent);letter-spacing:2px}
+.insight-title{font-size:13px;font-weight:700;color:var(--text);margin-top:7px;line-height:1.4}
+.insight-sub{font-size:11px;color:var(--muted);margin-top:5px}
+
+@media(max-width:768px){.sidebar,.dashboard{display:none}.app{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo"><span class="logo-accent">AUTO</span>PRO <span class="logo-tag">Taller Mecánico</span></div>
+  <div class="live-badge"><span class="status-dot"></span>Asesor IA activo</div>
+</header>
+
+<div class="app">
+  <aside class="sidebar">
+    <!-- Tarjeta del vehículo -->
+    <div class="sidebar-label">Tu vehículo</div>
+    <div id="vehicleCard" class="vehicle-card">
+      <div class="vehicle-empty">
+        🚗 Cuéntale a Mech tu marca, modelo y año para registrarlo
+      </div>
+    </div>
+
+    <!-- Historial -->
+    <div class="history-section" id="historySection" style="display:none">
+      <div class="history-label">Historial</div>
+      <div class="history-item"><div class="hist-date">Oct 2024</div><div class="hist-svc">Cambio de aceite</div><div class="hist-price">$450</div></div>
+      <div class="history-item"><div class="hist-date">Jul 2024</div><div class="hist-svc">Alineación y balanceo</div><div class="hist-price">$380</div></div>
+      <div class="history-item"><div class="hist-date">Feb 2024</div><div class="hist-svc">Afinación menor</div><div class="hist-price">$850</div></div>
+    </div>
+
+    <!-- Servicios con checkbox -->
+    <div class="sidebar-label" style="margin-top:8px">Servicios</div>
+    <div class="service-row" data-svc="afinacion-menor" data-price="850" onclick="toggleService('afinacion-menor','Afinación menor',850,'2-3 horas',this)">
+      <div class="svc-check" id="chk-afinacion-menor"></div>
+      <div class="svc-num">01</div>
+      <div class="svc-body"><div class="svc-name">Afinación menor</div><div class="svc-desc">Bujías, filtros, revisión general</div><div class="svc-time">⏱ 2-3 horas</div></div>
+      <div class="svc-price">$850</div>
+    </div>
+    <div class="service-row" data-svc="afinacion-mayor" data-price="1800" onclick="toggleService('afinacion-mayor','Afinación mayor',1800,'4-6 horas',this)">
+      <div class="svc-check" id="chk-afinacion-mayor"></div>
+      <div class="svc-num">02</div>
+      <div class="svc-body"><div class="svc-name">Afinación mayor</div><div class="svc-desc">Completa con escáner computarizado</div><div class="svc-time">⏱ 4-6 horas</div></div>
+      <div class="svc-price">$1,800</div>
+    </div>
+    <div class="service-row" data-svc="aceite" data-price="450" onclick="toggleService('aceite','Cambio de aceite',450,'30-45 min',this)">
+      <div class="svc-check" id="chk-aceite"></div>
+      <div class="svc-num">03</div>
+      <div class="svc-body"><div class="svc-name">Cambio de aceite</div><div class="svc-desc">Aceite sintético + filtro incluido</div><div class="svc-time">⏱ 30-45 min</div></div>
+      <div class="svc-price">$450</div>
+    </div>
+    <div class="service-row" data-svc="frenos" data-price="2200" onclick="toggleService('frenos','Frenos completos',2200,'3-4 horas',this)">
+      <div class="svc-check" id="chk-frenos"></div>
+      <div class="svc-num">04</div>
+      <div class="svc-body"><div class="svc-name">Frenos completos</div><div class="svc-desc">Balatas, discos y revisión de sistema</div><div class="svc-time">⏱ 3-4 horas</div></div>
+      <div class="svc-price">$2,200</div>
+    </div>
+    <div class="service-row" data-svc="alineacion" data-price="380" onclick="toggleService('alineacion','Alineación y balanceo',380,'1 hora',this)">
+      <div class="svc-check" id="chk-alineacion"></div>
+      <div class="svc-num">05</div>
+      <div class="svc-body"><div class="svc-name">Alineación y balanceo</div><div class="svc-desc">Computarizado, con garantía</div><div class="svc-time">⏱ 1 hora</div></div>
+      <div class="svc-price">$380</div>
+    </div>
+    <div class="service-row" data-svc="scanner" data-price="350" onclick="toggleService('scanner','Diagnóstico escáner',350,'45 min',this)">
+      <div class="svc-check" id="chk-scanner"></div>
+      <div class="svc-num">06</div>
+      <div class="svc-body"><div class="svc-name">Diagnóstico escáner</div><div class="svc-desc">Lectura de fallas computarizadas</div><div class="svc-time">⏱ 45 min</div></div>
+      <div class="svc-price">$350</div>
+    </div>
+    <div class="service-row" data-svc="electrico" data-price="600" onclick="toggleService('electrico','Sistema eléctrico',600,'Variable',this)">
+      <div class="svc-check" id="chk-electrico"></div>
+      <div class="svc-num">07</div>
+      <div class="svc-body"><div class="svc-name">Sistema eléctrico</div><div class="svc-desc">Diagnóstico y reparación eléctrica</div><div class="svc-time">⏱ Variable</div></div>
+      <div class="svc-price">Desde $600</div>
+    </div>
+    <div class="service-row" data-svc="suspension" data-price="280" onclick="toggleService('suspension','Revisión suspensión',280,'1-2 horas',this)">
+      <div class="svc-check" id="chk-suspension"></div>
+      <div class="svc-num">08</div>
+      <div class="svc-body"><div class="svc-name">Revisión de suspensión</div><div class="svc-desc">Amortiguadores, rótulas y terminales</div><div class="svc-time">⏱ 1-2 horas</div></div>
+      <div class="svc-price">$280</div>
+    </div>
+    <div class="service-row" data-svc="transmision" data-price="950" onclick="toggleService('transmision','Transmisión automática',950,'2 horas',this)">
+      <div class="svc-check" id="chk-transmision"></div>
+      <div class="svc-num">09</div>
+      <div class="svc-body"><div class="svc-name">Transmisión automática</div><div class="svc-desc">Cambio de aceite ATF + revisión</div><div class="svc-time">⏱ 2 horas</div></div>
+      <div class="svc-price">$950</div>
+    </div>
+    <div class="service-row" data-svc="previaje" data-price="490" onclick="toggleService('previaje','Revisión pre-viaje',490,'1.5 horas',this)">
+      <div class="svc-check" id="chk-previaje"></div>
+      <div class="svc-num">10</div>
+      <div class="svc-body"><div class="svc-name">Revisión previa a viaje</div><div class="svc-desc">Check 25 puntos + reporte digital</div><div class="svc-time">⏱ 1.5 horas</div></div>
+      <div class="svc-price">$490</div>
+    </div>
+  </aside>
+
+  <main class="chat-main">
+    <div class="chat-header">
+      <div class="bot-avatar"><span id="botAvatarEmoji">🔧</span></div>
+      <div>
+        <div class="bot-name" id="chatHeaderName">MECH — ASESOR IA</div>
+        <div class="bot-status"><span class="status-dot"></span>Online · Diagnósticos, citas y presupuestos</div>
+      </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages"></div>
+
+    <div class="quick-replies" id="quickReplies">
+      <button class="qr-btn" onclick="sendQuick('Mi carro hace un ruido raro al frenar, ¿qué puede ser?')">🔊 Ruido extraño</button>
+      <button class="qr-btn" onclick="sendQuick('Quiero registrar mi vehículo')">🚗 Registrar mi carro</button>
+      <button class="qr-btn" onclick="sendQuick('Necesito una cotización para afinación y cambio de aceite')">💰 Cotizar servicios</button>
+      <button class="qr-btn" onclick="sendQuick('Quiero agendar una cita para mañana')">📅 Agendar cita</button>
+    </div>
+
+    <div class="chat-input-area">
+      <textarea class="chat-input" id="chatInput" placeholder="Cuéntame qué le pasa a tu carro..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <button class="send-btn" style="background:var(--accent);border-radius:4px" onclick="sendMessage()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </main>
+
+  <aside class="dashboard">
+    <div class="dash-label">Taller hoy</div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-val">11</div><div class="stat-label">Unidades en taller</div><div class="stat-delta">↑ 3 vs ayer</div></div>
+      <div class="stat-card"><div class="stat-val">$18k</div><div class="stat-label">Facturado</div><div class="stat-delta">↑ 22%</div></div>
+      <div class="stat-card"><div class="stat-val" id="quoteCount">0</div><div class="stat-label">Servicios cotizados</div><div class="stat-delta" id="quoteDelta">Agrega servicios</div></div>
+      <div class="stat-card"><div class="stat-val">4.7★</div><div class="stat-label">Google Maps</div><div class="stat-delta">187 reseñas</div></div>
+    </div>
+
+    <!-- Cotizador -->
+    <div class="dash-label" style="margin-top:16px">Tu cotización</div>
+    <div class="quote-section" id="quoteSection">
+      <div class="quote-empty">Selecciona servicios de la lista para cotizar</div>
+    </div>
+
+    <!-- Cita agendada -->
+    <div id="appointmentSection"></div>
+
+    <!-- Tracker de servicio -->
+    <div id="trackerSection"></div>
+
+    <div class="insight-card">
+      <div class="insight-tag">⚡ INSIGHT IA</div>
+      <div class="insight-title">7 clientes no han regresado en +6 meses. El agente puede mandarles recordatorio automático</div>
+      <div class="insight-sub">Potencial de recuperación: $12,000 si 4 de 7 regresan este mes</div>
+    </div>
+  </aside>
+</div>
+
+<script src="../../assets/mesaia.js"></script>
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// ESTADO LOCAL — Demo Taller
+// ═══════════════════════════════════════════════════════════════════
+let state = {
+  vehicle: null,       // {brand, model, year, km, plates}
+  symptoms: [],
+  services: [],        // [{id, name, price, time}]
+  quote: null,         // {items, total, time}
+  appointment: null,   // {mechanic, date, time, folio}
+  serviceStatus: null, // 'recibido'|'diagnostico'|'taller'|'listo'
+  statusTimer: null
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// SYSTEM PROMPT DINÁMICO
+// ═══════════════════════════════════════════════════════════════════
+function getSystemPrompt() {
+  const vehicleText = state.vehicle
+    ? `${state.vehicle.brand} ${state.vehicle.model} ${state.vehicle.year}, ${state.vehicle.km}km${state.vehicle.plates ? ', placas: ' + state.vehicle.plates : ''}`
+    : 'no registrado';
+  const symptomsText = state.symptoms.length > 0 ? state.symptoms.join(', ') : 'ninguno reportado';
+  const servicesText = state.services.length > 0
+    ? state.services.map(s => `${s.name} ($${s.price})`).join(', ')
+    : 'ninguno seleccionado';
+  const totalText = state.services.reduce((s, i) => s + i.price, 0);
+  const apptText = state.appointment ? `folio ${state.appointment.folio}` : 'sin cita';
+
+  return `Eres Mech, el asesor virtual de "AutoPro Taller Mecánico" en Guadalajara, Jalisco.
+Eres práctico, honesto y muy conocedor de mecánica automotriz. Hablas en español mexicano directo y confiable.
+Tu objetivo: dar confianza al cliente y agendar su visita.
+
+SERVICIOS: Afinación menor $850 (2-3h), Afinación mayor $1,800 (4-6h), Cambio aceite $450 (30-45min), Frenos $2,200 (3-4h),
+Alineación/balanceo $380 (1h), Diagnóstico escáner $350 (45min), Sistema eléctrico desde $600,
+Suspensión $280 (1-2h), Transmisión ATF $950 (2h), Revisión pre-viaje $490 (1.5h).
+GARANTÍA: 3 meses o 5,000 km en todas las reparaciones.
+HORARIOS: Lun-Vie 8am-7pm, Sáb 8am-4pm. Calle Federalismo 890, GDL.
+MECÁNICOS DISPONIBLES: Miguel S. (motor y afinación), Javier R. (frenos y suspensión), Omar V. (electricidad y diagnóstico).
+
+VEHÍCULO ACTUAL: ${vehicleText}
+SÍNTOMAS REPORTADOS: ${symptomsText}
+SERVICIOS COTIZADOS: ${servicesText} — Total: $${totalText}
+CITA: ${apptText}
+
+FLUJOS:
+1. REGISTRO DE VEHÍCULO: Si el cliente menciona su carro (marca/modelo/año), confirma y menciona que lo registraste.
+   Responde como: "Registré tu [marca] [modelo] [año]. Ahora cuéntame qué le pasa."
+2. DIAGNÓSTICO: Si dan síntomas, sugiere 2-3 causas probables y los servicios recomendados.
+3. COTIZACIÓN: Los servicios seleccionados aparecen en el dashboard. Para confirmar, pide fecha y hora preferida.
+4. CITA: Asigna mecánico especialista según el servicio, genera folio APT-XXXXX.
+5. Siempre menciona la garantía de 3 meses.
+Respuestas cortas y directas, máx 3 oraciones.`;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// FUNCIONES PRINCIPALES
+// ═══════════════════════════════════════════════════════════════════
+function toggleService(id, name, price, time, row) {
+  const idx = state.services.findIndex(s => s.id === id);
+  const check = document.getElementById(`chk-${id}`);
+
+  if (idx >= 0) {
+    state.services.splice(idx, 1);
+    row.classList.remove('selected');
+    check.textContent = '';
+  } else {
+    state.services.push({ id, name, price, time });
+    row.classList.add('selected');
+    check.textContent = '✓';
+  }
+  renderQuote();
+}
+
+function renderQuote() {
+  const container = document.getElementById('quoteSection');
+  document.getElementById('quoteCount').textContent = state.services.length;
+
+  if (state.services.length === 0) {
+    container.innerHTML = `<div class="quote-empty">Selecciona servicios de la lista para cotizar</div>`;
+    document.getElementById('quoteDelta').textContent = 'Agrega servicios';
+    return;
+  }
+
+  const total = state.services.reduce((s, i) => s + i.price, 0);
+  document.getElementById('quoteDelta').textContent = `$${total.toLocaleString('es-MX')} estimado`;
+
+  container.innerHTML = `
+    ${state.services.map(s => `
+      <div class="quote-item">
+        <span class="quote-name">${s.name}</span>
+        <span class="quote-price">$${s.price.toLocaleString('es-MX')}</span>
+      </div>
+    `).join('')}
+    <div class="quote-item">
+      <span class="quote-name" style="font-weight:700">TOTAL</span>
+      <span class="quote-total">$${total.toLocaleString('es-MX')}</span>
+    </div>
+    <button class="confirm-quote-btn" onclick="confirmQuote()">AGENDAR CITA →</button>
+  `;
+}
+
+function confirmQuote() {
+  if (state.services.length === 0) return;
+  const svcs = state.services.map(s => s.name).join(', ');
+  const total = state.services.reduce((s, i) => s + i.price, 0);
+  MesaIA.send(`Quiero agendar los servicios: ${svcs}. Total estimado $${total.toLocaleString('es-MX')}. ${state.vehicle ? 'Es para mi ' + state.vehicle.brand + ' ' + state.vehicle.model + ' ' + state.vehicle.year + '.' : ''} ¿Qué fechas tienen disponibles?`);
+}
+
+function renderVehicle() {
+  const card = document.getElementById('vehicleCard');
+  if (!state.vehicle) return;
+  card.classList.add('filled');
+  card.innerHTML = `
+    <div class="vehicle-icon">🚗</div>
+    <div class="vehicle-name">${state.vehicle.brand} ${state.vehicle.model}</div>
+    <div class="vehicle-detail">
+      <div>Año: ${state.vehicle.year}</div>
+      ${state.vehicle.km ? `<div>Kilometraje: ${state.vehicle.km.toLocaleString('es-MX')} km</div>` : ''}
+    </div>
+    ${state.vehicle.plates ? `<div class="vehicle-plates">${state.vehicle.plates}</div>` : ''}
+  `;
+  // Mostrar historial
+  document.getElementById('historySection').style.display = 'block';
+  // Actualizar header del chat
+  document.getElementById('chatHeaderName').textContent = `MECH — ${state.vehicle.brand.toUpperCase()} ${state.vehicle.model.toUpperCase()}`;
+}
+
+function renderAppointment() {
+  const container = document.getElementById('appointmentSection');
+  if (!state.appointment) return;
+  container.innerHTML = `
+    <div class="dash-label" style="margin-top:16px">Cita confirmada</div>
+    <div class="appt-card">
+      <div class="appt-folio">✓ ${state.appointment.folio}</div>
+      <div class="appt-row"><span class="key">Mecánico</span><span class="val">${state.appointment.mechanic}</span></div>
+      <div class="appt-row"><span class="key">Fecha</span><span class="val">${state.appointment.date}</span></div>
+      <div class="appt-row"><span class="key">Hora</span><span class="val">${state.appointment.time}</span></div>
+      ${state.services.length > 0 ? `<div class="appt-row"><span class="key">Servicios</span><span class="val">${state.services.length} servicio(s)</span></div>` : ''}
+    </div>
+  `;
+
+  // Iniciar tracker
+  startServiceTracker();
+}
+
+function startServiceTracker() {
+  renderTracker('recibido');
+  state.serviceStatus = 'recibido';
+
+  const stages = ['recibido', 'diagnostico', 'taller', 'listo'];
+  let idx = 0;
+  if (state.statusTimer) clearInterval(state.statusTimer);
+  state.statusTimer = setInterval(() => {
+    idx++;
+    if (idx < stages.length) {
+      state.serviceStatus = stages[idx];
+      renderTracker(state.serviceStatus);
+    } else {
+      clearInterval(state.statusTimer);
+    }
+  }, 6000);
+}
+
+function renderTracker(status) {
+  const container = document.getElementById('trackerSection');
+  const stages = [
+    { id: 'recibido', label: 'Recibido', icon: '📋' },
+    { id: 'diagnostico', label: 'Diagnóstico', icon: '🔍' },
+    { id: 'taller', label: 'En taller', icon: '🔧' },
+    { id: 'listo', label: 'Listo', icon: '✅' }
+  ];
+  const currentIdx = stages.findIndex(s => s.id === status);
+  const colors = { recibido: '#60a5fa', diagnostico: '#f59e0b', taller: '#f97316', listo: '#4ade80' };
+  const color = colors[status];
+
+  container.innerHTML = `
+    <div class="dash-label" style="margin-top:12px">Tracker del servicio</div>
+    <div class="service-tracker">
+      <div class="tracker-title-row">
+        <span class="tracker-folio">${state.appointment?.folio || 'APT-DEMO'}</span>
+        <span class="tracker-badge" style="background:rgba(${hexToRgb(color)},0.15);color:${color};border:1px solid rgba(${hexToRgb(color)},0.3)">${status.toUpperCase()}</span>
+      </div>
+      <div class="tracker-stages">
+        ${stages.map((s, i) => `
+          <div class="t-stage ${i < currentIdx ? 'done' : i === currentIdx ? 'active' : ''}">
+            <div class="t-dot">${s.icon}</div>
+            <div class="t-label">${s.label}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function hexToRgb(hex) {
+  const colors = { '#60a5fa': '96,165,250', '#f59e0b': '245,158,11', '#f97316': '249,115,22', '#4ade80': '74,222,128' };
+  return colors[hex] || '249,115,22';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// DETECTAR RESPUESTAS DEL BOT
+// ═══════════════════════════════════════════════════════════════════
+function onBotReply(reply) {
+  const lower = reply.toLowerCase();
+
+  // Detectar registro de vehículo en respuesta del bot
+  if (!state.vehicle) {
+    // El bot confirma el vehículo registrado
+    const carMatch = reply.match(/registré?\s+(tu\s+)?([A-Za-záéíóúÁÉÍÓÚñÑ]+)\s+([A-Za-záéíóúÁÉÍÓÚñÑ0-9]+)\s+(\d{4})/i);
+    if (carMatch || (lower.includes('registr') && (lower.includes('nissan') || lower.includes('toyota') || lower.includes('honda') || lower.includes('chevrolet') || lower.includes('ford') || lower.includes('volkswagen') || lower.includes('kia') || lower.includes('hyundai')))) {
+      // Extraer datos del texto del usuario (el último mensaje)
+      extractVehicleFromContext();
+    }
+  }
+
+  // Detectar folio de cita en respuesta del bot
+  const folioMatch = reply.match(/APT-\d{5}/i);
+  if (folioMatch && !state.appointment) {
+    const mechanics = ['Miguel S.', 'Javier R.', 'Omar V.'];
+    state.appointment = {
+      folio: folioMatch[0],
+      mechanic: mechanics[Math.floor(Math.random() * mechanics.length)],
+      date: 'Próximamente',
+      time: '10:00 AM'
+    };
+    renderAppointment();
+  }
+}
+
+function extractVehicleFromContext() {
+  // Intentar extraer desde los mensajes del historial de chat
+  const bubbles = document.querySelectorAll('.msg.user .msg-bubble');
+  const allText = Array.from(bubbles).map(b => b.textContent).join(' ').toLowerCase();
+
+  const brands = ['nissan', 'toyota', 'honda', 'chevrolet', 'ford', 'volkswagen', 'kia', 'hyundai', 'mazda', 'seat'];
+  let detectedBrand = '';
+  brands.forEach(b => { if (allText.includes(b)) detectedBrand = b.charAt(0).toUpperCase() + b.slice(1); });
+
+  const yearMatch = allText.match(/\b(201[5-9]|202[0-4])\b/);
+  const year = yearMatch ? yearMatch[1] : '2020';
+  const kmMatch = allText.match(/(\d{1,3},?\d{3})\s*km/);
+  const km = kmMatch ? parseInt(kmMatch[1].replace(',', '')) : null;
+
+  if (detectedBrand) {
+    state.vehicle = { brand: detectedBrand, model: 'Versátil', year, km: km || 65000 };
+    renderVehicle();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INICIALIZACIÓN
+// ═══════════════════════════════════════════════════════════════════
+MesaIA.init({
+  system: getSystemPrompt,
+  onReply: onBotReply,
+  welcomeMessage: `¡Qué onda! Bienvenido a **AutoPro Taller** 🔧\n\nSoy Mech, tu asesor. Para atenderte mejor:\n\n1. **Registra tu vehículo** — dime marca, modelo y año\n2. **Cuéntame los síntomas** o el servicio que necesitas\n3. Selecciona servicios en la lista y **agenda tu cita**\n\nTodos nuestros trabajos tienen **garantía de 3 meses** ✅`
+});
+</script>
+</body>
+</html>
