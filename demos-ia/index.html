@@ -103,22 +103,26 @@ body {
   backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border);
 }
-.logo { display:flex; align-items:center; gap:10px; }
-.logo-gem {
-  width:30px; height:30px; border-radius:8px; flex-shrink:0;
-  background: linear-gradient(135deg,var(--brand-a),var(--brand-b));
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Bricolage Grotesque',sans-serif;
-  font-size:13px; font-weight:800; color:#04050a;
+.logo { display:flex; align-items:center; }
+.logo img {
+  height: 54px;
+  width: auto;
+  display: block;
+  mix-blend-mode: screen;  /* fondo negro del logo se vuelve transparente */
+  filter: brightness(1.08) contrast(1.05);
 }
-.logo-name {
-  font-family:'Bricolage Grotesque',sans-serif;
-  font-size:16px; font-weight:700; letter-spacing:-.3px; color:var(--text);
+
+/* Hero logo — brand anchor antes del headline */
+.hero-logo-wrap {
+  margin-bottom: 28px;
+  animation: fadeUp .45s ease both;
 }
-.logo-name em {
-  font-style:normal;
-  background:linear-gradient(90deg,var(--brand-a),var(--brand-b));
-  -webkit-background-clip:text; background-clip:text; color:transparent;
+.hero-logo-wrap img {
+  height: 110px;
+  width: auto;
+  mix-blend-mode: screen;
+  filter: brightness(1.1) contrast(1.05);
+  display: block;
 }
 .live-pill {
   display:flex; align-items:center; gap:7px;
@@ -476,7 +480,7 @@ body {
 <!-- NAV -->
 <nav class="nav">
   <div class="logo">
-    <img src="assets/logo-claveai.png" alt="ClaveAI" style="height:38px;width:auto;border-radius:6px;display:block;">
+    <img src="assets/logo-claveai.png" alt="ClaveAI">
   </div>
   <div class="live-pill">
     <div class="pulse"></div>
@@ -492,6 +496,9 @@ body {
   </div>
   <div class="hero-visual-row">
     <div class="hero-text-col">
+      <div class="hero-logo-wrap">
+        <img src="assets/logo-claveai.png" alt="ClaveAI">
+      </div>
       <h1 class="hero-h1">
         Agentes IA<br>
         <span class="ghost">para cada</span>
