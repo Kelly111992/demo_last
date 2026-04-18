@@ -4,170 +4,532 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>La Mesa Bonita — Agente IA</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600;9..144,800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Fraunces:opsz,wght@9..144,300;9..144,600;9..144,800&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/base.css">
 <style>
-:root {
-  --bg:#0d0b09;--surface:#161210;--surface2:#1e1a15;
-  --accent:#e07b2a;--accent2:#f0c040;--text:#f2ede6;
-  --muted:#8a7f74;--border:#2b2218;
-  --font-body:'DM Sans',sans-serif;--font-display:'Fraunces',serif;
-  --bubble-bot:var(--surface);--avatar-user-bg:var(--surface2);
-  --input-bg:var(--surface);--input-field-bg:var(--bg);
+:root{
+  --bg:#050302;
+  --surface:rgba(255,255,255,0.025);
+  --surface2:rgba(255,255,255,0.04);
+  --surface3:rgba(255,255,255,0.06);
+  --accent:#f07b20;
+  --accent2:#f0c040;
+  --text:#f5ede4;
+  --muted:#7a6a5d;
+  --border:rgba(255,180,100,0.08);
+  --border-mid:rgba(255,180,100,0.16);
+  --font-body:'DM Sans',sans-serif;
+  --font-display:'Fraunces',serif;
+  --font-ui:'Bricolage Grotesque',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+  --bubble-bot:rgba(255,255,255,0.03);
+  --avatar-user-bg:rgba(255,255,255,0.05);
+  --input-bg:rgba(255,255,255,0.025);
+  --input-field-bg:rgba(0,0,0,0.3);
 }
-body{background:var(--bg);background-image:radial-gradient(ellipse at 20% 10%,rgba(224,123,42,0.06) 0%,transparent 55%)}
-.header{height:62px;background:#0d0b09;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:100}
-.logo{font-family:var(--font-display);font-size:21px;font-weight:900;color:var(--accent);display:flex;align-items:center;gap:8px}
-.logo-sub{font-weight:300;color:var(--text);font-size:14px}
-.live-badge{display:flex;align-items:center;gap:6px;background:rgba(224,123,42,0.12);border:1px solid rgba(224,123,42,0.3);color:var(--accent);font-size:11px;font-weight:600;padding:4px 12px;border-radius:20px;letter-spacing:.8px;text-transform:uppercase}
-.app{display:grid;grid-template-columns:265px 1fr 290px;height:calc(100vh - 62px)}
 
-/* SIDEBAR */
-.sidebar{background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:18px 0 30px}
-.sidebar-label{font-size:9.5px;font-weight:600;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;padding:0 16px 14px}
-.cat-name{font-family:var(--font-display);font-size:12px;font-weight:700;color:var(--accent2);padding:10px 16px 5px}
+/* ── BODY + BACKGROUND ── */
+body{
+  background:var(--bg);
+  background-image:
+    radial-gradient(ellipse 70% 60% at 15% 5%,rgba(240,123,32,0.07) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 50% at 85% 90%,rgba(240,192,64,0.04) 0%,transparent 50%);
+}
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:radial-gradient(circle,rgba(255,255,255,0.04) 1px,transparent 1px);
+  background-size:28px 28px;
+  pointer-events:none;z-index:0;opacity:.4;
+}
 
-.menu-item{display:flex;align-items:center;gap:0;cursor:pointer;transition:all 0.14s;border-left:2px solid transparent;overflow:hidden}
-.menu-item:hover{background:var(--surface2);border-left-color:var(--accent)}
-.menu-item:hover .plus-btn{transform:scale(1.1);box-shadow:0 4px 10px rgba(224,123,42,0.4)}
-.item-img{width:64px;height:56px;object-fit:cover;flex-shrink:0;filter:brightness(0.9)}
-.menu-item:hover .item-img{filter:brightness(1)}
+/* ── HEADER ── */
+.header{
+  height:58px;
+  background:rgba(5,3,2,0.9);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;
+  position:sticky;top:0;z-index:100;
+}
+.logo{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--font-display);
+  font-size:20px;font-weight:900;
+  color:var(--accent);
+}
+.logo-gem{
+  width:30px;height:30px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;
+  color:var(--bg);
+  flex-shrink:0;
+}
+.logo-sub{
+  font-weight:300;color:var(--muted);font-size:13px;
+  font-family:var(--font-body);
+}
+.live-badge{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(240,192,64,0.1);
+  border:1px solid rgba(240,192,64,0.2);
+  color:var(--accent2);
+  font-size:11px;font-weight:600;
+  padding:5px 13px;border-radius:20px;
+  letter-spacing:.7px;text-transform:uppercase;
+}
+
+/* ── APP LAYOUT ── */
+.app{
+  display:grid;
+  grid-template-columns:258px 1fr 282px;
+  height:calc(100vh - 58px);
+  position:relative;z-index:1;
+}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  background:rgba(255,255,255,0.015);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-right:1px solid var(--border);
+  overflow-y:auto;
+  padding:16px 0 28px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
+}
+.sidebar-label{
+  font-family:var(--font-mono);
+  font-size:9px;font-weight:500;
+  color:var(--muted);
+  letter-spacing:2.5px;text-transform:uppercase;
+  padding:0 16px 12px;
+}
+.cat-name{
+  font-family:var(--font-display);
+  font-size:11px;font-weight:700;
+  color:var(--accent2);
+  padding:12px 16px 4px;
+  letter-spacing:.3px;
+}
+
+/* Menu items */
+.menu-item{
+  display:flex;align-items:center;
+  cursor:pointer;
+  transition:all .15s;
+  border-left:2px solid transparent;
+  overflow:hidden;
+  position:relative;
+}
+.menu-item:hover{
+  background:rgba(240,123,32,0.07);
+  border-left-color:var(--accent);
+}
+.menu-item:hover .plus-btn{
+  transform:scale(1.12);
+  box-shadow:0 4px 14px rgba(240,123,32,0.45);
+}
+.item-img{
+  width:60px;height:52px;
+  object-fit:cover;flex-shrink:0;
+  filter:brightness(.85) saturate(.9);
+  transition:filter .2s;
+}
+.menu-item:hover .item-img{filter:brightness(1) saturate(1.1)}
 .item-body{flex:1;padding:0 8px;min-width:0}
-.item-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-name{
+  font-size:12px;font-weight:500;
+  color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
 .item-desc{font-size:10px;color:var(--muted);margin-top:1px}
-.item-price{font-size:12px;font-weight:600;color:var(--accent);white-space:nowrap;margin-right:4px}
-.plus-btn{width:26px;height:26px;border-radius:50%;background:var(--accent);border:none;color:#fff;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform 0.14s,box-shadow 0.14s;flex-shrink:0;margin-right:10px;box-shadow:0 2px 5px rgba(0,0,0,0.25)}
-.plus-btn:active{transform:scale(0.9)}
-.divider{height:1px;background:var(--border);margin:8px 16px}
+.item-price{
+  font-family:var(--font-mono);
+  font-size:11.5px;font-weight:500;
+  color:var(--accent);white-space:nowrap;margin-right:6px;
+}
+.plus-btn{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--accent);border:none;
+  color:#fff;font-size:17px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:transform .14s,box-shadow .14s;
+  flex-shrink:0;margin-right:10px;
+  box-shadow:0 2px 8px rgba(240,123,32,0.3);
+}
+.plus-btn:active{transform:scale(.88)}
+.divider{height:1px;background:var(--border);margin:6px 16px}
 
-/* CHAT */
-.chat-main{display:flex;flex-direction:column;background:var(--bg)}
-.chat-header{padding:14px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px}
-.bot-avatar{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.bot-name{font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--text)}
-.bot-status{font-size:11px;color:#4ade80;display:flex;align-items:center;gap:5px;margin-top:2px}
+/* Dietary filters */
+.dietary-filters{display:flex;gap:5px;padding:8px 14px 10px;flex-wrap:wrap}
+.dietary-filter-btn{
+  font-size:10.5px;padding:4px 10px;border-radius:20px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,0.03);color:var(--muted);
+  cursor:pointer;transition:all .2s;
+  font-family:var(--font-body);
+}
+.dietary-filter-btn.active{
+  background:rgba(240,123,32,0.15);
+  border-color:rgba(240,123,32,0.4);color:var(--accent);
+}
 
-/* DASHBOARD */
-.dashboard{background:var(--surface);border-left:1px solid var(--border);padding:20px;overflow-y:auto}
-.dash-label{font-size:9.5px;font-weight:600;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:14px}
-.stat-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px}
-.stat-val{font-family:var(--font-display);font-size:26px;font-weight:800;color:var(--accent);line-height:1}
-.stat-label{font-size:11px;color:var(--muted);margin-top:4px}
-.stat-delta{font-size:10px;color:#4ade80;margin-top:2px}
-.order-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px}
-.o-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.o-new{background:#60a5fa;animation:pulse-dot 1s infinite}
-.o-prep{background:#f59e0b;animation:pulse-dot 1.5s infinite}
-.o-done{background:#4ade80}
-.o-info{flex:1;min-width:0}
-.o-name{font-size:12px;font-weight:500;color:var(--text)}
-.o-detail{font-size:10.5px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.o-price{font-size:12px;font-weight:600;color:var(--accent);white-space:nowrap}
-.insight-card{background:linear-gradient(135deg,rgba(224,123,42,0.13),rgba(240,192,64,0.06));border:1px solid rgba(224,123,42,0.28);border-radius:12px;padding:16px;margin-top:4px}
-.insight-tag{font-size:9.5px;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;font-weight:600}
-.insight-title{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--text);margin-top:7px;line-height:1.4}
-.insight-sub{font-size:11px;color:var(--muted);margin-top:5px}
-@media(max-width:768px){.sidebar,.dashboard{display:none}.app{grid-template-columns:1fr}}
+/* Order type */
+.order-type-selector{padding:0 14px 12px}
+.order-type-buttons{display:flex;gap:6px}
+.order-type-btn{
+  flex:1;padding:7px 4px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:rgba(255,255,255,0.02);color:var(--muted);
+  font-size:10.5px;font-weight:600;cursor:pointer;
+  transition:all .2s;font-family:var(--font-body);
+  text-align:center;
+}
+.order-type-btn.active{
+  background:var(--accent);
+  border-color:var(--accent);color:#fff;
+  box-shadow:0 2px 12px rgba(240,123,32,0.35);
+}
 
-/* Modal de notas */
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:1000}
-.modal-content{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;width:90%;max-width:400px}
-.modal-title{font-family:var(--font-display);font-size:18px;color:var(--text);margin:0 0 16px}
-.modal-input{width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;box-sizing:border-box}
-.modal-input::placeholder{color:var(--muted)}
-.modal-actions{display:flex;gap:10px;margin-top:16px}
-.modal-btn{flex:1;padding:10px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer}
-.modal-btn.cancel{background:var(--surface2);color:var(--text)}
-.modal-btn.confirm{background:var(--accent);color:#fff}
-
-/* Filtros dietéticos */
-.dietary-filters{display:flex;gap:6px;padding:8px 16px 12px;flex-wrap:wrap}
-.dietary-filter-btn{font-size:11px;padding:5px 10px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all 0.2s}
-.dietary-filter-btn.active{background:rgba(224,123,42,0.2);border-color:var(--accent);color:var(--accent)}
-
-/* Tipo de pedido */
-.order-type-selector{padding:0 16px 12px}
-.order-type-buttons{display:flex;gap:8px}
-.order-type-btn{flex:1;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--surface2);color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;transition:all 0.2s}
-.order-type-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
-
-/* Dirección de domicilio */
-.address-section{padding:0 16px 12px;display:none}
-.address-input{width:100%;padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;box-sizing:border-box}
+/* Address */
+.address-section{padding:0 14px 12px;display:none}
+.address-input{
+  width:100%;padding:9px 12px;
+  background:var(--input-field-bg);
+  border:1px solid var(--border);
+  border-radius:8px;color:var(--text);
+  font-size:12px;box-sizing:border-box;
+  font-family:var(--font-body);
+  transition:border-color .15s;
+}
+.address-input:focus{outline:none;border-color:var(--accent)}
 .address-input::placeholder{color:var(--muted)}
 
-/* Carrito en dashboard */
-.cart-section{margin-bottom:16px}
-.cart-empty{text-align:center;padding:20px;color:var(--muted);font-size:12px}
-.cart-items{display:flex;flex-direction:column;gap:8px}
-.cart-item{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px}
-.cart-item-info{flex:1;min-width:0}
-.cart-item-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cart-item-notes{font-size:10px;color:var(--muted);font-style:italic;margin-top:2px}
-.cart-item-price{font-size:10px;color:var(--muted);margin-top:1px}
-.qty-controls{display:flex;align-items:center;gap:4px}
-.qty-btn{width:24px;height:24px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.qty-btn:hover{border-color:var(--accent)}
-.qty-val{font-size:12px;font-weight:600;color:var(--text);min-width:20px;text-align:center}
-.cart-item-subtotal{font-size:12px;font-weight:600;color:var(--accent);min-width:50px;text-align:right}
-.cart-total-row{display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(224,123,42,0.1);border:1px solid rgba(224,123,42,0.3);border-radius:8px;margin-top:8px}
-.cart-total-label{font-size:12px;color:var(--text)}
-.cart-total-val{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--accent)}
-.confirm-order-btn{width:100%;margin-top:10px;padding:12px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s}
-.confirm-order-btn:hover{filter:brightness(1.1)}
-.confirm-order-btn:disabled{opacity:0.5;cursor:not-allowed;filter:none}
+/* ── CHAT MAIN ── */
+.chat-main{
+  display:flex;flex-direction:column;
+  background:transparent;
+  position:relative;
+}
+.chat-header{
+  padding:14px 22px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+  background:rgba(5,3,2,0.6);
+  backdrop-filter:blur(8px);
+}
+.bot-avatar{
+  width:40px;height:40px;border-radius:12px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
+  box-shadow:0 4px 16px rgba(240,123,32,0.3);
+}
+.bot-name{
+  font-family:var(--font-ui);
+  font-size:15px;font-weight:700;
+  color:var(--text);letter-spacing:-.2px;
+}
+.bot-status{
+  font-size:11px;color:#4ade80;
+  display:flex;align-items:center;gap:5px;margin-top:2px;
+}
 
-/* Tracker de pedido */
-.order-tracker{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px;margin-top:12px}
-.tracker-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.tracker-title{font-size:12px;font-weight:600;color:var(--text)}
-.tracker-status{font-size:9px;font-weight:700;padding:3px 8px;border-radius:6px;text-transform:uppercase;letter-spacing:0.5px}
-.status-recibido{background:rgba(96,165,250,0.2);color:#60a5fa}
-.status-preparando{background:rgba(245,158,11,0.2);color:#f59e0b}
-.status-listo{background:rgba(74,222,128,0.2);color:#4ade80}
-.status-entregado{background:rgba(34,197,94,0.2);color:#22c55e}
+/* ── DASHBOARD ── */
+.dashboard{
+  background:rgba(255,255,255,0.015);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  border-left:1px solid var(--border);
+  padding:18px 16px;overflow-y:auto;
+  scrollbar-width:thin;scrollbar-color:var(--border) transparent;
+}
+.dash-label{
+  font-family:var(--font-mono);
+  font-size:9px;font-weight:500;
+  color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;
+  margin-bottom:12px;
+}
+
+/* Stat cards */
+.stat-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:8px;margin-bottom:16px;
+}
+.stat-card{
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--border);
+  border-radius:12px;padding:12px 14px;
+  transition:background .2s,border-color .2s;
+}
+.stat-card:hover{
+  background:rgba(255,255,255,0.05);
+  border-color:var(--border-mid);
+}
+.stat-val{
+  font-family:var(--font-ui);
+  font-size:24px;font-weight:800;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  line-height:1;
+}
+.stat-label{font-size:10px;color:var(--muted);margin-top:4px}
+.stat-delta{font-size:10px;color:#4ade80;margin-top:2px}
+
+/* Cart */
+.cart-section{margin-bottom:14px}
+.cart-empty{
+  text-align:center;padding:22px 16px;
+  color:var(--muted);font-size:12px;line-height:1.6;
+  background:rgba(255,255,255,0.02);
+  border:1px dashed var(--border);
+  border-radius:10px;
+}
+.cart-items{display:flex;flex-direction:column;gap:6px}
+.cart-item{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid var(--border);
+  border-radius:9px;padding:10px;
+  transition:border-color .2s;
+}
+.cart-item:hover{border-color:var(--border-mid)}
+.cart-item-info{flex:1;min-width:0}
+.cart-item-name{
+  font-size:12px;font-weight:500;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.cart-item-notes{font-size:10px;color:var(--muted);font-style:italic;margin-top:2px}
+.cart-item-price{
+  font-family:var(--font-mono);
+  font-size:10px;color:var(--muted);margin-top:2px;
+}
+.qty-controls{display:flex;align-items:center;gap:4px}
+.qty-btn{
+  width:22px;height:22px;border-radius:6px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,0.04);
+  color:var(--text);font-size:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.qty-btn:hover{border-color:var(--accent);color:var(--accent)}
+.qty-val{
+  font-family:var(--font-mono);
+  font-size:12px;font-weight:600;color:var(--text);
+  min-width:20px;text-align:center;
+}
+.cart-item-subtotal{
+  font-family:var(--font-mono);
+  font-size:12px;font-weight:600;color:var(--accent);
+  min-width:48px;text-align:right;
+}
+.cart-total-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:11px 13px;
+  background:rgba(240,123,32,0.08);
+  border:1px solid rgba(240,123,32,0.2);
+  border-radius:9px;margin-top:8px;
+}
+.cart-total-label{font-size:12px;color:var(--text)}
+.cart-total-val{
+  font-family:var(--font-ui);
+  font-size:18px;font-weight:800;
+  color:var(--accent);
+}
+.confirm-order-btn{
+  width:100%;margin-top:10px;padding:11px;
+  background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 70%,var(--accent2)));
+  border:none;border-radius:9px;
+  color:#fff;font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .2s;
+  font-family:var(--font-body);
+  box-shadow:0 4px 16px rgba(240,123,32,0.3);
+  letter-spacing:.2px;
+}
+.confirm-order-btn:hover{
+  filter:brightness(1.1);
+  box-shadow:0 6px 20px rgba(240,123,32,0.45);
+  transform:translateY(-1px);
+}
+.confirm-order-btn:disabled{
+  opacity:.4;cursor:not-allowed;
+  filter:none;transform:none;box-shadow:none;
+}
+
+/* Order tracker */
+.order-tracker{
+  background:rgba(255,255,255,0.025);
+  border:1px solid var(--border);
+  border-radius:12px;padding:14px;margin-top:10px;
+}
+.tracker-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:14px;
+}
+.tracker-title{
+  font-family:var(--font-mono);
+  font-size:12px;font-weight:500;color:var(--text);
+}
+.tracker-status{
+  font-size:9px;font-weight:700;
+  padding:3px 8px;border-radius:6px;
+  text-transform:uppercase;letter-spacing:.5px;
+}
+.status-recibido{background:rgba(96,165,250,0.15);color:#60a5fa}
+.status-preparando{background:rgba(245,158,11,0.15);color:#f59e0b}
+.status-listo{background:rgba(74,222,128,0.15);color:#4ade80}
+.status-entregado{background:rgba(34,197,94,0.15);color:#22c55e}
 .tracker-stages{display:flex;align-items:center}
 .tracker-stage{display:flex;flex-direction:column;align-items:center;position:relative}
 .tracker-stage:not(:last-child){flex:1}
-.stage-icon{width:32px;height:32px;border-radius:50%;background:var(--surface);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;transition:all 0.3s}
-.tracker-stage.active .stage-icon{background:var(--accent);border-color:var(--accent)}
-.stage-label{font-size:9px;color:var(--muted);text-align:center;margin-top:4px;max-width:60px}
+.stage-icon{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,0.04);
+  border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;transition:all .3s;
+}
+.tracker-stage.active .stage-icon{
+  background:var(--accent);border-color:var(--accent);
+  box-shadow:0 0 16px rgba(240,123,32,0.35);
+}
+.stage-label{
+  font-size:9px;color:var(--muted);
+  text-align:center;margin-top:4px;max-width:56px;
+}
 .tracker-stage.active .stage-label{color:var(--text);font-weight:600}
-.stage-line{position:absolute;top:15px;left:50%;width:100%;height:2px;background:var(--border);z-index:-1}
+.stage-line{
+  position:absolute;top:15px;left:50%;
+  width:100%;height:1.5px;
+  background:var(--border);z-index:-1;
+}
 
-/* Reservación */
-.reservation-card{background:linear-gradient(135deg,rgba(224,123,42,0.15),rgba(240,192,64,0.08));border:1px solid rgba(224,123,42,0.3);border-radius:12px;padding:14px;margin-top:8px}
-.reservation-folio{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--accent);margin-bottom:8px}
-.reservation-details{font-size:11px;color:var(--text);line-height:1.6}
+/* Reservation card */
+.reservation-card{
+  background:linear-gradient(135deg,rgba(240,123,32,0.1),rgba(240,192,64,0.05));
+  border:1px solid rgba(240,123,32,0.22);
+  border-radius:12px;padding:14px;margin-top:8px;
+}
+.reservation-folio{
+  font-family:var(--font-mono);
+  font-size:13px;font-weight:500;
+  color:var(--accent);margin-bottom:8px;
+}
+.reservation-details{font-size:11px;color:var(--text);line-height:1.7}
+
+/* Insight card */
+.insight-card{
+  background:linear-gradient(135deg,rgba(240,123,32,0.1),rgba(240,192,64,0.04));
+  border:1px solid rgba(240,123,32,0.2);
+  border-radius:12px;padding:16px;margin-top:4px;
+  transition:border-color .2s;
+}
+.insight-card:hover{border-color:rgba(240,123,32,0.38)}
+.insight-tag{
+  font-family:var(--font-mono);
+  font-size:9px;color:var(--accent);
+  letter-spacing:1.5px;text-transform:uppercase;font-weight:500;
+}
+.insight-title{
+  font-family:var(--font-display);
+  font-size:13.5px;font-weight:700;
+  color:var(--text);margin-top:7px;line-height:1.45;
+}
+.insight-sub{font-size:11px;color:var(--muted);margin-top:5px}
+
+/* Modal */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+  z-index:1000;
+}
+.modal-content{
+  background:rgba(20,15,10,0.97);
+  border:1px solid var(--border-mid);
+  border-radius:16px;padding:24px;
+  width:90%;max-width:380px;
+  box-shadow:0 24px 60px rgba(0,0,0,0.6);
+}
+.modal-title{
+  font-family:var(--font-display);
+  font-size:17px;color:var(--text);margin:0 0 16px;
+}
+.modal-input{
+  width:100%;padding:11px 14px;
+  background:rgba(0,0,0,0.4);
+  border:1px solid var(--border);
+  border-radius:9px;color:var(--text);
+  font-size:13px;box-sizing:border-box;
+  font-family:var(--font-body);
+  transition:border-color .15s;
+}
+.modal-input:focus{outline:none;border-color:var(--accent)}
+.modal-input::placeholder{color:var(--muted)}
+.modal-actions{display:flex;gap:10px;margin-top:16px}
+.modal-btn{
+  flex:1;padding:10px;border:none;border-radius:8px;
+  font-size:13.5px;font-weight:600;cursor:pointer;
+  font-family:var(--font-body);transition:all .15s;
+}
+.modal-btn.cancel{
+  background:rgba(255,255,255,0.06);color:var(--text);
+  border:1px solid var(--border);
+}
+.modal-btn.cancel:hover{background:rgba(255,255,255,0.1)}
+.modal-btn.confirm{
+  background:var(--accent);color:#fff;
+  box-shadow:0 4px 14px rgba(240,123,32,0.35);
+}
+.modal-btn.confirm:hover{filter:brightness(1.1)}
+
+@media(max-width:768px){
+  .sidebar,.dashboard{display:none}
+  .app{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
+
 <header class="header">
-  <div class="logo">🍽️ La Mesa Bonita <span class="logo-sub">· Tlaquepaque</span></div>
+  <div class="logo">
+    <div class="logo-gem">🍽</div>
+    La Mesa Bonita
+    <span class="logo-sub">· Tlaquepaque</span>
+  </div>
   <div class="live-badge"><span class="status-dot"></span>Agente IA activo</div>
 </header>
+
 <div class="app">
+
+  <!-- SIDEBAR: Menú -->
   <aside class="sidebar">
     <div class="sidebar-label">Menú del día</div>
 
-    <!-- Filtros dietéticos -->
     <div class="dietary-filters">
       <button class="dietary-filter-btn" data-dietary="vegetariano">🥦 Vegetariano</button>
       <button class="dietary-filter-btn" data-dietary="sinGluten">🌾 Sin gluten</button>
       <button class="dietary-filter-btn" data-dietary="picante">🌶️ Picante</button>
     </div>
 
-    <!-- Tipo de pedido -->
     <div class="order-type-selector">
-      <div class="sidebar-label" style="padding-left:0">Tipo de pedido</div>
+      <div class="sidebar-label" style="padding-left:0;margin-bottom:6px">Tipo de pedido</div>
       <div class="order-type-buttons">
         <button class="order-type-btn" data-type="mesa" onclick="setOrderType('mesa')">🍽️ Mesa</button>
         <button class="order-type-btn" data-type="llevar" onclick="setOrderType('llevar')">📦 Llevar</button>
-        <button class="order-type-btn" data-type="domicilio" onclick="setOrderType('domicilio')">🚚 Domicilio</button>
+        <button class="order-type-btn" data-type="domicilio" onclick="setOrderType('domicilio')">🚚 Dom.</button>
       </div>
     </div>
 
-    <!-- Dirección (solo domicilio) -->
     <div class="address-section" id="addressSection">
       <input type="text" class="address-input" id="addressInput" placeholder="📍 Dirección de entrega" oninput="state.address = this.value">
     </div>
@@ -232,6 +594,7 @@ body{background:var(--bg);background-image:radial-gradient(ellipse at 20% 10%,rg
     </div>
   </aside>
 
+  <!-- CHAT -->
   <main class="chat-main">
     <div class="chat-header">
       <div class="bot-avatar"><span id="botAvatarEmoji">🤖</span></div>
@@ -254,14 +617,38 @@ body{background:var(--bg);background-image:radial-gradient(ellipse at 20% 10%,rg
     </div>
   </main>
 
+  <!-- DASHBOARD -->
   <aside class="dashboard">
-    <div class="dash-label">Tu pedido</div>
+    <!-- Stats de hoy -->
+    <div class="dash-label">Hoy en el restaurante</div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-val">$4,820</div>
+        <div class="stat-label">Ventas hoy</div>
+        <div class="stat-delta">↑ +12% vs ayer</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">34</div>
+        <div class="stat-label">Pedidos</div>
+        <div class="stat-delta">↑ +7 mesa</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">$142</div>
+        <div class="stat-label">Ticket prom.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-val">8</div>
+        <div class="stat-label">Reservas</div>
+        <div class="stat-delta">2 esta noche</div>
+      </div>
+    </div>
 
     <!-- Carrito -->
+    <div class="dash-label">Tu pedido</div>
     <div class="cart-section" id="cartContainer">
       <div class="cart-empty" id="cartEmpty">
         🛒 Tu carrito está vacío<br>
-        <span style="opacity:0.7">Agrega items con el botón +</span>
+        <span style="opacity:.65;font-size:11px">Agrega items con el botón +</span>
       </div>
       <div class="cart-items" id="cartItems"></div>
       <div class="cart-total-row">
@@ -273,10 +660,10 @@ body{background:var(--bg);background-image:radial-gradient(ellipse at 20% 10%,rg
       </button>
     </div>
 
-    <!-- Tracker de pedido -->
-    <div class="dash-label" style="margin-top:16px">Estatus</div>
+    <!-- Tracker -->
+    <div class="dash-label" style="margin-top:16px">Estatus del pedido</div>
     <div id="orderTracker">
-      <div style="text-align:center;padding:20px;color:var(--muted);font-size:12px">
+      <div style="text-align:center;padding:18px;color:var(--muted);font-size:12px;background:rgba(255,255,255,0.02);border:1px dashed var(--border);border-radius:10px">
         Sin pedido activo
       </div>
     </div>
@@ -285,14 +672,16 @@ body{background:var(--bg);background-image:radial-gradient(ellipse at 20% 10%,rg
     <div class="dash-label" style="margin-top:16px">Reservaciones</div>
     <div id="reservationDisplay"></div>
 
-    <!-- Insight IA (estático para demo) -->
+    <!-- Insight IA -->
     <div class="insight-card" style="margin-top:16px">
       <div class="insight-tag">💡 Sugerencia IA</div>
       <div class="insight-title">Activa "2×1 en birria después de las 8pm" los lunes</div>
       <div class="insight-sub">Los lunes bajan 34% en ventas nocturnas</div>
     </div>
   </aside>
+
 </div>
+
 <script src="../../assets/mesaia.js"></script>
 <script>
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -462,10 +851,8 @@ function renderCart() {
 let pendingItemId = null;
 
 function promptAddToCart(itemId) {
-  // Agregar directo al carrito — sin modal de notas
   addToCart(itemId, '');
 
-  // Feedback visual: animar el ícono del carrito
   const cartLabel = document.querySelector('.cart-label') || document.getElementById('cartContainer');
   if (cartLabel) {
     cartLabel.style.transition = 'transform 0.2s';
@@ -494,7 +881,6 @@ function cancelAddToCart() {
 function setOrderType(type) {
   state.orderType = type;
 
-  // Actualizar UI de botones
   document.querySelectorAll('.order-type-btn').forEach(btn => {
     btn.classList.remove('active');
     if (btn.dataset.type === type) btn.classList.add('active');
@@ -508,7 +894,6 @@ function setOrderType(type) {
     if (addrSection) addrSection.style.display = 'none';
   }
 
-  // Informar al bot
   const messages = {
     mesa: 'Voy a pedir para comer en el restaurante',
     llevar: 'Voy a pedir para llevar',
@@ -534,13 +919,9 @@ function confirmOrder() {
   state.orderNum = Math.floor(1000 + Math.random() * 9000);
   state.orderStatus = 'recibido';
 
-  // Iniciar tracker de estatus
   startOrderTracker();
-
-  // Actualizar UI
   renderOrderTracker();
 
-  // Enviar mensaje al bot
   const typeText = state.orderType === 'mesa' ? `mesa ${state.tableNum || '5'}` :
                    state.orderType === 'llevar' ? 'para llevar' : `domicilio a ${state.address}`;
 
@@ -565,7 +946,7 @@ function startOrderTracker() {
       clearInterval(state.orderTimer);
       state.orderTimer = null;
     }
-  }, 5000); // 5 segundos por etapa (demo)
+  }, 5000);
 }
 
 function renderOrderTracker() {
@@ -582,18 +963,20 @@ function renderOrderTracker() {
   const currentIndex = stages.findIndex(s => s.id === state.orderStatus);
 
   trackerContainer.innerHTML = `
-    <div class="tracker-header">
-      <span class="tracker-title">Pedido #${state.orderNum}</span>
-      <span class="tracker-status status-${state.orderStatus}">${state.orderStatus.toUpperCase()}</span>
-    </div>
-    <div class="tracker-stages">
-      ${stages.map((stage, i) => `
-        <div class="tracker-stage ${i <= currentIndex ? 'active' : ''}">
-          <div class="stage-icon">${stage.icon}</div>
-          <div class="stage-label">${stage.label}</div>
-          ${i < stages.length - 1 ? '<div class="stage-line"></div>' : ''}
-        </div>
-      `).join('')}
+    <div class="order-tracker">
+      <div class="tracker-header">
+        <span class="tracker-title">Pedido #${state.orderNum}</span>
+        <span class="tracker-status status-${state.orderStatus}">${state.orderStatus.toUpperCase()}</span>
+      </div>
+      <div class="tracker-stages">
+        ${stages.map((stage, i) => `
+          <div class="tracker-stage ${i <= currentIndex ? 'active' : ''}">
+            <div class="stage-icon">${stage.icon}</div>
+            <div class="stage-label">${stage.label}</div>
+            ${i < stages.length - 1 ? '<div class="stage-line"></div>' : ''}
+          </div>
+        `).join('')}
+      </div>
     </div>
   `;
 }
@@ -604,11 +987,9 @@ function renderOrderTracker() {
 function toggleDietaryFilter(filter) {
   state.dietaryFilters[filter] = !state.dietaryFilters[filter];
 
-  // Actualizar UI del botón
   const btn = document.querySelector(`[data-dietary="${filter}"]`);
   if (btn) btn.classList.toggle('active', state.dietaryFilters[filter]);
 
-  // Filtrar menú visible
   filterMenuItems();
 }
 
@@ -623,13 +1004,11 @@ function filterMenuItems() {
 
     if (!item) return;
 
-    // Si no hay filtros activos, mostrar todo
     if (activeFilters.length === 0) {
       el.style.display = 'flex';
       return;
     }
 
-    // Mostrar solo si tiene AL MENOS uno de los tags activos
     const matches = activeFilters.some(f => item.dietary.includes(f));
     el.style.display = matches ? 'flex' : 'none';
   });
@@ -644,7 +1023,6 @@ function makeReservation(data) {
     folio: `RSV-${Date.now().toString().slice(-6)}`
   };
 
-  // Mostrar en dashboard
   const resContainer = document.getElementById('reservationDisplay');
   if (resContainer) {
     resContainer.innerHTML = `
@@ -663,19 +1041,18 @@ function makeReservation(data) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// ACTUALIZAR PROMPT AL ENVIAR MENSAJES
+// ACTUALIZAR PROMPT
 // ═══════════════════════════════════════════════════════════════════════════════
 function updateOrderPrompt() {
   // El system prompt se actualiza automáticamente al ser función
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// PARSER DE COMANDOS DE LA IA — ejecuta acciones y devuelve texto limpio
+// PARSER DE COMANDOS DE LA IA
 // ═══════════════════════════════════════════════════════════════════════════════
 function parseAICommands(reply) {
   let clean = reply;
 
-  // [ADD:1,2,3] → agrega cada id al carrito
   clean = clean.replace(/\[ADD:([0-9,\s]+)\]/gi, (_, ids) => {
     ids.split(',').map(s => parseInt(s.trim())).filter(n => n > 0).forEach(id => {
       addToCart(id, '');
@@ -683,7 +1060,6 @@ function parseAICommands(reply) {
     return '';
   });
 
-  // [REMOVE:id] → quita del carrito
   clean = clean.replace(/\[REMOVE:([0-9,\s]+)\]/gi, (_, ids) => {
     ids.split(',').map(s => parseInt(s.trim())).filter(n => n > 0).forEach(id => {
       removeFromCart(id);
@@ -691,7 +1067,6 @@ function parseAICommands(reply) {
     return '';
   });
 
-  // [CONFIRM] → confirma el pedido
   if (/\[CONFIRM\]/i.test(clean)) {
     clean = clean.replace(/\[CONFIRM\]/gi, '');
     if (state.cart.length > 0) confirmOrder();
@@ -704,14 +1079,12 @@ function parseAICommands(reply) {
 // INICIALIZACIÓN
 // ═══════════════════════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-  // Inicializar MesaIA con system prompt dinámico y parser de comandos
   MesaIA.init({
     system: getSystemPrompt,
     welcomeMessage: `¡Bienvenido a **La Mesa Bonita**! 🌮\n\nSoy Chef IA. ¿En qué te ayudo hoy?\n\nPuedes:\n• Agregar items al carrito con el botón **+**\n• Filtrar por 🥦 Vegetariano | 🌾 Sin gluten | 🌶️ Picante\n• Hacer una reservación\n• Pedir para mesa, llevar o domicilio`,
     onReply: parseAICommands
   });
 
-  // Bind de botones de agregar al carrito
   document.querySelectorAll('.menu-item').forEach(el => {
     const itemId = el.dataset.itemId;
     const plusBtn = el.querySelector('.plus-btn');
@@ -724,14 +1097,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Bind de filtros dietéticos
   document.querySelectorAll('.dietary-filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       toggleDietaryFilter(btn.dataset.dietary);
     });
   });
 
-  // Render inicial del carrito
   renderCart();
 });
 </script>
