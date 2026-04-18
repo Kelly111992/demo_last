@@ -1007,6 +1007,7 @@ REGLAS OBLIGATORIAS:
 - Los comandos son invisibles para el cliente, el sistema los ejecuta automáticamente
 - Si el cliente pide 2 de lo mismo, repite el id: [ADD:3,3]
 - Si pide varios platillos juntos, ponlos en un solo comando: [ADD:1,4,7]
+- Si NO hay nada que agregar al carrito, NO incluyas ningún comando [ADD:]
 
 Respuestas cortas máx 2 oraciones. Sé cálido y elegante.`;
 }
@@ -1234,18 +1235,23 @@ function updateCartBadge() {
 
 function parseAICommands(reply) {
   let clean = reply;
-  clean = clean.replace(/\[ADD:([0-9,\s]+)\]/gi, (_, ids) => {
+  // Captura [ADD:1], [ADD:1,2,3] — con IDs válidos
+  clean = clean.replace(/\[ADD:([0-9,\s]*)\]/gi, (_, ids) => {
     ids.split(',').map(s => parseInt(s.trim())).filter(n => n > 0).forEach(id => addToCart(id, ''));
     return '';
   });
-  clean = clean.replace(/\[REMOVE:([0-9,\s]+)\]/gi, (_, ids) => {
+  // Captura [REMOVE:id]
+  clean = clean.replace(/\[REMOVE:([0-9,\s]*)\]/gi, (_, ids) => {
     ids.split(',').map(s => parseInt(s.trim())).filter(n => n > 0).forEach(id => removeFromCart(id));
     return '';
   });
+  // Captura [CONFIRM]
   if (/\[CONFIRM\]/i.test(clean)) {
     clean = clean.replace(/\[CONFIRM\]/gi, '');
     if (state.cart.length > 0) confirmOrder();
   }
+  // Limpia cualquier comando residual malformado
+  clean = clean.replace(/\[(?:ADD|REMOVE|CONFIRM)[^\]]*\]/gi, '');
   return clean.trim();
 }
 
