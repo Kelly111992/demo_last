@@ -849,11 +849,11 @@ body::before {
     </div>
     <div class="chat-messages" id="chatMessages"></div>
     <div class="quick-replies" id="quickReplies">
-      <button class="qr-btn" onclick="sendQuick('¿Qué tienen de comer hoy?')">Ver menú</button>
-      <button class="qr-btn" onclick="sendQuick('Quiero hacer un pedido a domicilio')">Pedir</button>
+      <button class="qr-btn" onclick="sendQuick('Quiero 2 tacos y una michelada')">2 tacos + michelada</button>
+      <button class="qr-btn" onclick="sendQuick('Una birria de res con agua de jamaica')">Birria + agua fresca</button>
+      <button class="qr-btn" onclick="sendQuick('¿Qué me recomiendas para cenar hoy?')">¿Qué recomiendas?</button>
       <button class="qr-btn" onclick="sendQuick('Quiero hacer una reservación para esta noche')">Reservación</button>
-      <button class="qr-btn" onclick="sendQuick('¿Cuáles son sus horarios?')">Info</button>
-      <button class="qr-btn" onclick="sendQuick('¿Qué me recomiendas para cenar?')">Recomendación</button>
+      <button class="qr-btn" onclick="sendQuick('¿Hacen domicilio? ¿Cuánto tarda?')">Domicilio</button>
     </div>
     <div class="chat-input-area">
       <textarea class="chat-input" id="chatInput" placeholder="Escríbele al agente..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
@@ -994,14 +994,21 @@ ESTADO ACTUAL DEL CLIENTE:
 - ${orderInfo}
 - ${reservationInfo}
 
-COMANDOS DE ACCIÓN:
-[ADD:3] para agregar 1 Pozole
-[ADD:3,3] para agregar 2 Pozoles
-[ADD:2,4,7] para agregar varios
-[REMOVE:5] para quitar del carrito
-[CONFIRM] cuando el cliente confirma el pedido
+COMANDOS DE ACCIÓN (MUY IMPORTANTE — sin esto el sistema no funciona):
+Cuando el cliente pida algo, incluye AL FINAL del mensaje el comando correspondiente:
+[ADD:1] agrega 1 Birria
+[ADD:1,1] agrega 2 Birrias
+[ADD:2,4,7] agrega Arrachera + Tacos + Agua en un solo mensaje
+[REMOVE:5] quita Tostadas del carrito
+[CONFIRM] cuando el cliente confirme el pedido
 
-Respuestas cortas máx 3 oraciones.`;
+REGLAS OBLIGATORIAS:
+- NUNCA digas "te agregué X" o "lo agrego" sin incluir el comando [ADD:id]
+- Los comandos son invisibles para el cliente, el sistema los ejecuta automáticamente
+- Si el cliente pide 2 de lo mismo, repite el id: [ADD:3,3]
+- Si pide varios platillos juntos, ponlos en un solo comando: [ADD:1,4,7]
+
+Respuestas cortas máx 2 oraciones. Sé cálido y elegante.`;
 }
 
 function addToCart(itemId, notes = '') {
