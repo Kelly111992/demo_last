@@ -1438,8 +1438,13 @@ function parseAICommands(reply) {
     clean = clean.replace(/\[CONFIRM\]/gi, '');
     if (state.cart.length > 0) confirmOrder();
   }
+  // [RESUMEN] → show order confirmation ticket in chat
+  if (/\[RESUMEN\]/i.test(clean)) {
+    clean = clean.replace(/\[RESUMEN\]/gi, '');
+    setTimeout(() => renderOrderTicket(), 50);
+  }
   // Limpia cualquier comando residual malformado
-  clean = clean.replace(/\[(?:ADD|REMOVE|CONFIRM)[^\]]*\]/gi, '');
+  clean = clean.replace(/\[(?:ADD|REMOVE|CONFIRM|RESUMEN)[^\]]*\]/gi, '');
   clean = clean.trim();
   dbSaveMessage('assistant', clean);
   return clean;
