@@ -1342,6 +1342,85 @@ function updateCartBadge() {
   else { badge.classList.remove('visible'); }
 }
 
+function renderOrderTicket() {
+  if (state.cart.length === 0) return;
+
+  // Remove any previous ticket
+  document.querySelector('.order-ticket-wrap')?.remove();
+
+  const itemRows = state.cart.map(item => {
+    const subtotal = item.price * item.qty;
+    return `
+      <div class="ticket-item">
+        <span class="ticket-item-name">${item.qty}× ${item.name}</span>
+        <span class="ticket-item-dots"></span>
+        <span class="ticket-item-price">$${subtotal}</span>
+      </div>`;
+  }).join('');
+
+  const total = getCartTotal();
+  const botEmoji = document.getElementById('botAvatarEmoji')?.textContent || '🤖';
+  const time = new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+
+  const msgDiv = document.createElement('div');
+  msgDiv.className = 'msg bot order-ticket-wrap';
+  msgDiv.innerHTML = `
+    <div class="msg-avatar">${botEmoji}</div>
+    <div class="msg-content">
+      <div class="order-ticket">
+        <div class="ticket-header"><span>🧾</span> Tu pedido</div>
+        <div class="ticket-items">${itemRows}</div>
+        <div class="ticket-divider"></div>
+        <div class="ticket-total">
+          <span class="ticket-total-label">Total</span>
+          <span class="ticket-total-amount">$${total}</span>
+        </div>
+        <div class="ticket-actions">
+          <button class="ticket-btn-confirm" onclick="confirmFromTicket(this.closest('.order-ticket-wrap'))">✓ Confirmar pedido</button>
+          <button class="ticket-btn-edit" onclick="dismissTicket(this.closest('.order-ticket-wrap'))">Editar</button>
+        </div>
+      </div>
+      <div class="msg-time">${time}</div>
+    </div>`;
+
+  const container = document.getElementById('chatMessages');
+  if (!container) return;
+  container.appendChild(msgDiv);
+  container.scrollTop = container.scrollHeight;
+}
+
+function confirmFromTicket(ticketWrap) {
+  confirmOrder();
+
+  const botEmoji = document.getElementById('botAvatarEmoji')?.textContent || '🤖';
+  const time = new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+
+  const receipt = document.createElement('div');
+  receipt.className = 'msg bot';
+  receipt.innerHTML = `
+    <div class="msg-avatar">${botEmoji}</div>
+    <div class="msg-content">
+      <div class="order-receipt">
+        <div class="receipt-folio">Pedido #${state.orderNum}</div>
+        <div class="receipt-status">Recibido — En preparación 👨‍🍳</div>
+        <div class="receipt-detail">Tiempo estimado: 15–20 min</div>
+      </div>
+      <div class="msg-time">${time}</div>
+    </div>`;
+
+  if (ticketWrap) {
+    ticketWrap.replaceWith(receipt);
+  } else {
+    document.getElementById('chatMessages')?.appendChild(receipt);
+  }
+  document.getElementById('chatMessages').scrollTop = 99999;
+}
+
+function dismissTicket(ticketWrap) {
+  if (ticketWrap) ticketWrap.remove();
+  ClaveAI.addBubble('Sin problema, dime qué quieres cambiar.', 'bot');
+}
+
 function parseAICommands(reply) {
   let clean = reply;
   // Captura [ADD:1], [ADD:1,2,3] — con IDs válidos
