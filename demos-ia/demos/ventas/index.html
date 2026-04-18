@@ -407,7 +407,7 @@ function calcROI() {
     Payback: ${payback} mes(es)
   `;
 
-  MesaIA.send(`Con ${employees} empleados ahorrando ${Math.round(automatedHours)} horas al mes, ¿cómo se compara eso con lo que pagan actualmente en tiempo?`);
+  ClaveAI.send(`Con ${employees} empleados ahorrando ${Math.round(automatedHours)} horas al mes, ¿cómo se compara eso con lo que pagan actualmente en tiempo?`);
 }
 
 function generateProposal() {
@@ -457,7 +457,7 @@ function renderProposal() {
 
 function downloadProposal() {
   if (!state.proposal) return;
-  MesaIA.send(`Quiero la propuesta ${state.proposal.id} en PDF. ¿Cómo me la hacen llegar?`);
+  ClaveAI.send(`Quiero la propuesta ${state.proposal.id} en PDF. ¿Cómo me la hacen llegar?`);
 }
 
 function renderLead() {
@@ -537,7 +537,7 @@ function onBotReply(reply) {
 // ═══════════════════════════════════════════════════════════════════
 // INICIALIZACIÓN
 // ═══════════════════════════════════════════════════════════════════
-MesaIA.init({
+ClaveAI.init({
   system: getSystemPrompt,
   onReply: onBotReply,
   welcomeMessage: `¡Hola! Soy **Alex**, tu asesor comercial de IA 👋\n\nAyudo a negocios a implementar inteligencia artificial para vender más, atender mejor y automatizar lo que hoy les quita tiempo.\n\nPuedes:\n• Explorar **casos de éxito** por industria en la izquierda\n• Seleccionar **módulos** y ver el costo de tu solución\n• **Calcular tu ROI** con la calculadora del dashboard\n\n¿Me cuentas a qué se dedica tu negocio?`

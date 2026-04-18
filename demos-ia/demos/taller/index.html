@@ -369,7 +369,7 @@ function confirmQuote() {
   if (state.services.length === 0) return;
   const svcs = state.services.map(s => s.name).join(', ');
   const total = state.services.reduce((s, i) => s + i.price, 0);
-  MesaIA.send(`Quiero agendar los servicios: ${svcs}. Total estimado $${total.toLocaleString('es-MX')}. ${state.vehicle ? 'Es para mi ' + state.vehicle.brand + ' ' + state.vehicle.model + ' ' + state.vehicle.year + '.' : ''} ¿Qué fechas tienen disponibles?`);
+  ClaveAI.send(`Quiero agendar los servicios: ${svcs}. Total estimado $${total.toLocaleString('es-MX')}. ${state.vehicle ? 'Es para mi ' + state.vehicle.brand + ' ' + state.vehicle.model + ' ' + state.vehicle.year + '.' : ''} ¿Qué fechas tienen disponibles?`);
 }
 
 function renderVehicle() {
@@ -516,7 +516,7 @@ function extractVehicleFromContext() {
 // ═══════════════════════════════════════════════════════════════════
 // INICIALIZACIÓN
 // ═══════════════════════════════════════════════════════════════════
-MesaIA.init({
+ClaveAI.init({
   system: getSystemPrompt,
   onReply: onBotReply,
   welcomeMessage: `¡Qué onda! Bienvenido a **AutoPro Taller** 🔧\n\nSoy Mech, tu asesor. Para atenderte mejor:\n\n1. **Registra tu vehículo** — dime marca, modelo y año\n2. **Cuéntame los síntomas** o el servicio que necesitas\n3. Selecciona servicios en la lista y **agenda tu cita**\n\nTodos nuestros trabajos tienen **garantía de 3 meses** ✅`

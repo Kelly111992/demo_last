@@ -512,7 +512,7 @@ function suggestSpecialty(symptoms) {
 }
 
 function startTriage() {
-  MesaIA.send('Voy a hacerte unas preguntas para orientarte mejor. ¿Qué síntomas tienes?');
+  ClaveAI.send('Voy a hacerte unas preguntas para orientarte mejor. ¿Qué síntomas tienes?');
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -583,7 +583,7 @@ function selectSlot(time) {
     if (btn.textContent === time) btn.classList.add('selected');
   });
 
-  MesaIA.send(`Quiero agendar cita para las ${time}`);
+  ClaveAI.send(`Quiero agendar cita para las ${time}`);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -615,7 +615,7 @@ function confirmAppointment() {
 
   renderAppointment();
 
-  MesaIA.send(`Confirmo mi cita para ${state.specialty} hoy a las ${state.slot.time}. Mi nombre es ${state.patient.name}.`);
+  ClaveAI.send(`Confirmo mi cita para ${state.specialty} hoy a las ${state.slot.time}. Mi nombre es ${state.patient.name}.`);
 }
 
 function renderAppointment() {
@@ -688,7 +688,7 @@ function selectSpecialty(name) {
   // Mostrar slots disponibles
   renderAvailableSlots();
 
-  MesaIA.send(`Me interesa la especialidad de ${name}`);
+  ClaveAI.send(`Me interesa la especialidad de ${name}`);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -696,7 +696,7 @@ function selectSpecialty(name) {
 // ═══════════════════════════════════════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   // Inicializar MesaIA con system prompt dinámico
-  MesaIA.init({
+  ClaveAI.init({
     system: getSystemPrompt,
     welcomeMessage: `Hola, bienvenido a **Clínica Salud+** 🏥\n\nSoy tu asistente virtual. Puedo ayudarte a:\n• Agendar una cita médica\n• Orientarte sobre qué especialidad necesitas\n• Consultar precios y horarios\n• Ver resultados de laboratorio\n\n¿En qué te puedo ayudar hoy?`
   });

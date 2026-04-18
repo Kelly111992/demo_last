@@ -325,7 +325,7 @@ function selectPlan(planId) {
   state.plan = planId;
   document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
   document.querySelector(`[data-plan="${planId}"]`).classList.add('selected');
-  MesaIA.send(`Quiero el plan ${PLAN_LABELS[planId].name} (${PLAN_LABELS[planId].price}). ¿Cómo me inscribo?`);
+  ClaveAI.send(`Quiero el plan ${PLAN_LABELS[planId].name} (${PLAN_LABELS[planId].price}). ¿Cómo me inscribo?`);
 }
 
 function reserveClass(id, name, time, spots, btn) {
@@ -345,7 +345,7 @@ function reserveClass(id, name, time, spots, btn) {
   btn.classList.add('booked');
   btn.onclick = null;
 
-  MesaIA.send(`Reservé ${name} de las ${time}. ¡Listo!`);
+  ClaveAI.send(`Reservé ${name} de las ${time}. ¡Listo!`);
 }
 
 function setGoal(goal) {
@@ -555,7 +555,7 @@ function onBotReply(reply) {
 // ═══════════════════════════════════════════════════════════════════
 // INICIALIZACIÓN
 // ═══════════════════════════════════════════════════════════════════
-MesaIA.init({
+ClaveAI.init({
   system: getSystemPrompt,
   onReply: onBotReply,
   welcomeMessage: `¡Bienvenido a **PowerZone Gym**! 💪\n\nSoy Max, tu Coach IA. Para empezar bien — ¿cuál es tu objetivo principal?\n\n🔥 **Bajar peso** · 💪 **Ganar músculo** · 🏃 **Resistencia** · ❤️ **Salud general**\n\nElige una opción o escríbeme directamente.`

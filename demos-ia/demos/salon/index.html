@@ -352,7 +352,7 @@ function selectStylist(id, name, specialty, rating) {
   document.querySelectorAll('.stylist-card').forEach(c => c.classList.remove('selected'));
   document.querySelector(`[data-stylist="${id}"]`).classList.add('selected');
   renderAppointmentBuilder();
-  MesaIA.send(`Quiero que me atienda ${name}, especialista en ${specialty}.`);
+  ClaveAI.send(`Quiero que me atienda ${name}, especialista en ${specialty}.`);
 }
 
 function toggleService(id, name, price, time) {
@@ -376,13 +376,13 @@ function toggleService(id, name, price, time) {
 }
 
 function requestBridalPackage() {
-  MesaIA.send('Quiero información sobre el paquete novia. Tengo una boda próximamente y me gustaría cotizar todos los servicios necesarios.');
+  ClaveAI.send('Quiero información sobre el paquete novia. Tengo una boda próximamente y me gustaría cotizar todos los servicios necesarios.');
 }
 
 function bookAppointment() {
   if (!state.stylist || state.services.length === 0) return;
   const svcs = state.services.map(s => s.name).join(', ');
-  MesaIA.send(`Quiero agendar mi cita con ${state.stylist.name} para los servicios: ${svcs}. Total: $${state.totalPrice}. ¿Qué horarios tienen disponibles?`);
+  ClaveAI.send(`Quiero agendar mi cita con ${state.stylist.name} para los servicios: ${svcs}. Total: $${state.totalPrice}. ¿Qué horarios tienen disponibles?`);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -462,7 +462,7 @@ function onBotReply(reply) {
 // ═══════════════════════════════════════════════════════════════════
 // INICIALIZACIÓN
 // ═══════════════════════════════════════════════════════════════════
-MesaIA.init({
+ClaveAI.init({
   system: getSystemPrompt,
   onReply: onBotReply,
   welcomeMessage: `¡Hola, bienvenida a **Studio Glam**! ✨\n\nSoy Luna, tu asistente. Puedo ayudarte a:\n\n• Elegir tu **estilista** y **servicios** (usa los checkboxes de la izquierda)\n• Agendar tu **cita** con el mejor horario\n• Hacer una **consulta de color** personalizada\n• Cotizar el **paquete novia** 👰\n\n¿En qué te puedo consentir hoy? 💅`

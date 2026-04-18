@@ -363,7 +363,7 @@ function toggleFav(e, id, name, price, icon) {
     btn.textContent = '♥';
     // Marcar tarjeta
     btn.closest('.prop-card').classList.add('fav');
-    MesaIA.send(`Guardé "${name}" en mis favoritos.`);
+    ClaveAI.send(`Guardé "${name}" en mis favoritos.`);
   }
   renderFavorites();
 }
@@ -404,7 +404,7 @@ function calcMortgage() {
   document.getElementById('mortResult').style.display = 'block';
   document.getElementById('mortMonthly').textContent = `$${Math.round(monthly).toLocaleString('es-MX')}`;
 
-  MesaIA.send(`Para una propiedad de $${price.toLocaleString('es-MX')} con ${downPct}% de enganche a ${years} años, ¿qué me recomiendas?`);
+  ClaveAI.send(`Para una propiedad de $${price.toLocaleString('es-MX')} con ${downPct}% de enganche a ${years} años, ¿qué me recomiendas?`);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -468,7 +468,7 @@ function onBotReply(reply) {
 // ═══════════════════════════════════════════════════════════════════
 // INICIALIZACIÓN
 // ═══════════════════════════════════════════════════════════════════
-MesaIA.init({
+ClaveAI.init({
   system: getSystemPrompt,
   onReply: onBotReply,
   welcomeMessage: `Bienvenido a **Apex Realty** 🏠\n\nSoy Valentina, tu asesora inmobiliaria. Tengo acceso a más de **80 propiedades** en la ZMG — casas, departamentos, preventa e inversión.\n\nPuedes filtrar las propiedades en la izquierda, guardar tus favoritas con ♡, o calcular tu mensualidad hipotecaria.\n\n¿Estás buscando comprar, rentar o invertir?`

@@ -933,6 +933,8 @@ body::before {
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../assets/supabase.js"></script>
 <script src="../../assets/mesaia.js"></script>
 <script>
 let state = {
@@ -1105,7 +1107,7 @@ function setOrderType(type) {
   const addrMobile = document.getElementById('addressSectionMobile');
   if (addrMobile) addrMobile.style.display = show ? 'block' : 'none';
   const messages = { mesa: 'Voy a pedir para comer en el restaurante', llevar: 'Voy a pedir para llevar', domicilio: 'Voy a pedir a domicilio' };
-  if (messages[type]) MesaIA.send(messages[type]);
+  if (messages[type]) ClaveAI.send(messages[type]);
 }
 
 function confirmOrder() {
@@ -1114,11 +1116,12 @@ function confirmOrder() {
   if (state.orderType === 'domicilio' && !state.address.trim()) { alert('Por favor ingresa la dirección de entrega'); return; }
   state.orderNum = Math.floor(1000 + Math.random() * 9000);
   state.orderStatus = 'recibido';
+  dbSavePedido();
   startOrderTracker();
   renderOrderTracker();
   const typeText = state.orderType === 'mesa' ? `mesa ${state.tableNum || '5'}` :
                    state.orderType === 'llevar' ? 'para llevar' : `domicilio a ${state.address}`;
-  MesaIA.send(`Confirmo mi pedido: ${state.cart.map(i => `${i.qty}x ${i.name}`).join(', ')}. Total $${getCartTotal()}. Es ${typeText}.`);
+  ClaveAI.send(`Confirmo mi pedido: ${state.cart.map(i => `${i.qty}x ${i.name}`).join(', ')}. Total $${getCartTotal()}. Es ${typeText}.`);
 }
 
 function startOrderTracker() {
@@ -1181,6 +1184,7 @@ function filterMenuItems() {
 
 function makeReservation(data) {
   state.reservation = { ...data, folio: `RSV-${Date.now().toString().slice(-6)}` };
+  dbSaveReservacion(state.reservation);
   const resContainer = document.getElementById('reservationDisplay');
   if (resContainer) {
     resContainer.innerHTML = `
@@ -1194,7 +1198,7 @@ function makeReservation(data) {
       </div>
     `;
   }
-  MesaIA.send(`Quiero hacer una reservación para ${state.reservation.people} personas el ${state.reservation.date} a las ${state.reservation.time}${state.reservation.occasion ? ', ocasión: ' + state.reservation.occasion : ''}`);
+  ClaveAI.send(`Quiero hacer una reservación para ${state.reservation.people} personas el ${state.reservation.date} a las ${state.reservation.time}${state.reservation.occasion ? ', ocasión: ' + state.reservation.occasion : ''}`);
 }
 
 function filterSearch(query) {
@@ -1252,11 +1256,65 @@ function parseAICommands(reply) {
   }
   // Limpia cualquier comando residual malformado
   clean = clean.replace(/\[(?:ADD|REMOVE|CONFIRM)[^\]]*\]/gi, '');
-  return clean.trim();
+  clean = clean.trim();
+  dbSaveMessage('assistant', clean);
+  return clean;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SUPABASE — Guardar datos en la base de datos
+// ═══════════════════════════════════════════════════════════════════════════════
+const SESSION_ID = crypto.randomUUID();
+
+async function dbSaveMessage(rol, mensaje) {
+  try {
+    await db.from('conversaciones').insert({
+      sesion_id: SESSION_ID,
+      demo: 'restaurante',
+      rol,
+      mensaje
+    });
+  } catch (e) { console.warn('ClaveAI DB:', e.message); }
+}
+
+async function dbSavePedido() {
+  try {
+    const { data, error } = await db.from('pedidos').insert({
+      numero: String(state.orderNum),
+      tipo: state.orderType,
+      direccion: state.address || null,
+      total: getCartTotal(),
+      estado: 'recibido'
+    }).select().single();
+
+    if (error || !data) { console.warn('ClaveAI DB pedido:', error?.message); return; }
+
+    const items = state.cart.map(i => ({
+      pedido_id: data.id,
+      item_id: i.id,
+      nombre: i.name,
+      precio: i.price,
+      cantidad: i.qty,
+      notas: i.notes || null
+    }));
+    await db.from('pedido_items').insert(items);
+  } catch (e) { console.warn('ClaveAI DB items:', e.message); }
+}
+
+async function dbSaveReservacion(rsv) {
+  try {
+    await db.from('reservaciones').insert({
+      folio: rsv.folio,
+      personas: parseInt(rsv.people) || 1,
+      fecha: rsv.date,
+      hora: rsv.time,
+      ocasion: rsv.occasion || null
+    });
+  } catch (e) { console.warn('ClaveAI DB reservacion:', e.message); }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  MesaIA.init({
+  ClaveAI.init({
     system: getSystemPrompt,
     welcomeMessage: `¡Bienvenido a **La Mesa Bonita**!\n\nSoy Chef IA. ¿En qué te ayudo hoy?\n\nPuedes:\n• Agregar items al carrito con el botón **+**\n• Filtrar por Vegetariano, Sin gluten o Picante\n• Hacer una reservación\n• Pedir para mesa, llevar o domicilio`,
     onReply: parseAICommands
@@ -1275,6 +1333,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   renderCart();
+
+  // Interceptar mensajes del usuario para guardar en DB
+  const _origSendMessage = window.sendMessage;
+  window.sendMessage = function() {
+    const txt = document.getElementById('chatInput')?.value?.trim();
+    if (txt) dbSaveMessage('user', txt);
+    _origSendMessage();
+  };
+  const _origSendQuick = window.sendQuick;
+  window.sendQuick = function(text) {
+    dbSaveMessage('user', text);
+    _origSendQuick(text);
+  };
 
   if (window.innerWidth <= 768) {
     const searchWrap = document.getElementById('mobileSearchWrap');

@@ -350,7 +350,7 @@ function selectRoom(id, price, name) {
   document.querySelectorAll('.room-card').forEach(c => c.classList.remove('selected'));
   document.querySelector(`[data-room="${id}"]`).classList.add('selected');
   renderBooking();
-  MesaIA.send(`Me interesa la ${name} a $${price.toLocaleString('es-MX')}/noche.`);
+  ClaveAI.send(`Me interesa la ${name} a $${price.toLocaleString('es-MX')}/noche.`);
 }
 
 function updateDates() {
@@ -401,7 +401,7 @@ function calculateTotal() {
 }
 
 function requestConcierge(service) {
-  MesaIA.send(`Necesito ${service} en mi habitación, por favor.`);
+  ClaveAI.send(`Necesito ${service} en mi habitación, por favor.`);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -461,7 +461,7 @@ function confirmBooking() {
     confirmed: true
   };
   renderBooking();
-  MesaIA.send(`Confirmo la reservación: ${state.room.name}, ${state.dates.checkin} al ${state.dates.checkout} (${state.dates.nights} noches). ${state.extras.length > 0 ? 'Con extras: ' + state.extras.map(e => EXTRAS_CONFIG[e]?.name).join(', ') + '.' : ''} Total: $${state.reservation.total.toLocaleString('es-MX')}.`);
+  ClaveAI.send(`Confirmo la reservación: ${state.room.name}, ${state.dates.checkin} al ${state.dates.checkout} (${state.dates.nights} noches). ${state.extras.length > 0 ? 'Con extras: ' + state.extras.map(e => EXTRAS_CONFIG[e]?.name).join(', ') + '.' : ''} Total: $${state.reservation.total.toLocaleString('es-MX')}.`);
 }
 
 function onBotReply(reply) {
@@ -489,7 +489,7 @@ document.getElementById('checkinDate').value = checkinDefault.toISOString().spli
 document.getElementById('checkoutDate').value = checkoutDefault.toISOString().split('T')[0];
 updateDates();
 
-MesaIA.init({
+ClaveAI.init({
   system: getSystemPrompt,
   onReply: onBotReply,
   welcomeMessage: `Bienvenido a **Hotel Cielo Boutique** 🏨✦\n\nSoy Sofía, su concierge personal. Es un placer atenderle.\n\nPuedo ayudarle con **reservaciones**, información sobre nuestras **habitaciones y servicios**, o cualquier consulta durante su estadía.\n\n¿En qué le puedo servir?`

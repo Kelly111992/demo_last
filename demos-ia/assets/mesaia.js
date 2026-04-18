@@ -1,9 +1,9 @@
 /**
- * mesaIA — SDK compartido para todos los demos
+ * ClaveAI — SDK compartido para todos los demos
  * Maneja llamadas al backend, historial de conversación y UI del chat
  */
 
-const MesaIA = (() => {
+const ClaveAI = (() => {
 
   // ── Configuración ────────────────────────────
   const API_URL = window.location.hostname === 'localhost'
@@ -71,7 +71,7 @@ const MesaIA = (() => {
 
     } catch (err) {
       removeTyping();
-      console.error('MesaIA error:', err);
+      console.error('ClaveAI error:', err);
       addBubble('⚠️ Error: ' + err.message, 'bot');
     }
 
@@ -150,14 +150,14 @@ function sendMessage() {
   const input = document.getElementById('chatInput');
   const text = input?.value?.trim();
   if (text) {
-    MesaIA.send(text);
+    ClaveAI.send(text);
     input.value = '';
     input.style.height = 'auto';
   }
 }
 
 function sendQuick(text) {
-  MesaIA.send(text);
+  ClaveAI.send(text);
 }
 
 function handleKey(e) {
@@ -171,3 +171,6 @@ function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
 }
+
+// Alias de compatibilidad — todas las demos existentes siguen funcionando
+const MesaIA = ClaveAI;
