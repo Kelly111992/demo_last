@@ -150,8 +150,9 @@ body::before{
 .item-desc{font-size:10px;color:var(--muted);margin-top:1px}
 .item-price{
   font-family:var(--font-mono);
-  font-size:11.5px;font-weight:500;
-  color:var(--accent);white-space:nowrap;margin-right:6px;
+  font-size:12px;font-weight:600;
+  color:var(--accent);white-space:nowrap;
+  margin-top:3px;
 }
 .plus-btn{
   width:26px;height:26px;border-radius:50%;
@@ -492,238 +493,202 @@ body::before{
 }
 .modal-btn.confirm:hover{filter:brightness(1.1)}
 
-/* ── MOBILE NAV (oculta en desktop) ── */
+/* ── MOBILE NAV — oculto en desktop ── */
 .mobile-nav{display:none}
+.mobile-search-wrap{display:none}
+.sidebar-scroll{display:contents} /* desktop: sin efecto */
 
 @media(max-width:768px){
-  /* App ocupa el espacio entre header y bottom nav */
+
+  /* ── LAYOUT BASE ── */
   .app{
     grid-template-columns:1fr;
-    height:calc(100vh - 58px - 58px);
+    height:calc(100vh - 58px - 60px);
     position:relative;
+    overflow:hidden;
   }
 
-  /* Cada panel ocupa todo el espacio, solo el activo es visible */
+  /* Paneles apilados — solo el activo visible */
   .sidebar,.chat-main,.dashboard{
     position:absolute;
-    inset:0;
+    top:0;left:0;right:0;bottom:0;
     display:none;
-    overflow-y:auto;
   }
-  .sidebar.mobile-active{display:block}
-  .chat-main.mobile-active{display:flex;flex-direction:column}
-  .dashboard.mobile-active{display:block}
+  .sidebar.mobile-active{
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .chat-main.mobile-active{
+    display:flex;
+    flex-direction:column;
+  }
+  .dashboard.mobile-active{
+    display:block;
+    overflow-y:auto;
+    padding:16px 14px 20px;
+  }
 
-  /* El sidebar en móvil necesita padding-bottom para no tapar contenido */
-  .sidebar{padding-bottom:12px}
-  .dashboard{padding-bottom:12px}
-
-  /* El chat necesita que el input quede fijo arriba del nav */
-  .chat-main .chat-messages{flex:1;overflow-y:auto}
-
-  /* Bottom navigation */
+  /* ── BOTTOM NAV ── */
   .mobile-nav{
     display:flex;
     position:fixed;
     bottom:0;left:0;right:0;
-    height:58px;
-    background:rgba(5,3,2,0.97);
+    height:60px;
+    background:rgba(5,3,2,0.98);
     backdrop-filter:blur(24px);
     -webkit-backdrop-filter:blur(24px);
     border-top:1px solid var(--border);
     z-index:200;
   }
   .mobile-tab{
-    flex:1;
-    display:flex;flex-direction:column;
-    align-items:center;justify-content:center;
-    gap:3px;
-    cursor:pointer;
-    color:var(--muted);
-    font-size:10px;font-weight:600;
-    letter-spacing:.4px;text-transform:uppercase;
+    flex:1;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:3px;
+    cursor:pointer;color:var(--muted);
+    font-size:10px;font-weight:600;letter-spacing:.4px;
     font-family:var(--font-body);
-    transition:color .15s;
-    position:relative;
+    transition:color .15s;position:relative;
     border:none;background:transparent;
     -webkit-tap-highlight-color:transparent;
   }
   .mobile-tab.active{color:var(--accent)}
-  .mobile-tab-icon{font-size:22px;line-height:1}
-  .mobile-tab-label{font-size:9.5px;font-weight:600;letter-spacing:.5px}
-
-  /* Indicador activo — línea superior */
   .mobile-tab::before{
-    content:'';
-    position:absolute;top:0;left:50%;
+    content:'';position:absolute;top:0;left:50%;
     transform:translateX(-50%) scaleX(0);
     width:28px;height:2px;
     background:var(--accent);border-radius:0 0 3px 3px;
     transition:transform .2s;
   }
   .mobile-tab.active::before{transform:translateX(-50%) scaleX(1)}
+  .mobile-tab-icon{font-size:22px;line-height:1}
+  .mobile-tab-label{font-size:9.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
 
-  /* Badge del carrito */
+  /* Badge carrito */
   .cart-badge{
-    position:absolute;
-    top:7px;
-    right:calc(50% - 22px);
+    position:absolute;top:7px;right:calc(50% - 22px);
     min-width:16px;height:16px;
-    background:var(--accent);
-    border-radius:8px;
-    font-size:9px;font-weight:700;
-    color:#fff;
-    display:none;
-    align-items:center;justify-content:center;
-    padding:0 4px;
-    line-height:1;
+    background:var(--accent);border-radius:8px;
+    font-size:9px;font-weight:700;color:#fff;
+    display:none;align-items:center;justify-content:center;
+    padding:0 4px;line-height:1;
     box-shadow:0 2px 6px rgba(240,123,32,0.5);
   }
   .cart-badge.visible{display:flex}
 
-  /* ── BARRA DE BÚSQUEDA MÓVIL ── */
+  /* ── SIDEBAR PANEL MÓVIL ── */
+  /* Buscador sticky */
   .mobile-search-wrap{
-    padding:12px 14px 8px;
-    position:sticky;top:0;
-    background:rgba(5,3,2,0.97);
+    display:block;
+    flex-shrink:0;
+    padding:10px 12px 6px;
+    background:rgba(5,3,2,0.98);
     backdrop-filter:blur(16px);
-    z-index:10;
     border-bottom:1px solid var(--border);
+    z-index:5;
   }
   .mobile-search-inner{position:relative}
   .mobile-search-icon{
-    position:absolute;left:12px;top:50%;
+    position:absolute;left:11px;top:50%;
     transform:translateY(-50%);
-    font-size:14px;pointer-events:none;
-    opacity:.5;
+    font-size:13px;opacity:.45;pointer-events:none;
   }
   .mobile-search-input{
-    width:100%;
-    padding:10px 14px 10px 38px;
-    background:rgba(255,255,255,0.06);
+    width:100%;padding:9px 12px 9px 34px;
+    background:rgba(255,255,255,0.07);
     border:1px solid var(--border);
-    border-radius:12px;
-    color:var(--text);
-    font-size:13.5px;
-    box-sizing:border-box;
+    border-radius:10px;color:var(--text);
+    font-size:14px;box-sizing:border-box;
     font-family:var(--font-body);
-    transition:border-color .15s,background .15s;
   }
-  .mobile-search-input:focus{
-    outline:none;
-    border-color:rgba(240,123,32,0.4);
-    background:rgba(255,255,255,0.08);
-  }
+  .mobile-search-input:focus{outline:none;border-color:rgba(240,123,32,0.4)}
   .mobile-search-input::placeholder{color:var(--muted)}
 
-  /* ── FILTROS DIETÉTICOS MÓVIL ── */
+  /* Filtros en scroll horizontal */
   .dietary-filters{
-    padding:10px 14px 10px;
-    gap:7px;
+    flex-shrink:0;
+    padding:8px 12px 8px;
+    gap:6px;flex-wrap:nowrap;
     overflow-x:auto;
-    flex-wrap:nowrap;
   }
   .dietary-filters::-webkit-scrollbar{display:none}
   .dietary-filter-btn{
     font-size:12px;padding:7px 16px;
-    border-radius:20px;white-space:nowrap;
-    flex-shrink:0;
+    white-space:nowrap;flex-shrink:0;border-radius:20px;
   }
 
-  /* Ocultar tipo de pedido en la vista de menú (está en el carrito) */
+  /* Ocultar tipo de pedido del sidebar en móvil */
   .order-type-selector,.address-section{display:none}
 
-  /* ── TARJETAS DE MENÚ MÓVIL ── */
-  .cat-name{
-    font-size:12px;font-weight:700;
-    padding:14px 14px 6px;
-    letter-spacing:.5px;
+  /* Área scrollable de items */
+  .sidebar-scroll{
+    flex:1;overflow-y:auto;
+    padding-bottom:10px;
   }
-  .sidebar .divider{margin:4px 14px}
+  .sidebar-scroll::-webkit-scrollbar{width:3px}
+  .sidebar-scroll::-webkit-scrollbar-thumb{background:var(--border)}
 
+  /* Categorías */
+  .cat-name{padding:14px 12px 5px;font-size:12px}
+  .sidebar .divider{margin:4px 12px}
+
+  /* ── TARJETAS DE MENÚ ── */
   .menu-item{
-    min-height:96px;
+    display:flex;
+    align-items:center;
     margin:0 10px 8px;
-    border-radius:14px !important;
-    border:1px solid var(--border) !important;
-    border-left:1px solid var(--border) !important;
-    background:rgba(255,255,255,0.035);
-    padding:6px 0 6px 0;
-    gap:0;
-    transition:background .15s,border-color .15s,transform .1s;
+    padding:8px;
+    min-height:unset;
+    border-radius:14px;
+    border:1px solid var(--border);
+    border-left:1px solid var(--border);
+    background:rgba(255,255,255,0.04);
+    overflow:visible;
+    gap:10px;
+    transition:background .15s,border-color .15s;
   }
-  .menu-item:active{transform:scale(.98)}
-  .menu-item:hover{
-    background:rgba(255,255,255,0.06);
-    border-color:rgba(240,123,32,0.3) !important;
-  }
+  .menu-item:active{background:rgba(255,255,255,0.07)}
 
   .item-img{
-    width:84px !important;
-    height:84px !important;
+    width:82px;height:82px;
     border-radius:10px;
-    margin:0 0 0 8px;
     object-fit:cover;
     flex-shrink:0;
-    filter:brightness(.95) saturate(1.05);
+    margin:0;
   }
-  .menu-item:hover .item-img{filter:brightness(1.05) saturate(1.15)}
 
   .item-body{
-    flex:1;
-    padding:6px 10px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    gap:2px;
+    flex:1;min-width:0;
+    padding:0;
+    display:flex;flex-direction:column;gap:2px;
   }
   .item-name{
-    font-size:14px !important;
-    font-weight:600;
-    color:var(--text);
-    white-space:normal !important;
-    line-height:1.3;
-    overflow:visible !important;
-    text-overflow:unset !important;
+    font-size:14px;font-weight:600;
+    color:var(--text);line-height:1.3;
+    white-space:normal;overflow:visible;text-overflow:unset;
   }
   .item-desc{
-    font-size:11.5px;
-    color:var(--muted);
-    margin-top:2px;
-    line-height:1.4;
-    white-space:normal;
+    font-size:11.5px;color:var(--muted);
+    line-height:1.35;white-space:normal;margin-top:0;
   }
   .item-price{
+    font-size:15px;font-weight:700;
+    color:var(--accent);margin-top:4px;
     font-family:var(--font-ui);
-    font-size:15px !important;
-    font-weight:700;
-    color:var(--accent);
-    white-space:nowrap;
-    margin-top:4px;
-    margin-right:0;
   }
 
   .plus-btn{
-    width:36px !important;
-    height:36px !important;
-    font-size:22px !important;
-    margin-right:12px !important;
-    flex-shrink:0;
+    width:36px;height:36px;font-size:22px;
+    margin:0;flex-shrink:0;
     box-shadow:0 3px 10px rgba(240,123,32,0.4);
   }
 
-  /* ── SIDEBAR PADDING BOTTOM ── */
-  .sidebar{padding-bottom:20px}
-
-  /* ── QUICK REPLIES CON SCROLL ── */
-  .quick-replies{flex-wrap:nowrap;overflow-x:auto;padding-bottom:10px}
+  /* ── CHAT PANEL ── */
+  .chat-main .chat-messages{flex:1;overflow-y:auto}
+  .quick-replies{flex-wrap:nowrap;overflow-x:auto;padding-bottom:8px}
   .quick-replies::-webkit-scrollbar{display:none}
 
-  /* ── DASHBOARD MÓVIL ── */
-  .dashboard{padding:16px 14px 20px}
-  /* Ocultar stats en móvil — en el carrito solo mostramos lo esencial */
+  /* ── CARRITO PANEL ── */
   .stat-grid{display:none}
-  /* Mostrar el tipo de pedido dentro del dashboard en móvil */
   .dashboard .order-type-selector-mobile{display:block}
 }
 </style>
@@ -773,64 +738,66 @@ body::before{
       <input type="text" class="address-input" id="addressInput" placeholder="📍 Dirección de entrega" oninput="state.address = this.value">
     </div>
 
+    <div class="sidebar-scroll">
     <div class="divider"></div>
     <div class="cat-name">🔥 Especialidades</div>
     <div class="menu-item" data-item-id="1">
       <img class="item-img" src="https://images.unsplash.com/photo-1624300629298-e9de39c13be5?w=400&h=300&fit=crop&q=85&auto=format" alt="Birria">
-      <div class="item-body"><div class="item-name">Birria de res</div><div class="item-desc">Con consomé y tortillas</div></div>
-      <div class="item-price">$185</div><button class="plus-btn">+</button>
+      <div class="item-body"><div class="item-name">Birria de res</div><div class="item-desc">Con consomé y tortillas</div><div class="item-price">$185</div></div>
+      <button class="plus-btn">+</button>
     </div>
     <div class="menu-item" data-item-id="2">
       <img class="item-img" src="https://images.unsplash.com/photo-1558030006-450675393462?w=400&h=300&fit=crop&q=85&auto=format" alt="Arrachera">
-      <div class="item-body"><div class="item-name">Arrachera a la parrilla</div><div class="item-desc">Con guarnición y salsas</div></div>
-      <div class="item-price">$220</div><button class="plus-btn">+</button>
+      <div class="item-body"><div class="item-name">Arrachera a la parrilla</div><div class="item-desc">Con guarnición y salsas</div><div class="item-price">$220</div></div>
+      <button class="plus-btn">+</button>
     </div>
     <div class="menu-item" data-item-id="3">
       <img class="item-img" src="https://images.unsplash.com/photo-1547592166-23ac45744acd?w=400&h=300&fit=crop&q=85&auto=format" alt="Pozole">
-      <div class="item-body"><div class="item-name">Pozole rojo</div><div class="item-desc">Grande con tostadas</div></div>
-      <div class="item-price">$145</div><button class="plus-btn">+</button>
+      <div class="item-body"><div class="item-name">Pozole rojo</div><div class="item-desc">Grande con tostadas</div><div class="item-price">$145</div></div>
+      <button class="plus-btn">+</button>
     </div>
     <div class="divider"></div>
     <div class="cat-name">🌮 Antojitos</div>
     <div class="menu-item" data-item-id="4">
       <img class="item-img" src="https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&h=300&fit=crop&q=85&auto=format" alt="Tacos">
-      <div class="item-body"><div class="item-name">Orden de tacos (3)</div><div class="item-desc">Pastor, carnitas o barbacoa</div></div>
-      <div class="item-price">$95</div><button class="plus-btn">+</button>
+      <div class="item-body"><div class="item-name">Orden de tacos (3)</div><div class="item-desc">Pastor, carnitas o barbacoa</div><div class="item-price">$95</div></div>
+      <button class="plus-btn">+</button>
     </div>
     <div class="menu-item" data-item-id="5">
       <img class="item-img" src="https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=400&h=300&fit=crop&q=85&auto=format" alt="Tostadas">
-      <div class="item-body"><div class="item-name">Tostadas de tinga</div><div class="item-desc">Con crema y queso</div></div>
-      <div class="item-price">$75</div><button class="plus-btn">+</button>
+      <div class="item-body"><div class="item-name">Tostadas de tinga</div><div class="item-desc">Con crema y queso</div><div class="item-price">$75</div></div>
+      <button class="plus-btn">+</button>
     </div>
     <div class="menu-item" data-item-id="6">
       <img class="item-img" src="https://images.unsplash.com/photo-1534352956036-cd81e27dd615?w=400&h=300&fit=crop&q=85&auto=format" alt="Enchiladas">
-      <div class="item-body"><div class="item-name">Enchiladas verdes</div><div class="item-desc">Con pollo y crema</div></div>
-      <div class="item-price">$110</div><button class="plus-btn">+</button>
+      <div class="item-body"><div class="item-name">Enchiladas verdes</div><div class="item-desc">Con pollo y crema</div><div class="item-price">$110</div></div>
+      <button class="plus-btn">+</button>
     </div>
     <div class="divider"></div>
     <div class="cat-name">🥤 Bebidas</div>
     <div class="menu-item" data-item-id="7">
       <img class="item-img" src="https://images.unsplash.com/photo-1497534446932-c925b458314e?w=400&h=300&fit=crop&q=85&auto=format" alt="Agua fresca">
-      <div class="item-body"><div class="item-name">Agua fresca</div><div class="item-desc">Jamaica, horchata o tamarindo</div></div>
-      <div class="item-price">$35</div><button class="plus-btn">+</button>
+      <div class="item-body"><div class="item-name">Agua fresca</div><div class="item-desc">Jamaica, horchata o tamarindo</div><div class="item-price">$35</div></div>
+      <button class="plus-btn">+</button>
     </div>
     <div class="menu-item" data-item-id="8">
       <img class="item-img" src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=300&fit=crop&q=85&auto=format" alt="Michelada">
-      <div class="item-body"><div class="item-name">Michelada</div><div class="item-desc">Clamato, limón y chamoy</div></div>
-      <div class="item-price">$85</div><button class="plus-btn">+</button>
+      <div class="item-body"><div class="item-name">Michelada</div><div class="item-desc">Clamato, limón y chamoy</div><div class="item-price">$85</div></div>
+      <button class="plus-btn">+</button>
     </div>
     <div class="divider"></div>
     <div class="cat-name">🍮 Postres</div>
     <div class="menu-item" data-item-id="9">
       <img class="item-img" src="https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400&h=300&fit=crop&q=85&auto=format" alt="Flan">
-      <div class="item-body"><div class="item-name">Flan napolitano</div><div class="item-desc">Casero, con cajeta</div></div>
-      <div class="item-price">$65</div><button class="plus-btn">+</button>
+      <div class="item-body"><div class="item-name">Flan napolitano</div><div class="item-desc">Casero, con cajeta</div><div class="item-price">$65</div></div>
+      <button class="plus-btn">+</button>
     </div>
     <div class="menu-item" data-item-id="10">
       <img class="item-img" src="https://images.unsplash.com/photo-1624804657834-11bef4c3e73e?w=400&h=300&fit=crop&q=85&auto=format" alt="Churros">
-      <div class="item-body"><div class="item-name">Churros con chocolate</div><div class="item-desc">Orden de 4 piezas</div></div>
-      <div class="item-price">$70</div><button class="plus-btn">+</button>
+      <div class="item-body"><div class="item-name">Churros con chocolate</div><div class="item-desc">Orden de 4 piezas</div><div class="item-price">$70</div></div>
+      <button class="plus-btn">+</button>
     </div>
+    </div><!-- /sidebar-scroll -->
   </aside>
 
   <!-- CHAT -->
