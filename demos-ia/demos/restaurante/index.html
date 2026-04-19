@@ -1112,9 +1112,12 @@ REGLAS DE COMPORTAMIENTO:
 5. NUNCA digas "simulación", "demo", "ambiente virtual", "IA", "como si fuera".
    Trata cada interacción como un restaurante real con clientes reales.
 
-COMANDOS (el sistema los ejecuta, son invisibles para el cliente):
+COMANDOS PERMITIDOS (son invisibles para el cliente, el sistema los ejecuta):
 [ADD:4,4,8] agrega 2 tacos + michelada | [ADD:3,3] agrega 2 pozoles
 [REMOVE:5] quita tostadas | [RESUMEN] muestra ticket de confirmación
+
+PROHIBIDO: NO inventes otros comandos como [RESERVA], [INFO], [PEDIDO], etc.
+Solo existen: [ADD:ids], [REMOVE:ids], [RESUMEN]. Ningún otro.
 
 Respuestas máx 2 oraciones. Sin listas con bullets. Directo como mesero real.`;
 }
@@ -1441,8 +1444,8 @@ function parseAICommands(reply) {
     clean = clean.replace(/\[RESUMEN\]/gi, '');
     setTimeout(() => renderOrderTicket(), 50);
   }
-  // Limpia cualquier comando residual malformado
-  clean = clean.replace(/\[(?:ADD|REMOVE|CONFIRM|RESUMEN)[^\]]*\]/gi, '');
+  // Limpia CUALQUIER [COMANDO] residual — el modelo a veces inventa comandos propios
+  clean = clean.replace(/\[[A-ZÁÉÍÓÚÑ][^\]]*\]/g, '');
   clean = clean.trim();
   dbSaveMessage('assistant', clean);
   return clean;
