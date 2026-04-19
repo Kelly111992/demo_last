@@ -1224,9 +1224,7 @@ function confirmOrder() {
   dbSavePedido();
   startOrderTracker();
   renderOrderTracker();
-  const typeText = state.orderType === 'mesa' ? `mesa ${state.tableNum || '5'}` :
-                   state.orderType === 'llevar' ? 'para llevar' : `domicilio a ${state.address}`;
-  ClaveAI.send(`Confirmo mi pedido: ${state.cart.map(i => `${i.qty}x ${i.name}`).join(', ')}. Total $${getCartTotal()}. Es ${typeText}.`);
+  // No enviamos mensaje al chat — confirmFromTicket ya muestra el recibo visual
 }
 
 function startOrderTracker() {
