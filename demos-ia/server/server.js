@@ -1,16 +1,27 @@
 /**
- * mesaIA Backend — Groq
+ * ClaveAI Backend — Google Gemini 2.5 Flash
  */
 
-const http = require('http');
+const http  = require('http');
 const https = require('https');
-const fs = require('fs');
-const path = require('path');
+const fs    = require('fs');
+const path  = require('path');
+
+// Cargar .env si existe
+const envPath = path.join(__dirname, '..', '.env');
+if (fs.existsSync(envPath)) {
+  fs.readFileSync(envPath, 'utf8')
+    .split('\n')
+    .forEach(line => {
+      const [k, v] = line.split('=');
+      if (k && v) process.env[k.trim()] = v.trim();
+    });
+}
 
 const CONFIG = {
-  GROQ_API_KEY: process.env.GROQ_API_KEY || '',
-  PORT: 3000,
-  MODEL: 'llama-3.3-70b-versatile',
+  GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || '',
+  PORT:       3000,
+  MODEL:      'gemini-2.5-flash-preview-04-17',
   MAX_TOKENS: 800,
 };
 
@@ -21,6 +32,7 @@ const MIME = {
   '.json': 'application/json',
   '.png':  'image/png',
   '.jpg':  'image/jpeg',
+  '.jpeg': 'image/jpeg',
   '.svg':  'image/svg+xml',
   '.ico':  'image/x-icon',
 };
@@ -43,7 +55,7 @@ const server = http.createServer((req, res) => {
       try {
         const { messages, system } = JSON.parse(body);
         console.log('\nMensaje:', messages[messages.length-1]?.content?.slice(0, 60));
-        callGroq(messages, system, res);
+        callGemini(messages, system, res);
       } catch (e) {
         console.error('Error:', e.message);
         res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -68,30 +80,35 @@ const server = http.createServer((req, res) => {
   });
 });
 
-function callGroq(messages, system, res) {
+function callGemini(messages, system, res) {
+  // Gemini OpenAI-compatible endpoint
   const fullMessages = [
-    { role: 'system', content: system || 'Eres un asistente útil.' },
-    ...messages,
+    { role: 'user', content: system || 'Eres un asistente útil.' },
+    { role: 'model', content: 'Entendido.' },
+    ...messages.map(m => ({
+      role: m.role === 'assistant' ? 'model' : m.role,
+      content: m.content,
+    })),
   ];
 
   const payload = JSON.stringify({
-    model: CONFIG.MODEL,
+    model:      CONFIG.MODEL,
     max_tokens: CONFIG.MAX_TOKENS,
-    messages: fullMessages,
+    messages:   fullMessages,
   });
 
   const options = {
-    hostname: 'api.groq.com',
-    path: '/openai/v1/chat/completions',
-    method: 'POST',
+    hostname: 'generativelanguage.googleapis.com',
+    path:     `/v1beta/openai/chat/completions`,
+    method:   'POST',
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${CONFIG.GROQ_API_KEY}`,
+      'Content-Type':   'application/json',
+      'Authorization':  `Bearer ${CONFIG.GOOGLE_API_KEY}`,
       'Content-Length': Buffer.byteLength(payload),
     },
   };
 
-  console.log('Enviando a Groq, modelo:', CONFIG.MODEL);
+  console.log('Enviando a Gemini, modelo:', CONFIG.MODEL);
 
   const apiReq = https.request(options, (apiRes) => {
     let data = '';
@@ -101,9 +118,9 @@ function callGroq(messages, system, res) {
       try {
         const json = JSON.parse(data);
         if (json.error) {
-          console.error('Error:', json.error.message);
+          console.error('Error Gemini:', json.error.message || JSON.stringify(json.error));
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: json.error.message }));
+          res.end(JSON.stringify({ error: json.error.message || 'Error de Gemini' }));
           return;
         }
         const text = json.choices?.[0]?.message?.content || '';
@@ -111,7 +128,7 @@ function callGroq(messages, system, res) {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ content: [{ type: 'text', text }] }));
       } catch (e) {
-        console.error('Error parseando:', e.message);
+        console.error('Error parseando:', e.message, '\nRaw:', data.slice(0, 200));
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ error: 'Error parseando respuesta' }));
       }
@@ -129,7 +146,8 @@ function callGroq(messages, system, res) {
 }
 
 server.listen(CONFIG.PORT, () => {
-  console.log('\nmesaIA Backend — Groq');
+  console.log('\nClaveAI Backend — Google Gemini 2.5 Flash');
   console.log('URL:    http://localhost:' + CONFIG.PORT);
-  console.log('Modelo: ' + CONFIG.MODEL + '\n');
+  console.log('Modelo: ' + CONFIG.MODEL);
+  console.log('Key:    ' + (CONFIG.GOOGLE_API_KEY ? '✓ configurada' : '✗ FALTA GOOGLE_API_KEY') + '\n');
 });
