@@ -1455,6 +1455,8 @@ function renderOrderTicket() {
 
 function confirmFromTicket(ticketWrap) {
   confirmOrder();
+  // Si confirmOrder abortó por falta de datos (tipo de orden o dirección), no pintar recibo null
+  if (!state.orderNum) return;
 
   const botEmoji = document.getElementById('botAvatarEmoji')?.textContent || '🤖';
   const time = new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
@@ -1544,12 +1546,13 @@ const SESSION_ID = crypto.randomUUID();
 
 async function dbSaveMessage(rol, mensaje) {
   try {
-    await db.from('conversaciones').insert({
+    const { error } = await db.from('conversaciones').insert({
       sesion_id: SESSION_ID,
       demo: 'restaurante',
       rol,
       mensaje
     });
+    if (error) console.warn('ClaveAI DB conversaciones:', error.message);
   } catch (e) { console.warn('ClaveAI DB:', e.message); }
 }
 
