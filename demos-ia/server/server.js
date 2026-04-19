@@ -81,14 +81,10 @@ const server = http.createServer((req, res) => {
 });
 
 function callGemini(messages, system, res) {
-  // Gemini OpenAI-compatible endpoint
+  // OpenAI-compatible endpoint: system/user/assistant igual que OpenAI
   const fullMessages = [
-    { role: 'user', content: system || 'Eres un asistente útil.' },
-    { role: 'model', content: 'Entendido.' },
-    ...messages.map(m => ({
-      role: m.role === 'assistant' ? 'model' : m.role,
-      content: m.content,
-    })),
+    { role: 'system', content: system || 'Eres un asistente útil.' },
+    ...messages,
   ];
 
   const payload = JSON.stringify({

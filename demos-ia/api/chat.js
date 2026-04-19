@@ -30,14 +30,10 @@ module.exports = async function handler(req, res) {
     return;
   }
 
-  // Gemini usa 'model' en lugar de 'assistant' para el rol del asistente
+  // OpenAI-compatible endpoint: usa system/user/assistant igual que OpenAI
   const fullMessages = [
-    { role: 'user',  content: system || 'Eres un asistente útil.' },
-    { role: 'model', content: 'Entendido.' },
-    ...messages.map(m => ({
-      role:    m.role === 'assistant' ? 'model' : m.role,
-      content: m.content,
-    })),
+    { role: 'system', content: system || 'Eres un asistente útil.' },
+    ...messages,
   ];
 
   const payload = JSON.stringify({
