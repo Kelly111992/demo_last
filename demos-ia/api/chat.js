@@ -7,8 +7,8 @@ const https = require('https');
 
 const CONFIG = {
   GOOGLE_API_KEY: (process.env.GOOGLE_API_KEY || '').trim(),
-  MODEL:          process.env.MODEL || 'gemini-2.5-flash-preview-04-17',
-  MAX_TOKENS:     800,
+  MODEL:          process.env.MODEL || 'gemini-2.5-flash',
+  MAX_TOKENS:     2048,
 };
 
 module.exports = async function handler(req, res) {
@@ -37,9 +37,10 @@ module.exports = async function handler(req, res) {
   ];
 
   const payload = JSON.stringify({
-    model:      CONFIG.MODEL,
-    max_tokens: CONFIG.MAX_TOKENS,
-    messages:   fullMessages,
+    model:            CONFIG.MODEL,
+    max_tokens:       CONFIG.MAX_TOKENS,
+    messages:         fullMessages,
+    reasoning_effort: 'none',
   });
 
   return new Promise((resolve) => {
@@ -65,6 +66,8 @@ module.exports = async function handler(req, res) {
             resolve(); return;
           }
           const text = json.choices?.[0]?.message?.content || '';
+          const finish = json.choices?.[0]?.finish_reason;
+          if (!text) console.warn('Gemini respuesta vacía. finish_reason:', finish, 'usage:', json.usage);
           res.status(200).json({ content: [{ type: 'text', text }] });
           resolve();
         } catch (e) {

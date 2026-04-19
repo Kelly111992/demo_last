@@ -1454,6 +1454,7 @@ function parseAICommands(reply) {
   // Limpia CUALQUIER [COMANDO] residual — el modelo a veces inventa comandos propios
   clean = clean.replace(/\[[A-ZÁÉÍÓÚÑ][^\]]*\]/g, '');
   clean = clean.trim();
+  if (!clean) clean = '¡Listo!';
   dbSaveMessage('assistant', clean);
   return clean;
 }
