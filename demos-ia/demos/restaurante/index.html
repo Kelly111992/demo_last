@@ -1556,6 +1556,7 @@ async function dbSaveMessage(rol, mensaje) {
 async function dbSavePedido() {
   try {
     const { data, error } = await db.from('pedidos').insert({
+      sesion_id: SESSION_ID,
       numero: String(state.orderNum),
       tipo: state.orderType,
       direccion: state.address || null,
@@ -1580,6 +1581,7 @@ async function dbSavePedido() {
 async function dbSaveReservacion(rsv) {
   try {
     await db.from('reservaciones').insert({
+      sesion_id: SESSION_ID,
       folio: rsv.folio,
       personas: parseInt(rsv.people) || 1,
       fecha: rsv.date,
