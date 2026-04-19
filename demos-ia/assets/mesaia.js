@@ -32,6 +32,9 @@ const ClaveAI = (() => {
     if (!text.trim() || isLoading) return;
     isLoading = true;
 
+    const startTime = Date.now();
+    const minThinkMs = 400 + Math.random() * 800;
+
     addBubble(text, 'user');
     hideQuickReplies();
     showTyping();
@@ -66,10 +69,15 @@ const ClaveAI = (() => {
         if (typeof transformed === 'string') displayText = transformed;
       }
 
+      const elapsed = Date.now() - startTime;
+      if (elapsed < minThinkMs) await new Promise(r => setTimeout(r, minThinkMs - elapsed));
+
       removeTyping();
       addBubble(displayText, 'bot');
 
     } catch (err) {
+      const elapsed = Date.now() - startTime;
+      if (elapsed < minThinkMs) await new Promise(r => setTimeout(r, minThinkMs - elapsed));
       removeTyping();
       console.error('ClaveAI error:', err);
       addBubble('⚠️ Error: ' + err.message, 'bot');
