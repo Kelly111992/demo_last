@@ -59,7 +59,7 @@ const ClaveAI = (() => {
 
       if (data.error) throw new Error(data.error);
 
-      const reply = data.content[0].text;
+      const reply = data.content?.[0]?.text || '';
       history.push({ role: 'assistant', content: reply });
 
       // onReply puede transformar la respuesta (ej: ejecutar comandos y devolver texto limpio)
@@ -67,6 +67,15 @@ const ClaveAI = (() => {
       if (onReplyCallback) {
         const transformed = onReplyCallback(reply);
         if (typeof transformed === 'string') displayText = transformed;
+      }
+
+      // Fallback ante respuesta vacía:
+      // - reply crudo vacío = el modelo no respondió (p. ej. rate limit) → pedir reintento amable.
+      // - reply tenía contenido pero quedó vacío tras limpiar comandos = fue una acción → "¡Listo!".
+      if (!displayText || !displayText.trim()) {
+        displayText = (!reply || !reply.trim())
+          ? 'Perdón, me quedé pensando un momento. ¿Me lo repites, por favor?'
+          : '¡Listo! ✓';
       }
 
       const elapsed = Date.now() - startTime;
