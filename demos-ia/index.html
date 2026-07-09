@@ -384,6 +384,14 @@ body {
 .card:hover .arr { transform:translateX(5px); }
 .card.hidden { display:none; }
 
+/* ── SOLUCIONES (grid uniforme 4-up) ────── */
+.section-divider {
+  max-width:1380px; margin:0 auto; padding:0 52px;
+}
+.section-divider hr { border:none; border-top:1px solid var(--border); }
+.grid.grid-sol .card { grid-column:span 3 !important; }
+@media (max-width:1200px){ .grid.grid-sol .card { grid-column:span 6 !important; } }
+
 /* ── FOOTER ─────────────────────────────── */
 .footer {
   max-width:1380px; margin:0 auto;
@@ -580,8 +588,8 @@ body {
       Selecciona una demo y ve en tiempo real cómo la IA <strong>atiende clientes</strong>, agenda citas y cierra ventas — las 24 horas, sin intervención humana.
     </p>
     <div class="hero-stats">
-      <div class="hstat"><span class="hstat-n">8</span><span class="hstat-l">Demos</span></div>
-      <div class="hstat"><span class="hstat-n">4</span><span class="hstat-l">Sectores</span></div>
+      <div class="hstat"><span class="hstat-n">12</span><span class="hstat-l">Demos</span></div>
+      <div class="hstat"><span class="hstat-n">8+4</span><span class="hstat-l">Agentes · Servicios</span></div>
       <div class="hstat"><span class="hstat-n">24/7</span><span class="hstat-l">En vivo</span></div>
     </div>
   </div>
@@ -600,7 +608,7 @@ body {
     </div>
   </div>
 
-  <div class="grid">
+  <div class="grid" id="agentsGrid">
 
     <a class="card" data-sector="gastro" href="demos/restaurante/index.html">
       <div class="card-stripe"></div>
@@ -757,6 +765,102 @@ body {
   </div>
 </div>
 
+<!-- SOLUCIONES CLAVEAI -->
+<div class="section" style="padding-top:0">
+  <div class="section-top">
+    <span class="section-lbl">// 4 soluciones ClaveAI</span>
+    <span class="section-lbl" style="color:var(--sub)">Encontramos la clave de tu negocio</span>
+  </div>
+  <div style="margin-bottom:22px">
+    <h2 style="font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(28px,3.2vw,40px);font-weight:800;letter-spacing:-1.2px;color:var(--text);line-height:1.05">
+      No solo agentes.<br><span style="background:linear-gradient(100deg,var(--brand-a),var(--brand-b) 60%,#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent">Toda la operación digital.</span>
+    </h2>
+    <p style="font-size:14px;color:var(--sub);max-width:520px;margin-top:14px;line-height:1.7">
+      Además de los agentes por industria, en ClaveAI construimos tu presencia web, automatizamos tus procesos y capacitamos a tu equipo en IA. Prueba cada servicio en vivo. →
+    </p>
+  </div>
+
+  <div class="grid grid-sol">
+
+    <a class="card" data-sector="sol" style="--c:#4d9fff" href="demos/sitios-web/index.html">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-head">
+          <div class="card-icon">🌐</div>
+          <div class="card-meta"><span class="card-num">S1</span><span class="card-tag">Sitios Web</span></div>
+        </div>
+        <div class="card-title">Sitios Web Pro</div>
+        <div class="card-desc">Llave en mano: diseño, dominio, hosting y SSL. Presencia digital lista para convertir desde el primer día.</div>
+        <div class="feats">
+          <div class="feat"><span class="fb"></span>Diseño a la medida de tu marca</div>
+          <div class="feat"><span class="fb"></span>Dominio, hosting y SSL incluidos</div>
+          <div class="feat"><span class="fb"></span>Preview de tu landing en vivo</div>
+          <div class="feat"><span class="fb"></span>Entrega en ~7 días</div>
+        </div>
+        <div class="cta">Probar demo en vivo <span class="arr">→</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-sector="sol" style="--c:#ff6d5a" href="demos/flujos-n8n/index.html">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-head">
+          <div class="card-icon">⚡</div>
+          <div class="card-meta"><span class="card-num">S2</span><span class="card-tag">Automatización</span></div>
+        </div>
+        <div class="card-title">Flujos n8n</div>
+        <div class="card-desc">Operación 24/7: conectamos WhatsApp, CRM, Sheets y APIs para que tu equipo deje de hacer trabajo repetitivo.</div>
+        <div class="feats">
+          <div class="feat"><span class="fb"></span>Canvas de flujo animado</div>
+          <div class="feat"><span class="fb"></span>Integra WhatsApp · CRM · Sheets</div>
+          <div class="feat"><span class="fb"></span>Ejecución en vivo con consola</div>
+          <div class="feat"><span class="fb"></span>Horas ahorradas al mes</div>
+        </div>
+        <div class="cta">Probar demo en vivo <span class="arr">→</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-sector="sol" style="--c:#a78bfa" href="demos/ia-mastery/index.html">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-head">
+          <div class="card-icon">🧠</div>
+          <div class="card-meta"><span class="card-num">S3</span><span class="card-tag">Formación IA</span></div>
+        </div>
+        <div class="card-title">IA Mastery</div>
+        <div class="card-desc">Gemini · GPT · Claude. Implementamos Custom GPTs y agentes, y capacitamos a tu equipo para usar IA a diario.</div>
+        <div class="feats">
+          <div class="feat"><span class="fb"></span>Constructor de Custom GPT en vivo</div>
+          <div class="feat"><span class="fb"></span>Elige modelo y capacidades</div>
+          <div class="feat"><span class="fb"></span>Medidor de "listo para desplegar"</div>
+          <div class="feat"><span class="fb"></span>Capacitación incluida</div>
+        </div>
+        <div class="cta">Probar demo en vivo <span class="arr">→</span></div>
+      </div>
+    </a>
+
+    <a class="card" data-sector="sol" style="--c:#34d399" href="demos/vibe-coding/index.html">
+      <div class="card-stripe"></div>
+      <div class="card-body">
+        <div class="card-head">
+          <div class="card-icon">👾</div>
+          <div class="card-meta"><span class="card-num">S4</span><span class="card-tag">Desarrollo</span></div>
+        </div>
+        <div class="card-title">Vibe Coding</div>
+        <div class="card-desc">Apps a medida: dashboards, mini-CRMs y calculadoras que resuelven tu operación. Se construyen en días, no meses.</div>
+        <div class="feats">
+          <div class="feat"><span class="fb"></span>Preview + código en vivo</div>
+          <div class="feat"><span class="fb"></span>Dashboards, CRM, cotizadores</div>
+          <div class="feat"><span class="fb"></span>Stack React · Supabase · Vercel</div>
+          <div class="feat"><span class="fb"></span>Entrega en días</div>
+        </div>
+        <div class="cta">Probar demo en vivo <span class="arr">→</span></div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
 <!-- FOOTER -->
 <div class="footer">
   <p class="foot-txt">Para que los chats funcionen, <strong>corre el servidor primero</strong></p>
@@ -791,7 +895,7 @@ document.querySelectorAll('.flt').forEach(f => {
     document.querySelectorAll('.flt').forEach(b => b.classList.remove('active'));
     f.classList.add('active');
     const s = f.dataset.sector;
-    document.querySelectorAll('.card').forEach(c => {
+    document.querySelectorAll('#agentsGrid .card').forEach(c => {
       c.classList.toggle('hidden', s !== 'all' && c.dataset.sector !== s);
     });
   });
