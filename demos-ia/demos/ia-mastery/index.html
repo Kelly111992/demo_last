@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ClaveAI — IA Mastery · Crea tu asistente y pruébalo</title>
+<title>ClaveAI — IA Mastery · La IA que tu equipo usa a diario</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -38,78 +38,40 @@ a{text-decoration:none;color:inherit}
 @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(167,139,250,.5)}60%{opacity:.5;box-shadow:0 0 0 6px rgba(167,139,250,0)}}
 h1{font-family:var(--font-display);font-size:clamp(30px,5vw,54px);font-weight:800;line-height:1.02;letter-spacing:-1.5px;margin-bottom:14px}
 h1 .g{background:linear-gradient(100deg,var(--accent),#c4b5fd);-webkit-background-clip:text;background-clip:text;color:transparent}
-.lead{font-size:clamp(14px,1.5vw,16px);color:var(--sub);line-height:1.7;max-width:620px;margin:0 auto}
+.lead{font-size:clamp(14px,1.5vw,16px);color:var(--sub);line-height:1.7;max-width:640px;margin:0 auto}
 
 .studio{max-width:1240px;margin:24px auto 0;padding:0 clamp(16px,4vw,40px)}
-.grid{display:grid;grid-template-columns:minmax(0,420px) 1fr;gap:18px}
-@media(max-width:900px){.grid{grid-template-columns:1fr}}
-.card{background:var(--surface);border:1px solid var(--border2);border-radius:18px;overflow:hidden}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;justify-content:center}
+.tool{display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:11px 16px;cursor:pointer;transition:.15s;font-size:14px;font-weight:600;color:var(--sub)}
+.tool:hover{color:var(--text);border-color:var(--accent)}
+.tool.on{color:var(--text);border-color:var(--accent);background:rgba(167,139,250,.12);box-shadow:0 0 0 2px rgba(167,139,250,.16)}
+.tool .e{font-size:17px}
+
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--border2);border-radius:18px;overflow:hidden;display:flex;flex-direction:column}
 .card-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px;font-weight:700;font-size:14px}
 .card-head .n{font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-left:auto}
+.card-body{padding:18px;flex:1;display:flex;flex-direction:column}
+.tool-desc{font-size:13px;color:var(--sub);line-height:1.6;margin-bottom:14px}
+.io-lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:9px;display:block}
+.io-input{width:100%;flex:1;min-height:180px;background:var(--surface2);border:1px solid var(--border2);border-radius:12px;color:var(--text);font-family:var(--font-body);font-size:14px;line-height:1.6;padding:14px;resize:vertical;transition:.15s}
+.io-input:focus{outline:none;border-color:var(--accent)}
+.gen-btn{margin-top:14px;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;font-weight:700;font-size:15px;padding:14px;border:none;border-radius:12px;cursor:pointer;transition:.15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.gen-btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 12px 30px rgba(139,92,246,.4)}
+.gen-btn:disabled{opacity:.6;cursor:not-allowed}
+.output{min-height:180px;flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:16px;font-size:14px;line-height:1.7;color:var(--text);overflow-y:auto;white-space:pre-wrap}
+.output::-webkit-scrollbar{width:6px}.output::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.output b{color:var(--accent);font-weight:700}
+.out-empty{color:var(--muted);text-align:center;margin:auto;padding:30px 10px}
+.out-empty .big{font-size:38px;margin-bottom:10px}
+.spin{width:20px;height:20px;border:2px solid rgba(167,139,250,.25);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:20px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.copy-btn{font-size:11px;color:var(--muted);background:var(--surface3);border:1px solid var(--border2);border-radius:7px;padding:5px 10px;cursor:pointer;margin-left:auto;transition:.15s}
+.copy-btn:hover{color:var(--accent);border-color:var(--accent)}
+.model-tag{margin-left:8px;font-family:var(--font-mono);font-size:10px;color:var(--muted);border:1px solid var(--border2);padding:3px 8px;border-radius:20px}
 
-.cfg{padding:18px}
-.lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:16px 0 9px;display:block}
-.lbl:first-child{margin-top:0}
-.presets{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.preset{display:flex;align-items:center;gap:9px;background:var(--surface2);border:1px solid var(--border2);border-radius:11px;padding:10px 12px;cursor:pointer;transition:.15s;font-size:13px;font-weight:600}
-.preset:hover{border-color:var(--accent)}
-.preset.on{border-color:var(--accent);background:rgba(167,139,250,.12);box-shadow:0 0 0 2px rgba(167,139,250,.18)}
-.preset .e{font-size:18px}
-.field{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;color:var(--text);font-family:var(--font-body);font-size:13.5px;padding:11px 13px;transition:.15s}
-.field:focus{outline:none;border-color:var(--accent)}
-textarea.field{resize:vertical;min-height:74px;line-height:1.5}
-.models{display:flex;gap:8px}
-.model{flex:1;text-align:center;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:10px 6px;cursor:pointer;transition:.15s}
-.model.on{border-color:var(--accent);background:rgba(167,139,250,.12)}
-.model .m{font-weight:700;font-size:13px}.model .s{font-size:10px;color:var(--muted);margin-top:2px}
-.caps{display:flex;flex-wrap:wrap;gap:7px}
-.cap{font-size:12px;font-weight:600;padding:7px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--surface2);color:var(--sub);cursor:pointer;transition:.15s;display:flex;align-items:center;gap:6px}
-.cap.on{border-color:var(--accent);background:rgba(167,139,250,.14);color:var(--text)}
-.cap .x{width:14px;height:14px;border-radius:4px;border:1px solid var(--border2);display:grid;place-items:center;font-size:10px}
-.cap.on .x{background:var(--accent);border-color:var(--accent);color:#1b1330}
-.ready{margin-top:18px;background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:14px}
-.ready-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--sub);margin-bottom:9px}
-.ready-top b{color:var(--text)}
-.ready-bar{height:8px;border-radius:5px;background:var(--surface3);overflow:hidden}
-.ready-fill{height:100%;width:0;border-radius:5px;background:linear-gradient(90deg,var(--accent2),var(--accent),#c4b5fd);transition:width .5s cubic-bezier(.2,.7,.3,1)}
-.deploy-btn{width:100%;margin-top:14px;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;font-weight:700;font-size:15px;padding:14px;border:none;border-radius:12px;cursor:pointer;transition:.15s}
-.deploy-btn:hover{transform:translateY(-1px);box-shadow:0 12px 30px rgba(139,92,246,.4)}
-
-.chat{display:flex;flex-direction:column;min-height:540px}
-.chat-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
-.chat-av{width:40px;height:40px;border-radius:11px;background:rgba(167,139,250,.15);border:1px solid var(--border2);display:grid;place-items:center;font-size:20px}
-.chat-name{font-family:var(--font-display);font-weight:700;font-size:16px}
-.chat-status{font-size:11px;color:var(--accent);display:flex;align-items:center;gap:6px;margin-top:2px;font-family:var(--font-mono)}
-.chat-status .d{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
-.chat-model{margin-left:auto;font-family:var(--font-mono);font-size:10px;color:var(--muted);border:1px solid var(--border2);padding:4px 9px;border-radius:20px}
-.msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;min-height:300px;max-height:440px}
-.msgs::-webkit-scrollbar{width:6px}.msgs::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-.empty{margin:auto;text-align:center;color:var(--muted);font-size:14px;line-height:1.8;max-width:280px}
-.empty .big{font-size:40px;margin-bottom:12px}
-.msg{display:flex;gap:9px;max-width:88%}
-.msg.user{align-self:flex-end;flex-direction:row-reverse}
-.msg .av{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:15px;flex-shrink:0;background:var(--surface3)}
-.msg.bot .av{background:rgba(167,139,250,.15)}
-.bubble{padding:11px 14px;border-radius:13px;font-size:14px;line-height:1.55}
-.msg.bot .bubble{background:var(--surface2);border:1px solid var(--border2);border-top-left-radius:3px}
-.msg.user .bubble{background:rgba(167,139,250,.16);border:1px solid rgba(167,139,250,.28);border-top-right-radius:3px}
-.bubble b{font-weight:700}
-.typing{display:flex;gap:4px;padding:13px 15px;background:var(--surface2);border:1px solid var(--border2);border-radius:13px;border-top-left-radius:3px;width:fit-content}
-.typing span{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:blink 1.2s infinite}
-.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
-@keyframes blink{0%,60%,100%{opacity:.3}30%{opacity:1}}
-.chips{display:flex;flex-wrap:wrap;gap:7px;padding:0 18px 12px}
-.chip{background:var(--surface2);border:1px solid var(--border2);color:var(--sub);font-size:12px;padding:7px 12px;border-radius:20px;cursor:pointer;transition:.15s}
-.chip:hover{border-color:var(--accent);color:var(--text)}
-.input-area{padding:14px 16px;border-top:1px solid var(--border);display:flex;gap:10px;align-items:flex-end}
-.chat-input{flex:1;background:var(--surface2);border:1px solid var(--border2);color:var(--text);padding:11px 14px;border-radius:12px;font-family:var(--font-body);font-size:14px;resize:none;outline:none;max-height:110px;min-height:44px;line-height:1.5}
-.chat-input:focus{border-color:var(--accent)}
-.chat-input:disabled{opacity:.5}
-.send{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent2),var(--accent));border:none;cursor:pointer;display:grid;place-items:center;flex-shrink:0;transition:.15s}
-.send:hover:not(:disabled){filter:brightness(1.1)}.send:disabled{opacity:.4;cursor:not-allowed}
-.send svg{width:18px;height:18px;fill:#fff}
-
-.section{max-width:1240px;margin:0 auto;padding:clamp(40px,6vw,68px) clamp(16px,4vw,40px)}
+.section{max-width:1240px;margin:0 auto;padding:clamp(44px,6vw,68px) clamp(16px,4vw,40px)}
 .sec-lbl{font-family:var(--font-mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
 .sec-h{font-family:var(--font-display);font-size:clamp(24px,3.2vw,38px);font-weight:800;letter-spacing:-1px;margin-bottom:14px}
 .sec-sub{font-size:15px;color:var(--sub);max-width:560px;line-height:1.7;margin-bottom:34px}
@@ -136,7 +98,7 @@ textarea.field{resize:vertical;min-height:74px;line-height:1.5}
   <a class="brand" href="../../index.html"><span class="dot"></span>ClaveAI</a>
   <div class="nav-right">
     <a class="back" href="../../index.html">← Todas las soluciones</a>
-    <a class="wa-btn" target="_blank" href="https://wa.me/523344151396?text=Hola%20CLAVE.AI%2C%20quiero%20implementar%20Custom%20GPTs%20y%20capacitar%20a%20mi%20equipo.">
+    <a class="wa-btn" target="_blank" href="https://wa.me/523344151396?text=Hola%20CLAVE.AI%2C%20quiero%20que%20mi%20equipo%20use%20IA%20en%20su%20trabajo%20diario.">
       <svg viewBox="0 0 24 24"><path d="M.06 24l1.68-6.14A11.9 11.9 0 0 1 .16 11.9C.16 5.34 5.5 0 12.06 0a11.8 11.8 0 0 1 8.4 3.49 11.8 11.8 0 0 1 3.48 8.41c0 6.56-5.34 11.9-11.9 11.9a11.9 11.9 0 0 1-5.7-1.45L.06 24zM6.6 20.2c1.68.99 3.28 1.58 5.4 1.58 5.45 0 9.9-4.44 9.9-9.88 0-5.46-4.43-9.9-9.9-9.9-5.46 0-9.9 4.44-9.9 9.9 0 2.24.66 3.92 1.76 5.6l-.98 3.58 3.72-.98z"/></svg>
       WhatsApp
     </a>
@@ -144,54 +106,27 @@ textarea.field{resize:vertical;min-height:74px;line-height:1.5}
 </nav>
 
 <section class="hero">
-  <div class="eyebrow"><span class="live"></span>Demo interactiva · Créalo y pruébalo</div>
-  <h1>Crea tu asistente de IA <span class="g">en 30 segundos.</span></h1>
-  <p class="lead">Así implementamos Custom GPTs para tu negocio: eliges el rol, lo configuras y lo pruebas al instante. Arma el tuyo abajo y <b>chatea con él de verdad</b>.</p>
+  <div class="eyebrow"><span class="live"></span>Demo interactiva · Pruébala con IA real</div>
+  <h1>La IA que tu equipo usa <span class="g">todos los días.</span></h1>
+  <p class="lead">No solo agentes que atienden clientes: herramientas de IA que <b>redactan, resumen, extraen datos y analizan</b> por ti. El trabajo repetitivo, en segundos. Elige una, mete tu texto y dale a generar.</p>
 </section>
 
 <div class="studio">
+  <div class="tools" id="tools"></div>
   <div class="grid">
     <div class="card">
-      <div class="card-head">🧠 Configura tu asistente<span class="n">paso 1</span></div>
-      <div class="cfg">
-        <span class="lbl">¿Para qué lo quieres?</span>
-        <div class="presets" id="presets"></div>
-
-        <span class="lbl">Nombre del asistente</span>
-        <input class="field" id="nameF" maxlength="28">
-
-        <span class="lbl">Modelo</span>
-        <div class="models" id="models">
-          <div class="model on" data-m="gemini"><div class="m">Gemini 2.5</div><div class="s">Rápido · económico</div></div>
-          <div class="model" data-m="gpt"><div class="m">GPT-4o</div><div class="s">Versátil</div></div>
-          <div class="model" data-m="claude"><div class="m">Claude</div><div class="s">Razonamiento</div></div>
-        </div>
-
-        <span class="lbl">Instrucciones (personalidad y tarea)</span>
-        <textarea class="field" id="instF"></textarea>
-
-        <span class="lbl">Capacidades</span>
-        <div class="caps" id="caps"></div>
-
-        <div class="ready">
-          <div class="ready-top"><span>Listo para desplegar</span><b id="readyPct">0%</b></div>
-          <div class="ready-bar"><div class="ready-fill" id="readyFill"></div></div>
-        </div>
-        <button class="deploy-btn" id="deployBtn">🚀 Desplegar y probar</button>
+      <div class="card-head"><span id="tIcon">✍️</span> <span id="tTitle">Redactor profesional</span><span class="n">entrada</span></div>
+      <div class="card-body">
+        <div class="tool-desc" id="tDesc"></div>
+        <span class="io-lbl">Tu texto</span>
+        <textarea class="io-input" id="inputF"></textarea>
+        <button class="gen-btn" id="genBtn">✨ Generar con IA</button>
       </div>
     </div>
-
-    <div class="card chat">
-      <div class="chat-head">
-        <div class="chat-av" id="cAv">🤖</div>
-        <div><div class="chat-name" id="cName">Tu asistente</div><div class="chat-status"><span class="d"></span><span id="cStatus">Configúralo y despliégalo</span></div></div>
-        <div class="chat-model" id="cModel">Gemini 2.5</div>
-      </div>
-      <div class="msgs" id="msgs"><div class="empty"><div class="big">✨</div>Arma tu asistente a la izquierda y presiona <b>Desplegar</b> para chatear con él.</div></div>
-      <div class="chips" id="chips"></div>
-      <div class="input-area">
-        <textarea class="chat-input" id="chatInput" placeholder="Despliega tu asistente primero…" rows="1" disabled onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg();}"></textarea>
-        <button class="send" id="sendBtn" disabled onclick="sendMsg()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
+    <div class="card">
+      <div class="card-head">✅ Resultado<span class="model-tag" id="modelTag">Gemini 2.5</span></div>
+      <div class="card-body">
+        <div class="output" id="output"><div class="out-empty"><div class="big">✨</div>El resultado aparecerá aquí.<br>Elige una herramienta, revisa el ejemplo y presiona <b>Generar</b>.</div></div>
       </div>
     </div>
   </div>
@@ -200,18 +135,18 @@ textarea.field{resize:vertical;min-height:74px;line-height:1.5}
 <section class="section">
   <div class="sec-lbl">// Lo que hacemos por ti</div>
   <h2 class="sec-h">Del "no sé usar IA" a tenerla en tu operación diaria</h2>
-  <p class="sec-sub">No te vendemos una herramienta genérica. Diseñamos asistentes con TU información y TU tono, los desplegamos y capacitamos a tu equipo para usarlos.</p>
+  <p class="sec-sub">Implementamos estas herramientas conectadas a TU información y TU tono, y capacitamos a tu equipo para que las use con confianza. La tecnología sin adopción no sirve.</p>
   <div class="cards3">
-    <div class="fcard"><div class="ic">🎯</div><h3>Custom GPTs a la medida</h3><p>Asistentes entrenados con tu catálogo, tus procesos y tu forma de hablar. No respuestas genéricas.</p></div>
+    <div class="fcard"><div class="ic">🧰</div><h3>Herramientas a la medida</h3><p>Redactores, extractores y analizadores entrenados con tu catálogo, tus procesos y tu forma de hablar.</p></div>
     <div class="fcard"><div class="ic">🧩</div><h3>El modelo correcto</h3><p>Gemini, GPT o Claude según la tarea: rapidez, costo o razonamiento. Nosotros elegimos por ti.</p></div>
-    <div class="fcard"><div class="ic">🎓</div><h3>Capacitación incluida</h3><p>Entrenamos a tu equipo para que use IA a diario con confianza. La tecnología sin adopción no sirve.</p></div>
+    <div class="fcard"><div class="ic">🎓</div><h3>Capacitación incluida</h3><p>Entrenamos a tu equipo para usar IA a diario: prompts, buenas prácticas y flujos que ahorran horas.</p></div>
   </div>
 </section>
 
 <div class="cta-band">
-  <h2>¿Listo para tener IA trabajando en tu negocio?</h2>
-  <p>Te ayudamos a diseñar, desplegar y adoptar asistentes de IA reales — con tu info y conectados a tus procesos.</p>
-  <a class="btn-primary" target="_blank" href="https://wa.me/523344151396?text=Hola%20CLAVE.AI%2C%20quiero%20implementar%20IA%20en%20mi%20equipo.">Agendar por WhatsApp →</a>
+  <h2>¿Listo para que tu equipo trabaje con IA?</h2>
+  <p>Diseñamos y desplegamos las herramientas de IA que tu operación necesita — y capacitamos a tu gente para usarlas.</p>
+  <a class="btn-primary" target="_blank" href="https://wa.me/523344151396?text=Hola%20CLAVE.AI%2C%20quiero%20herramientas%20de%20IA%20para%20mi%20equipo.">Agendar por WhatsApp →</a>
 </div>
 
 <footer class="footer">
@@ -226,116 +161,60 @@ textarea.field{resize:vertical;min-height:74px;line-height:1.5}
 <script>
 const API_URL=(location.hostname==='localhost'||location.hostname==='127.0.0.1')?'https://democlient-ivory.vercel.app/api/chat':'/api/chat';
 
-const PRESETS={
-  ventas:{key:'ventas',emoji:'🛍️',label:'Ventas',name:'Vendedor IA',
-    inst:'Eres el asistente de ventas de una tienda. Ayudas a los clientes a elegir el producto ideal, resuelves dudas de precio y disponibilidad, y los guías con amabilidad a cerrar la compra.',
-    caps:['Recomendar productos','Informar precios','Cerrar la venta'],
-    welcome:'¡Hola! 👋 Soy tu asistente de ventas. ¿Qué estás buscando hoy?',
-    chips:['¿Qué me recomiendas?','¿Hacen envíos?','Busco algo económico']},
-  soporte:{key:'soporte',emoji:'🎧',label:'Soporte',name:'Soporte IA',
-    inst:'Eres un asistente de soporte al cliente. Resuelves dudas frecuentes con paciencia y claridad, en pasos simples. Si no sabes algo, ofreces escalar con una persona del equipo.',
-    caps:['Responder FAQs','Guías paso a paso','Escalar a humano'],
-    welcome:'Hola, soy tu asistente de soporte 🎧 ¿En qué te puedo ayudar?',
-    chips:['¿Cómo rastreo mi pedido?','Quiero un reembolso','No puedo entrar a mi cuenta']},
-  citas:{key:'citas',emoji:'📅',label:'Citas',name:'Recepción IA',
-    inst:'Eres la recepcionista virtual de un negocio de servicios. Agendas citas, informas horarios y precios, y confirmas con amabilidad. Preguntas el servicio, la fecha y la hora que prefiere el cliente.',
-    caps:['Agendar citas','Informar horarios','Confirmar datos'],
-    welcome:'¡Hola! Soy la recepción virtual 📅 ¿Te gustaría agendar una cita?',
-    chips:['Quiero una cita','¿Qué horarios tienen?','¿Cuánto cuesta?']},
-  marketing:{key:'marketing',emoji:'✍️',label:'Marketing',name:'Copy IA',
-    inst:'Eres un redactor de marketing creativo. Generas textos persuasivos y con gancho: posts para redes, anuncios, correos y titulares. Preguntas el objetivo y el tono si hace falta.',
-    caps:['Posts para redes','Anuncios','Correos'],
-    welcome:'¡Listo para crear! ✍️ ¿Qué contenido necesitas hoy?',
-    chips:['Un post para Instagram','Idea para una promo','Correo de bienvenida']}
+const TOOLS={
+  redactar:{key:'redactar',emoji:'✍️',label:'Redactar',title:'Redactor profesional',
+    desc:'Convierte notas sueltas en un mensaje o correo pulido, listo para enviar.',
+    example:'Responder a cliente molesto: su pedido #4821 llegó 3 días tarde. Disculparnos, ofrecer 15% de descuento en su próxima compra, tono cálido y profesional.',
+    system:'Eres un redactor profesional para empresas. A partir de las notas del usuario, redacta en español un mensaje o correo claro, cálido y profesional, listo para enviar. Devuelve SOLO el mensaje final (con asunto si es correo), sin explicaciones ni comentarios.'},
+  resumir:{key:'resumir',emoji:'📄',label:'Resumir',title:'Resumen ejecutivo',
+    desc:'Pega un texto largo (junta, correo, reporte) y obtén lo esencial en segundos.',
+    example:'En la junta de hoy revisamos ventas de marzo: subieron 12% vs febrero, impulsadas por la promo de temporada. El área de logística reportó retrasos por falta de personal los fines de semana. Marketing propuso invertir más en Instagram porque de ahí vienen el 60% de los leads. Se acordó contratar 2 repartidores y lanzar una campaña de reseñas. Pendiente: definir presupuesto de anuncios antes del viernes.',
+    system:'Resume el texto del usuario en español. Devuelve EXACTAMENTE este formato: un resumen de 2 líneas; luego una línea "**Puntos clave:**" seguida de 3 viñetas con "- "; luego "**Siguiente paso:**" con una acción concreta sugerida. Sé conciso y claro.'},
+  extraer:{key:'extraer',emoji:'🔎',label:'Extraer datos',title:'Extractor de datos',
+    desc:'De un mensaje desordenado a datos estructurados, listos para tu sistema.',
+    example:'Hola! quiero pedir 3 pizzas grandes de pepperoni y 2 refrescos de 600ml, soy Laura Gómez, mi cel es 33 1234 5678, me lo mandan a Av. Vallarta 234 col. Centro porfa, pago con tarjeta',
+    system:'Extrae los datos del texto del usuario y devuélvelos como lista en español, un campo por línea con el formato "**Campo:** valor". Incluye: Nombre, Teléfono, Dirección, Productos (con cantidades), Método de pago. Si un dato no aparece, pon "no especificado". No agregues comentarios.'},
+  resenas:{key:'resenas',emoji:'⭐',label:'Analizar reseñas',title:'Análisis de reseñas',
+    desc:'Entiende qué opinan tus clientes y obtén una respuesta lista para publicar.',
+    example:'El servicio fue algo lento y la comida llegó tibia, pero el postre estuvo delicioso y el mesero súper amable. Regresaría por el ambiente.',
+    system:'Analiza la reseña del usuario. Devuelve en español EXACTAMENTE: "**Sentimiento:** [Positivo/Neutral/Negativo]"; luego "**Puntos positivos:**" con viñetas "- "; luego "**A mejorar:**" con viñetas "- "; luego "**Respuesta sugerida:**" con un mensaje cordial y profesional para responderle al cliente. Breve.'}
 };
-const MODEL_LABEL={gemini:'Gemini 2.5',gpt:'GPT-4o',claude:'Claude'};
 
-let cfg={preset:'ventas',model:'gemini',caps:{}};
-let deployed=false, history=[], loading=false;
 const $=id=>document.getElementById(id);
+let cur='redactar', loading=false;
 
-$('presets').innerHTML=Object.values(PRESETS).map(p=>`<div class="preset" data-p="${p.key}"><span class="e">${p.emoji}</span>${p.label}</div>`).join('');
-$('presets').querySelectorAll('.preset').forEach(el=>el.addEventListener('click',()=>loadPreset(el.dataset.p)));
-$('models').querySelectorAll('.model').forEach(el=>el.addEventListener('click',()=>{cfg.model=el.dataset.m;$('models').querySelectorAll('.model').forEach(m=>m.classList.toggle('on',m===el));$('cModel').textContent=MODEL_LABEL[cfg.model];updateReady();}));
-$('nameF').addEventListener('input',updateReady);
-$('instF').addEventListener('input',updateReady);
+$('tools').innerHTML=Object.values(TOOLS).map(t=>`<div class="tool" data-t="${t.key}"><span class="e">${t.emoji}</span>${t.label}</div>`).join('');
+$('tools').querySelectorAll('.tool').forEach(el=>el.addEventListener('click',()=>{if(!loading)loadTool(el.dataset.t);}));
 
-function loadPreset(key){
-  const p=PRESETS[key];cfg.preset=key;
-  $('presets').querySelectorAll('.preset').forEach(el=>el.classList.toggle('on',el.dataset.p===key));
-  $('nameF').value=p.name;
-  $('instF').value=p.inst;
-  cfg.caps={};
-  $('caps').innerHTML=p.caps.map((c,i)=>`<div class="cap on" data-c="${i}"><span class="x">✓</span>${c}</div>`).join('');
-  p.caps.forEach((c,i)=>cfg.caps[i]=c);
-  $('caps').querySelectorAll('.cap').forEach(el=>el.addEventListener('click',()=>{
-    el.classList.toggle('on');
-    if(el.classList.contains('on'))cfg.caps[el.dataset.c]=p.caps[el.dataset.c];else delete cfg.caps[el.dataset.c];
-    updateReady();
-  }));
-  updateReady();
+function loadTool(key){
+  cur=key;const t=TOOLS[key];
+  $('tools').querySelectorAll('.tool').forEach(el=>el.classList.toggle('on',el.dataset.t===key));
+  $('tIcon').textContent=t.emoji;$('tTitle').textContent=t.title;$('tDesc').textContent=t.desc;
+  $('inputF').value=t.example;
+  $('output').innerHTML='<div class="out-empty"><div class="big">'+t.emoji+'</div>Presiona <b>Generar con IA</b> para ver el resultado.</div>';
 }
-function updateReady(){
-  let pct=0;
-  if($('nameF').value.trim())pct+=20;
-  if($('instF').value.trim().length>40)pct+=30;
-  if(cfg.model)pct+=20;
-  if(Object.keys(cfg.caps).length>0)pct+=30;
-  $('readyFill').style.width=pct+'%';
-  $('readyPct').textContent=pct+'%';
+function fmt(text){
+  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.*?)\*\*/g,'<b>$1</b>')
+    .replace(/^[-•]\s?(.*)$/gm,'• $1');
 }
-function buildSystem(){
-  const name=$('nameF').value.trim()||'Asistente';
-  const inst=$('instF').value.trim();
-  const caps=Object.values(cfg.caps);
-  return `${inst}\n\nTe llamas "${name}". Capacidades activas: ${caps.join(', ')||'generales'}.\nReglas: responde en español, breve y útil (máx 3-4 oraciones). Sé cálido y profesional. Mantente siempre en tu rol; nunca digas que eres una IA genérica o un modelo de lenguaje.`;
-}
-
-$('deployBtn').addEventListener('click',()=>{
-  const p=PRESETS[cfg.preset];
-  deployed=true;history=[];
-  $('cAv').textContent=p.emoji;
-  $('cName').textContent=$('nameF').value.trim()||'Asistente';
-  $('cStatus').textContent='En línea · '+MODEL_LABEL[cfg.model];
-  $('msgs').innerHTML='';
-  addBubble(p.welcome,'bot');
-  $('chips').innerHTML=p.chips.map(c=>`<div class="chip">${c}</div>`).join('');
-  $('chips').querySelectorAll('.chip').forEach(el=>el.addEventListener('click',()=>{$('chatInput').value=el.textContent;sendMsg();}));
-  $('chatInput').disabled=false;$('sendBtn').disabled=false;
-  $('chatInput').placeholder='Escríbele a tu asistente…';
-  $('chatInput').focus();
-});
-
-function addBubble(text,role){
-  const empty=$('msgs').querySelector('.empty');if(empty)empty.remove();
-  const emoji=role==='bot'?$('cAv').textContent:'🙂';
-  const safe=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');
-  const d=document.createElement('div');d.className='msg '+role;
-  d.innerHTML=`<div class="av">${emoji}</div><div class="bubble">${safe}</div>`;
-  $('msgs').appendChild(d);$('msgs').scrollTop=$('msgs').scrollHeight;
-}
-function showTyping(){const d=document.createElement('div');d.className='msg bot';d.id='typing';d.innerHTML=`<div class="av">${$('cAv').textContent}</div><div class="typing"><span></span><span></span><span></span></div>`;$('msgs').appendChild(d);$('msgs').scrollTop=$('msgs').scrollHeight;}
-function hideTyping(){const t=$('typing');if(t)t.remove();}
-
-async function sendMsg(){
-  const inp=$('chatInput');const text=inp.value.trim();
-  if(!text||!deployed||loading)return;
-  loading=true;inp.value='';inp.style.height='auto';
-  const qr=$('chips');if(qr)qr.innerHTML='';
-  addBubble(text,'user');history.push({role:'user',content:text});
-  showTyping();$('sendBtn').disabled=true;
+async function generate(){
+  if(loading)return;const t=TOOLS[cur];const text=$('inputF').value.trim();
+  if(!text){$('output').innerHTML='<div class="out-empty">Escribe algo primero ✍️</div>';return;}
+  loading=true;$('genBtn').disabled=true;$('genBtn').textContent='⏳ Generando…';
+  $('output').innerHTML='<div class="spin"></div>';
   try{
-    const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:buildSystem(),messages:history})});
+    const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({system:t.system,messages:[{role:'user',content:text}]})});
     const data=await res.json();
-    const reply=(data.content&&data.content[0]&&data.content[0].text)||'Perdón, ¿me lo repites?';
-    history.push({role:'assistant',content:reply});
-    hideTyping();addBubble(reply,'bot');
-  }catch(e){hideTyping();addBubble('⚠️ No pude conectar. Intenta de nuevo.','bot');}
-  loading=false;$('sendBtn').disabled=false;inp.focus();
+    const out=(data.content&&data.content[0]&&data.content[0].text)||'No pude generar el resultado. Intenta de nuevo.';
+    $('output').innerHTML='<button class="copy-btn" id="copyBtn">Copiar</button>'+fmt(out);
+    const cb=$('copyBtn');if(cb)cb.addEventListener('click',()=>{navigator.clipboard.writeText(out);cb.textContent='¡Copiado!';setTimeout(()=>cb.textContent='Copiar',1500);});
+  }catch(e){$('output').innerHTML='<div class="out-empty">⚠️ No pude conectar. Intenta de nuevo.</div>';}
+  loading=false;$('genBtn').disabled=false;$('genBtn').textContent='✨ Generar con IA';
 }
-window.sendMsg=sendMsg;
+$('genBtn').addEventListener('click',generate);
 
-loadPreset('ventas');
+loadTool('redactar');
 </script>
 </body>
 </html>
