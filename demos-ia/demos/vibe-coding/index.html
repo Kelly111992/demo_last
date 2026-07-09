@@ -3,15 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ClaveAI — Vibe Coding</title>
+<title>ClaveAI — Vibe Coding · Herramientas a medida en vivo</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#06100c;--surface:#0a1712;--surface2:#0f2019;
+  --bg:#05100c;--surface:#0a1a13;--surface2:#0f241a;--surface3:#153025;
   --accent:#34d399;--accent2:#10b981;
-  --text:#e6f5ee;--sub:#a7c7ba;--muted:#6f8a7d;--border:#173026;
-  --wa:#25d366;
+  --text:#e9fff5;--sub:#9dc4b3;--muted:#6f9585;--border:#153025;--border2:#1f4536;
+  --yellow:#fbbf24;--red:#f87171;--blue:#60a5fa;
   --font-body:'Plus Jakarta Sans',sans-serif;--font-display:'Bricolage Grotesque',sans-serif;--font-mono:'JetBrains Mono',monospace;
 }
 html{scroll-behavior:smooth}
@@ -19,91 +19,126 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);overflo
 .aurora{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
 .orb{position:absolute;border-radius:50%;filter:blur(110px)}
 .orb1{width:700px;height:600px;top:-220px;left:-150px;background:rgba(52,211,153,0.13)}
-.orb2{width:600px;height:600px;bottom:-200px;right:-160px;background:rgba(16,185,129,0.1)}
+.orb2{width:600px;height:600px;bottom:-200px;right:-160px;background:rgba(16,185,129,0.09)}
 a{text-decoration:none;color:inherit}
 
-.nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 clamp(20px,5vw,52px);background:rgba(6,16,12,0.82);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav{position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 clamp(20px,5vw,52px);background:rgba(5,16,12,0.82);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:800;font-size:20px;letter-spacing:-.5px}
 .brand .dot{width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2))}
 .nav-right{display:flex;align-items:center;gap:10px}
-.back{font-size:13px;color:var(--sub);display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:9px;transition:.15s}
+.back{font-size:13px;color:var(--sub);padding:8px 12px;border-radius:9px;transition:.15s}
 .back:hover{color:var(--text);background:var(--surface2)}
-.wa-btn{display:inline-flex;align-items:center;gap:8px;background:var(--wa);color:#04310f;font-weight:700;font-size:13px;padding:9px 16px;border-radius:10px;transition:.15s}
+.wa-btn{display:inline-flex;align-items:center;gap:8px;background:#25d366;color:#04310f;font-weight:700;font-size:13px;padding:9px 16px;border-radius:10px;transition:.15s}
 .wa-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
 .wa-btn svg{width:16px;height:16px;fill:#04310f}
+@media(max-width:640px){.back{display:none}}
 
-.hero{max-width:1180px;margin:0 auto;padding:clamp(40px,7vw,84px) clamp(20px,5vw,52px) 40px;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
-@media(max-width:900px){.hero{grid-template-columns:1fr;gap:32px}}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(52,211,153,0.3);background:rgba(52,211,153,0.08);padding:6px 13px;border-radius:20px;margin-bottom:22px}
+.hero{max-width:1240px;margin:0 auto;padding:clamp(30px,5vw,52px) clamp(16px,4vw,40px) 10px;text-align:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(52,211,153,0.3);background:rgba(52,211,153,0.08);padding:6px 13px;border-radius:20px;margin-bottom:18px}
 .eyebrow .live{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(52,211,153,.5)}60%{opacity:.5;box-shadow:0 0 0 6px rgba(52,211,153,0)}}
-h1{font-family:var(--font-display);font-size:clamp(38px,6vw,68px);font-weight:800;line-height:1;letter-spacing:-2px;margin-bottom:22px}
-h1 .g{background:linear-gradient(100deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.lead{font-size:clamp(15px,1.6vw,17px);color:var(--sub);line-height:1.7;max-width:480px;margin-bottom:30px}
-.cta-row{display:flex;flex-wrap:wrap;gap:12px}
-.btn-primary{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#04241a;font-weight:700;font-size:15px;padding:14px 24px;border-radius:12px;transition:.15s}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(16,185,129,.4)}
-.btn-ghost{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--border);color:var(--text);font-weight:600;font-size:15px;padding:14px 22px;border-radius:12px;transition:.15s}
-.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+h1{font-family:var(--font-display);font-size:clamp(30px,5vw,54px);font-weight:800;line-height:1.02;letter-spacing:-1.5px;margin-bottom:14px}
+h1 .g{background:linear-gradient(100deg,var(--accent),#6ee7b7);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{font-size:clamp(14px,1.5vw,16px);color:var(--sub);line-height:1.7;max-width:600px;margin:0 auto}
 
-/* window */
-.stage{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:20px;box-shadow:0 30px 70px rgba(0,0,0,.5)}
-.stage-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.stage-title{font-size:12px;font-weight:600;color:var(--sub);display:flex;align-items:center;gap:8px}
-.stage-title .d{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
-.tabs{display:flex;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:3px}
-.tab{font-size:11px;font-weight:600;padding:5px 12px;border-radius:6px;color:var(--muted);cursor:pointer;transition:.14s}
-.tab.on{background:var(--accent);color:#052018}
-.win{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:#fff}
-.win-bar{height:32px;background:#0d1a15;display:flex;align-items:center;gap:6px;padding:0 12px;border-bottom:1px solid var(--border)}
-.wdot{width:9px;height:9px;border-radius:50%}.wdot.r{background:#ff5f57}.wdot.y{background:#febc2e}.wdot.g{background:#28c840}
-.wtitle{margin-left:8px;font-family:var(--font-mono);font-size:10px;color:var(--muted)}
-.pane{min-height:290px}
-.pv{padding:16px;background:#f6f9f8;color:#0d1f18}
-.pv-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.pv-title{font-family:var(--font-display);font-size:16px;font-weight:800;color:#0d1f18}
-.pv-badge{font-size:9px;font-weight:700;color:#10b981;background:rgba(16,185,129,0.12);padding:3px 8px;border-radius:6px}
-.pv-kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.pv-kpi{background:#fff;border:1px solid #e6efec;border-radius:9px;padding:10px}
-.pv-kpi .n{font-family:var(--font-display);font-size:18px;font-weight:800;color:#0d1f18}
-.pv-kpi .l{font-size:8px;color:#7a8f87;margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
-.pv-chart{display:flex;align-items:flex-end;gap:6px;height:70px;background:#fff;border:1px solid #e6efec;border-radius:9px;padding:10px}
-.pv-bar{flex:1;background:linear-gradient(180deg,#34d399,#10b981);border-radius:4px 4px 0 0;min-height:8px;transition:height .5s}
-.pv-tr{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:8px 10px;background:#fff;border:1px solid #e6efec;border-radius:8px;margin-bottom:6px}
-.pv-tr .tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px;background:rgba(16,185,129,0.12);color:#10b981}
-.pv-calc-out{background:#0d1f18;color:#34d399;font-family:var(--font-mono);font-size:22px;font-weight:600;text-align:right;padding:16px;border-radius:9px;margin-bottom:8px}
-.pv-grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
-.pv-key{background:#fff;border:1px solid #e6efec;border-radius:7px;height:32px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#334155}
-.code{padding:16px;background:#08130f;font-family:var(--font-mono);font-size:11px;line-height:1.7;color:#8fb3a3;min-height:290px;overflow:auto}
-.code .kw{color:#c084fc}.code .fn{color:#34d399}.code .str{color:#fbbf24}.code .cm{color:#4b6a5d}
-.cursor{display:inline-block;width:7px;height:13px;background:var(--accent);vertical-align:middle;animation:blink 1s steps(2) infinite}
-@keyframes blink{50%{opacity:0}}
-.hidden{display:none}
+.ide-wrap{max-width:1180px;margin:24px auto 0;padding:0 clamp(16px,4vw,40px)}
+.ide{background:var(--surface);border:1px solid var(--border2);border-radius:18px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.5)}
+.ide-bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);background:var(--surface2);flex-wrap:wrap}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--sub);background:transparent;border:1px solid transparent;padding:8px 13px;border-radius:9px;cursor:pointer;transition:.15s}
+.tab:hover{color:var(--text)}
+.tab.on{color:var(--text);background:var(--surface3);border-color:var(--border2)}
+.tab .e{font-size:15px}
+.ide-spacer{flex:1}
+.toggle{display:flex;background:var(--surface3);border:1px solid var(--border2);border-radius:9px;padding:3px}
+.toggle button{font-size:12px;font-weight:600;color:var(--sub);background:transparent;border:none;padding:6px 13px;border-radius:7px;cursor:pointer;transition:.15s;font-family:var(--font-body)}
+.toggle button.on{background:var(--accent);color:#04231a}
+.ide-body{position:relative;min-height:440px}
+.pane{display:none;padding:22px}
+.pane.on{display:block}
+.badge-app{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:8px}
 
-.stats{max-width:1180px;margin:0 auto;padding:20px clamp(20px,5vw,52px);display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}}
-.stat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px}
-.stat-n{font-family:var(--font-display);font-size:30px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
-.stat-l{font-size:12px;color:var(--sub);margin-top:6px}
+/* code view */
+.code{margin:0;padding:22px;font-family:var(--font-mono);font-size:12.5px;line-height:1.7;color:#cfe;overflow-x:auto;background:#04120c;min-height:440px}
+.code .k{color:#f0abfc}.code .s{color:#6ee7b7}.code .c{color:#6f9585}.code .f{color:#93c5fd}.code .n{color:#fbbf24}
 
-.section{max-width:1180px;margin:0 auto;padding:clamp(40px,6vw,72px) clamp(20px,5vw,52px)}
+/* ── Cotizador ── */
+.cotz{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+@media(max-width:760px){.cotz{grid-template-columns:1fr}}
+.ctrl{margin-bottom:20px}
+.ctrl-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px}
+.ctrl-top b{color:var(--accent);font-family:var(--font-mono)}
+.ctrl input[type=range]{width:100%;accent-color:var(--accent);height:6px}
+.result{background:linear-gradient(135deg,rgba(52,211,153,.1),rgba(16,185,129,.04));border:1px solid var(--border2);border-radius:14px;padding:22px}
+.res-row{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--border)}
+.res-row:last-child{border-bottom:none}
+.res-row .l{font-size:13px;color:var(--sub)}
+.res-row .v{font-family:var(--font-display);font-weight:800;font-size:26px}
+.res-hi{background:var(--surface3);border-radius:12px;padding:16px;margin-top:14px;text-align:center}
+.res-hi .v{font-family:var(--font-display);font-weight:800;font-size:38px;color:var(--accent);line-height:1}
+.res-hi .l{font-size:12px;color:var(--sub);margin-top:6px}
+
+/* ── Inventario ── */
+.inv-alert{display:flex;align-items:center;gap:10px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:var(--red);border-radius:12px;padding:12px 16px;font-size:14px;font-weight:600;margin-bottom:16px}
+.inv-alert.ok{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.3);color:var(--accent)}
+.inv-table{width:100%;border-collapse:collapse}
+.inv-table th{text-align:left;font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--border)}
+.inv-table td{padding:11px 10px;border-bottom:1px solid var(--border);font-size:14px}
+.inv-table tr.low td{background:rgba(248,113,113,.06)}
+.inv-bar{height:7px;border-radius:4px;background:var(--surface3);overflow:hidden;width:120px}
+.inv-bar i{display:block;height:100%;border-radius:4px;background:var(--accent);transition:width .25s}
+.inv-bar i.warn{background:var(--yellow)}.inv-bar i.crit{background:var(--red)}
+.st-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
+.st-ok{background:rgba(52,211,153,.14);color:var(--accent)}
+.st-low{background:rgba(251,191,36,.14);color:var(--yellow)}
+.st-out{background:rgba(248,113,113,.14);color:var(--red)}
+.qty{display:flex;align-items:center;gap:8px}
+.qbtn{width:26px;height:26px;border-radius:7px;border:1px solid var(--border2);background:var(--surface3);color:var(--text);font-size:15px;cursor:pointer;transition:.12s}
+.qbtn:hover{border-color:var(--accent);color:var(--accent)}
+.qn{min-width:26px;text-align:center;font-family:var(--font-mono);font-weight:600}
+
+/* ── Agenda ── */
+.agenda{display:grid;grid-template-columns:1fr 1.2fr;gap:24px}
+@media(max-width:760px){.agenda{grid-template-columns:1fr}}
+.ag-field{margin-bottom:16px}
+.ag-field label{font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:9px}
+.ag-sel{width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:11px 13px;font-family:var(--font-body);font-size:14px;cursor:pointer}
+.days{display:flex;gap:7px;flex-wrap:wrap}
+.day{background:var(--surface2);border:1px solid var(--border2);color:var(--sub);border-radius:10px;padding:9px 13px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;text-align:center}
+.day.on{border-color:var(--accent);background:rgba(52,211,153,.12);color:var(--text)}
+.day small{display:block;font-size:10px;color:var(--muted);font-weight:500}
+.slots-lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+@media(max-width:520px){.slots{grid-template-columns:repeat(3,1fr)}}
+.slot{background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:12px 6px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;text-align:center}
+.slot:hover:not(.taken){border-color:var(--accent);background:rgba(52,211,153,.1)}
+.slot.taken{opacity:.32;cursor:not-allowed;text-decoration:line-through}
+.slot.sel{background:var(--accent);color:#04231a;border-color:var(--accent)}
+.ag-conf{margin-top:18px;background:linear-gradient(135deg,rgba(52,211,153,.12),rgba(16,185,129,.04));border:1px solid var(--border2);border-radius:14px;padding:18px;display:none}
+.ag-conf.show{display:block;animation:pop .4s cubic-bezier(.2,.7,.3,1.3)}
+@keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+.ag-conf .h{font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.ag-conf .kv{display:flex;flex-wrap:wrap;gap:7px}
+.ag-conf .kv span{font-family:var(--font-mono);font-size:11px;background:var(--surface3);border:1px solid var(--border2);padding:4px 9px;border-radius:6px;color:var(--sub)}
+.ag-conf .kv b{color:var(--accent)}
+
+/* sections */
+.section{max-width:1240px;margin:0 auto;padding:clamp(40px,6vw,68px) clamp(16px,4vw,40px)}
 .sec-lbl{font-family:var(--font-mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
-.sec-h{font-family:var(--font-display);font-size:clamp(26px,3.4vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:14px}
-.sec-sub{font-size:15px;color:var(--sub);max-width:560px;line-height:1.7;margin-bottom:36px}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-@media(max-width:820px){.cards{grid-template-columns:1fr}}
-.fcard{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;transition:.2s}
-.fcard:hover{border-color:rgba(52,211,153,0.4);transform:translateY(-4px)}
-.fcard .ic{width:46px;height:46px;border-radius:12px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+.sec-h{font-family:var(--font-display);font-size:clamp(24px,3.2vw,38px);font-weight:800;letter-spacing:-1px;margin-bottom:14px}
+.sec-sub{font-size:15px;color:var(--sub);max-width:560px;line-height:1.7;margin-bottom:34px}
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:820px){.cards3{grid-template-columns:1fr}}
+.fcard{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px}
+.fcard .ic{width:46px;height:46px;border-radius:12px;background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.2);display:grid;place-items:center;font-size:22px;margin-bottom:16px}
 .fcard h3{font-family:var(--font-display);font-size:18px;font-weight:700;margin-bottom:8px}
 .fcard p{font-size:13.5px;color:var(--sub);line-height:1.65}
-.stack{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
-.stk{font-family:var(--font-mono);font-size:12.5px;font-weight:500;padding:8px 15px;border-radius:9px;background:var(--surface);border:1px solid var(--border);color:var(--accent)}
-
-.cta-band{max-width:1180px;margin:0 auto 60px;padding:clamp(32px,5vw,56px);background:linear-gradient(135deg,rgba(52,211,153,0.14),rgba(16,185,129,0.06));border:1px solid rgba(52,211,153,0.3);border-radius:24px;text-align:center}
-.cta-band h2{font-family:var(--font-display);font-size:clamp(26px,3.6vw,40px);font-weight:800;letter-spacing:-1px;margin-bottom:14px}
+.cta-band{max-width:1240px;margin:0 auto 60px;padding:clamp(32px,5vw,56px);background:linear-gradient(135deg,rgba(52,211,153,0.14),rgba(16,185,129,0.06));border:1px solid rgba(52,211,153,0.3);border-radius:24px;text-align:center}
+.cta-band h2{font-family:var(--font-display);font-size:clamp(24px,3.4vw,38px);font-weight:800;letter-spacing:-1px;margin-bottom:14px}
 .cta-band p{font-size:15px;color:var(--sub);max-width:480px;margin:0 auto 26px;line-height:1.6}
-.footer{border-top:1px solid var(--border);padding:26px clamp(20px,5vw,52px);display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;max-width:1180px;margin:0 auto}
+.btn-primary{display:inline-flex;align-items:center;gap:9px;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#04231a;font-weight:700;font-size:15px;padding:14px 24px;border-radius:12px;transition:.15s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(16,185,129,.35)}
+.footer{border-top:1px solid var(--border);padding:26px clamp(20px,5vw,52px);display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;max-width:1240px;margin:0 auto}
 .footer p{font-size:13px;color:var(--muted)}
 .footer a{color:var(--sub);font-size:13px}.footer a:hover{color:var(--accent)}
 </style>
@@ -115,65 +150,49 @@ h1 .g{background:linear-gradient(100deg,var(--accent),var(--accent2));-webkit-ba
   <a class="brand" href="../../index.html"><span class="dot"></span>ClaveAI</a>
   <div class="nav-right">
     <a class="back" href="../../index.html">← Todas las soluciones</a>
-    <a class="wa-btn" target="_blank" href="https://wa.me/523344151396?text=Hola%20CLAVE.AI%2C%20quiero%20una%20app%2Fdashboard%20a%20medida%20con%20Vibe%20Coding.">
-      <svg viewBox="0 0 24 24"><path d="M.06 24l1.68-6.14A11.9 11.9 0 0 1 .16 11.9C.16 5.34 5.5 0 12.06 0a11.8 11.8 0 0 1 8.4 3.49 11.8 11.8 0 0 1 3.48 8.41c0 6.56-5.34 11.9-11.9 11.9a11.9 11.9 0 0 1-5.7-1.45L.06 24zM6.6 20.2c1.68.99 3.28 1.58 5.4 1.58 5.45 0 9.9-4.44 9.9-9.88 0-5.46-4.43-9.9-9.9-9.9-5.46 0-9.9 4.44-9.9 9.9 0 2.24.66 3.92 1.76 5.6l-.98 3.58 3.72-.98zm11.4-5.55c-.07-.12-.27-.2-.57-.35-.3-.15-1.76-.87-2.03-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51-.17-.01-.37-.01-.57-.01-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.49 0 1.47 1.07 2.89 1.22 3.09.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2-1.41.25-.69.25-1.28.17-1.41z"/></svg>
+    <a class="wa-btn" target="_blank" href="https://wa.me/523344151396?text=Hola%20CLAVE.AI%2C%20quiero%20una%20herramienta%20a%20medida%20para%20mi%20negocio.">
+      <svg viewBox="0 0 24 24"><path d="M.06 24l1.68-6.14A11.9 11.9 0 0 1 .16 11.9C.16 5.34 5.5 0 12.06 0a11.8 11.8 0 0 1 8.4 3.49 11.8 11.8 0 0 1 3.48 8.41c0 6.56-5.34 11.9-11.9 11.9a11.9 11.9 0 0 1-5.7-1.45L.06 24zM6.6 20.2c1.68.99 3.28 1.58 5.4 1.58 5.45 0 9.9-4.44 9.9-9.88 0-5.46-4.43-9.9-9.9-9.9-5.46 0-9.9 4.44-9.9 9.9 0 2.24.66 3.92 1.76 5.6l-.98 3.58 3.72-.98z"/></svg>
       WhatsApp
     </a>
   </div>
 </nav>
 
 <section class="hero">
-  <div>
-    <div class="eyebrow"><span class="live"></span>Vibe Coding · Apps a medida</div>
-    <h1>Herramientas que se construyen en <span class="g">días, no meses.</span></h1>
-    <p class="lead">Desarrollo asistido por IA para resolver problemas específicos de tu operación: dashboards, mini-CRMs, cotizadores y apps internas — hechas a tu medida.</p>
-    <div class="cta-row">
-      <a class="btn-primary" target="_blank" href="https://wa.me/523344151396?text=Hola%20CLAVE.AI%2C%20quiero%20una%20app%20a%20medida%20con%20Vibe%20Coding.">Quiero mi herramienta →</a>
-      <a class="btn-ghost" href="#que">Ver qué construimos</a>
-    </div>
-  </div>
-
-  <div class="stage">
-    <div class="stage-top">
-      <div class="stage-title"><span class="d"></span><span id="buildLabel">Construyendo herramienta</span></div>
-      <div class="tabs"><div class="tab on" id="tabP" onclick="setTab('p')">👁 Preview</div><div class="tab" id="tabC" onclick="setTab('c')">‹/› Código</div></div>
-    </div>
-    <div class="win">
-      <div class="win-bar"><span class="wdot r"></span><span class="wdot y"></span><span class="wdot g"></span><span class="wtitle" id="wtitle">app.tunegocio.com</span></div>
-      <div class="pane pv" id="preview"></div>
-      <div class="pane code hidden" id="code"></div>
-    </div>
-  </div>
+  <div class="eyebrow"><span class="live"></span>Demo interactiva · Úsalas de verdad</div>
+  <h1>Herramientas a medida <span class="g">que sí funcionan.</span></h1>
+  <p class="lead">No son mockups: son mini-apps reales que construimos para resolver tu operación. Pruébalas abajo — cambia los datos, mira los resultados, y ve el <b>código</b> detrás.</p>
 </section>
 
-<div class="stats">
-  <div class="stat"><div class="stat-n">Días</div><div class="stat-l">Entrega, no meses</div></div>
-  <div class="stat"><div class="stat-n">A medida</div><div class="stat-l">Para tu problema real</div></div>
-  <div class="stat"><div class="stat-n">React</div><div class="stat-l">+ Supabase + Vercel</div></div>
-  <div class="stat"><div class="stat-n">IA</div><div class="stat-l">Desarrollo asistido</div></div>
+<div class="ide-wrap">
+  <div class="ide">
+    <div class="ide-bar">
+      <div class="tabs" id="tabs">
+        <button class="tab on" data-t="cotz"><span class="e">🧮</span>Cotizador / ROI</button>
+        <button class="tab" data-t="inv"><span class="e">📦</span>Dashboard inventario</button>
+        <button class="tab" data-t="agenda"><span class="e">📅</span>Agenda / reservas</button>
+      </div>
+      <div class="ide-spacer"></div>
+      <div class="toggle" id="toggle"><button class="on" data-v="preview">▷ Preview</button><button data-v="code">{ } Código</button></div>
+    </div>
+    <div class="ide-body" id="ideBody"></div>
+  </div>
 </div>
 
-<section class="section" id="que">
-  <div class="sec-lbl">// Qué construimos</div>
-  <h2 class="sec-h">Apps internas que resuelven tu operación</h2>
-  <p class="sec-sub">No plantillas genéricas: herramientas pensadas para cómo trabajas tú. Si lo haces en un Excel caótico o "de memoria", probablemente podemos convertirlo en una app.</p>
-  <div class="cards">
-    <div class="fcard"><div class="ic">📊</div><h3>Dashboards</h3><p>Tus ventas, clientes y pedidos del día en una sola pantalla, en tiempo real.</p></div>
-    <div class="fcard"><div class="ic">🗂️</div><h3>Mini-CRMs</h3><p>Seguimiento de prospectos y clientes sin pagar licencias caras que no usas.</p></div>
-    <div class="fcard"><div class="ic">🧮</div><h3>Calculadoras / cotizadores</h3><p>Cotiza servicios complejos en segundos, con tus reglas de precio.</p></div>
-    <div class="fcard"><div class="ic">📅</div><h3>Portales de reservas</h3><p>Que tus clientes agenden solos, conectado a tu calendario.</p></div>
-    <div class="fcard"><div class="ic">📦</div><h3>Paneles de inventario</h3><p>Stock, entradas y salidas con alertas de bajo mínimo.</p></div>
-    <div class="fcard"><div class="ic">✨</div><h3>Lo que se te ocurra</h3><p>Si te quita tiempo y es repetitivo, lo volvemos una herramienta.</p></div>
-  </div>
-  <div class="stack">
-    <span class="stk">React</span><span class="stk">Tailwind</span><span class="stk">Supabase</span><span class="stk">Vercel</span><span class="stk">IA</span>
+<section class="section">
+  <div class="sec-lbl">// Lo que construimos</div>
+  <h2 class="sec-h">Apps internas que resuelven tu operación real</h2>
+  <p class="sec-sub">Cotizadores, dashboards, mini-CRMs, portales de reservas, paneles de inventario. Lo que hoy haces en Excel a mano, lo convertimos en una herramienta que tu equipo usa a diario.</p>
+  <div class="cards3">
+    <div class="fcard"><div class="ic">⚡</div><h3>En días, no meses</h3><p>Con IA y componentes probados construimos y desplegamos tu herramienta en una fracción del tiempo.</p></div>
+    <div class="fcard"><div class="ic">🎯</div><h3>Para tu problema real</h3><p>No plantillas genéricas: la app resuelve exactamente el proceso que hoy te cuesta tiempo y errores.</p></div>
+    <div class="fcard"><div class="ic">🧱</div><h3>Stack moderno</h3><p>React, Tailwind, Supabase y Vercel. Rápido, seguro y listo para crecer contigo.</p></div>
   </div>
 </section>
 
 <div class="cta-band">
-  <h2>¿Qué resuelves hoy "a mano"?</h2>
-  <p>Cuéntanos ese proceso que te quita tiempo y te decimos cómo volverlo una app. En días, no meses.</p>
-  <a class="btn-primary" target="_blank" href="https://wa.me/523344151396?text=Hola%20CLAVE.AI%2C%20quiero%20una%20herramienta%20a%20medida%20con%20Vibe%20Coding.">Agendar por WhatsApp →</a>
+  <h2>¿Qué herramienta te haría la vida más fácil?</h2>
+  <p>Cuéntanos el proceso que hoy haces a mano y te lo convertimos en una app. La primera consultoría es directa por WhatsApp.</p>
+  <a class="btn-primary" target="_blank" href="https://wa.me/523344151396?text=Hola%20CLAVE.AI%2C%20quiero%20una%20herramienta%20a%20medida.">Agendar por WhatsApp →</a>
 </div>
 
 <footer class="footer">
@@ -186,43 +205,202 @@ h1 .g{background:linear-gradient(100deg,var(--accent),var(--accent2));-webkit-ba
 </footer>
 
 <script>
-const TOOLS=[
-  {name:'Panel de Ventas',title:'ventas.tunegocio.com',
-   preview:`<div class="pv-h"><span class="pv-title">Panel de Control</span><span class="pv-badge">EN VIVO</span></div>
-     <div class="pv-kpis"><div class="pv-kpi"><div class="n">$142k</div><div class="l">Ventas mes</div></div><div class="pv-kpi"><div class="n">318</div><div class="l">Pedidos</div></div><div class="pv-kpi"><div class="n">+24%</div><div class="l">Crecimiento</div></div></div>
-     <div class="pv-chart">${[34,52,41,68,59,80,72].map(h=>`<div class="pv-bar" style="height:${h}%"></div>`).join('')}</div>`,
-   code:[['kw','const '],['fn','Dashboard'],['',' = () => {\n  '],['kw','const '],['','{ data } = '],['fn','useKPIs'],['','();\n  '],['kw','return '],['','<Grid>\n    <KPI label='],['str','"Ventas"'],['',' value={data.sales} />\n    <BarChart series={data.trend} />\n  </Grid>;\n}']]},
-  {name:'Mini-CRM',title:'crm.tunegocio.com',
-   preview:`<div class="pv-h"><span class="pv-title">Prospectos</span><span class="pv-badge">32 activos</span></div>
-     <div class="pv-tr"><span>María López · Cotización</span><span class="tag">Caliente</span></div>
-     <div class="pv-tr"><span>Grupo Marvelsa · Demo</span><span class="tag">Seguimiento</span></div>
-     <div class="pv-tr"><span>Carlos Ruiz · Contacto</span><span class="tag">Nuevo</span></div>
-     <div class="pv-tr"><span>Ana Torres · Propuesta</span><span class="tag">Caliente</span></div>`,
-   code:[['kw','function '],['fn','CRM'],['','() {\n  '],['kw','const '],['','leads = '],['fn','useLeads'],['','();\n  '],['kw','return '],['','leads.'],['fn','map'],['','(l => (\n    <LeadCard key={l.id}\n      lead={l} stage={l.stage} />\n  ));\n}']]},
-  {name:'Cotizador',title:'cotizador.tunegocio.com',
-   preview:`<div class="pv-h"><span class="pv-title">Cotizador de fletes</span><span class="pv-badge">$ MXN</span></div>
-     <div class="pv-calc-out">$ 4,850.00</div>
-     <div class="pv-grid4">${['7','8','9','÷','4','5','6','×','1','2','3','−','0','.','=','+'].map(k=>`<div class="pv-key">${k}</div>`).join('')}</div>`,
-   code:[['kw','const '],['fn','cotizar'],['',' = (km, peso) => {\n  '],['kw','const '],['','base = km * '],['str','12.5'],['',';\n  '],['kw','const '],['','extra = peso > '],['str','500'],['',' ? '],['str','800'],['',' : 0;\n  '],['kw','return '],['','base + extra;\n}']]}
-];
-let idx=0,tab='p',typeTimer=null;
 const $=id=>document.getElementById(id);
-function setTab(t){tab=t;$('tabP').classList.toggle('on',t==='p');$('tabC').classList.toggle('on',t==='c');$('preview').classList.toggle('hidden',t!=='p');$('code').classList.toggle('hidden',t!=='c');}
-function esc(s){return s.replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function typeCode(tokens){
-  const el=$('code');if(typeTimer)clearInterval(typeTimer);let i=0;
-  const render=()=>{el.innerHTML=tokens.slice(0,i).map(tk=>tk[0]?`<span class="${tk[0]}">${esc(tk[1])}</span>`:esc(tk[1])).join('')+'<span class="cursor"></span>';};
-  render();typeTimer=setInterval(()=>{i++;render();if(i>=tokens.length)clearInterval(typeTimer);},90);
+let curTab='cotz', curView='preview';
+
+// ---------- COTIZADOR ----------
+function cotzPreview(){
+  return `<div class="pane on"><div class="badge-app">🧮 Cotizador de ahorro con automatización · app en vivo</div>
+  <div class="cotz">
+    <div>
+      <div class="ctrl"><div class="ctrl-top"><span>Personas en la tarea</span><b id="cP">3</b></div><input type="range" id="rP" min="1" max="20" value="3"></div>
+      <div class="ctrl"><div class="ctrl-top"><span>Horas/semana por persona</span><b id="cH">8</b></div><input type="range" id="rH" min="1" max="40" value="8"></div>
+      <div class="ctrl"><div class="ctrl-top"><span>Costo por hora (MXN)</span><b id="cC">$120</b></div><input type="range" id="rC" min="50" max="500" step="10" value="120"></div>
+      <div class="ctrl"><div class="ctrl-top"><span>% del trabajo automatizable</span><b id="cA">80%</b></div><input type="range" id="rA" min="40" max="95" value="80"></div>
+    </div>
+    <div class="result">
+      <div class="res-row"><span class="l">Horas ahorradas / mes</span><span class="v" id="oH">0</span></div>
+      <div class="res-row"><span class="l">Ahorro mensual</span><span class="v" id="oM">$0</span></div>
+      <div class="res-hi"><div class="v" id="oY">$0</div><div class="l">de ahorro al año 🚀</div></div>
+    </div>
+  </div></div>`;
 }
-function wait(ms){return new Promise(r=>setTimeout(r,ms));}
-async function play(t){
-  $('buildLabel').textContent='Construyendo: '+t.name;
-  $('wtitle').textContent=t.title;
-  $('preview').innerHTML=t.preview;
-  typeCode(t.code);
+function cotzInit(){
+  const f=v=>v.toLocaleString('es-MX');
+  function calc(){
+    const P=+$('rP').value,H=+$('rH').value,C=+$('rC').value,A=+$('rA').value;
+    $('cP').textContent=P;$('cH').textContent=H;$('cC').textContent='$'+f(C);$('cA').textContent=A+'%';
+    const horas=Math.round(P*H*4.33*(A/100));
+    const mes=horas*C, anio=mes*12;
+    $('oH').textContent=f(horas)+' h';
+    $('oM').textContent='$'+f(mes);
+    $('oY').textContent='$'+f(anio);
+  }
+  ['rP','rH','rC','rA'].forEach(id=>$(id).addEventListener('input',calc));
+  calc();
 }
-async function loop(){while(true){await play(TOOLS[idx]);await wait(4200);idx=(idx+1)%TOOLS.length;await wait(300);}}
-loop();
+
+// ---------- INVENTARIO ----------
+let INV=[
+  {n:'Playera negra',s:42,min:20},{n:'Sudadera gris',s:8,min:15},
+  {n:'Gorra logo',s:0,min:10},{n:'Termo acero',s:31,min:12},
+  {n:'Calcetines pack',s:14,min:20}
+];
+function invStatus(it){ if(it.s===0)return['out','Agotado']; if(it.s<it.min)return['low','Bajo']; return['ok','OK']; }
+function invPreview(){
+  return `<div class="pane on"><div class="badge-app">📦 Panel de inventario · app en vivo</div>
+    <div id="invAlert" class="inv-alert"></div>
+    <table class="inv-table"><thead><tr><th>Producto</th><th>Stock</th><th>Nivel</th><th>Estatus</th><th>Ajustar</th></tr></thead>
+    <tbody id="invBody"></tbody></table>
+    <div style="font-size:12px;color:var(--muted);margin-top:12px">Ajusta el stock con + / − y mira cómo cambian las alertas en tiempo real.</div></div>`;
+}
+function invRender(){
+  const max=50, body=$('invBody'); if(!body)return;
+  body.innerHTML=INV.map((it,i)=>{
+    const [cls,lbl]=invStatus(it);
+    const pct=Math.min(100,Math.round(it.s/max*100));
+    const barCls=it.s===0?'crit':it.s<it.min?'warn':'';
+    return `<tr class="${it.s<it.min?'low':''}"><td>${it.n}</td>
+      <td><span class="qn">${it.s}</span> <small style="color:var(--muted)">/ mín ${it.min}</small></td>
+      <td><div class="inv-bar"><i class="${barCls}" style="width:${pct}%"></i></div></td>
+      <td><span class="st-badge st-${cls}">${lbl}</span></td>
+      <td><div class="qty"><button class="qbtn" onclick="invAdj(${i},-1)">−</button><button class="qbtn" onclick="invAdj(${i},1)">+</button></div></td></tr>`;
+  }).join('');
+  const low=INV.filter(it=>it.s<it.min).length;
+  const al=$('invAlert');
+  if(low>0){al.className='inv-alert';al.innerHTML=`⚠️ <b>${low}</b> producto(s) por debajo del mínimo — reponer pronto`;}
+  else{al.className='inv-alert ok';al.innerHTML=`✓ Todo el inventario está por encima del mínimo`;}
+}
+function invAdj(i,d){INV[i].s=Math.max(0,INV[i].s+d);invRender();}
+window.invAdj=invAdj;
+
+// ---------- AGENDA ----------
+const AG_SERV={corte:'Corte de cabello · 45 min',tinte:'Tinte completo · 2h',mani:'Manicure · 1h',barba:'Barba y perfilado · 30 min'};
+const AG_DAYS=[['Hoy','14 mar'],['Mañana','15 mar'],['Sáb','16 mar'],['Lun','18 mar']];
+const AG_SLOTS=['10:00','11:00','12:00','13:00','16:00','17:00','18:00','19:00'];
+let agTaken={}; // key: day index -> array of taken slots
+AG_DAYS.forEach((d,i)=>{agTaken[i]=[AG_SLOTS[(i+1)%8],AG_SLOTS[(i+4)%8]];}); // algunos ocupados
+let agState={serv:'corte',day:0,slot:null};
+function agPreview(){
+  return `<div class="pane on"><div class="badge-app">📅 Portal de reservas · app en vivo</div>
+    <div class="agenda">
+      <div>
+        <div class="ag-field"><label>Servicio</label>
+          <select class="ag-sel" id="agServ">${Object.entries(AG_SERV).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div>
+        <div class="ag-field"><label>Día</label><div class="days" id="agDays"></div></div>
+        <div class="ag-conf" id="agConf"></div>
+      </div>
+      <div>
+        <div class="slots-lbl">Horarios disponibles</div>
+        <div class="slots" id="agSlots"></div>
+      </div>
+    </div></div>`;
+}
+function agInit(){
+  $('agServ').addEventListener('change',e=>{agState.serv=e.target.value;});
+  agRenderDays();agRenderSlots();
+}
+function agRenderDays(){
+  $('agDays').innerHTML=AG_DAYS.map((d,i)=>`<div class="day ${i===agState.day?'on':''}" data-d="${i}">${d[0]}<small>${d[1]}</small></div>`).join('');
+  $('agDays').querySelectorAll('.day').forEach(el=>el.addEventListener('click',()=>{agState.day=+el.dataset.d;agState.slot=null;$('agConf').classList.remove('show');agRenderDays();agRenderSlots();}));
+}
+function agRenderSlots(){
+  const taken=agTaken[agState.day]||[];
+  $('agSlots').innerHTML=AG_SLOTS.map(s=>{
+    const isTaken=taken.includes(s);
+    const sel=agState.slot===s;
+    return `<div class="slot ${isTaken?'taken':''} ${sel?'sel':''}" data-s="${s}">${s}</div>`;
+  }).join('');
+  $('agSlots').querySelectorAll('.slot').forEach(el=>{
+    if(el.classList.contains('taken'))return;
+    el.addEventListener('click',()=>{agState.slot=el.dataset.s;agRenderSlots();agConfirm();});
+  });
+}
+function agConfirm(){
+  const c=$('agConf');
+  c.innerHTML=`<div class="h">✅ ¡Reservado!</div><div class="kv"><span>Servicio: <b>${AG_SERV[agState.serv].split(' · ')[0]}</b></span><span>Día: <b>${AG_DAYS[agState.day][0]} ${AG_DAYS[agState.day][1]}</b></span><span>Hora: <b>${agState.slot}</b></span></div>`;
+  c.classList.add('show');
+  // marcar el horario como ocupado
+  if(!agTaken[agState.day].includes(agState.slot))agTaken[agState.day].push(agState.slot);
+  setTimeout(agRenderSlots,600);
+}
+
+// ---------- CÓDIGO (representativo) ----------
+const CODE={
+cotz:`<span class="c">// Cotizador de ahorro — React</span>
+<span class="k">function</span> <span class="f">Cotizador</span>() {
+  <span class="k">const</span> [p, setP] = <span class="f">useState</span>(<span class="n">3</span>)   <span class="c">// personas</span>
+  <span class="k">const</span> [h, setH] = <span class="f">useState</span>(<span class="n">8</span>)   <span class="c">// horas/sem</span>
+  <span class="k">const</span> [c, setC] = <span class="f">useState</span>(<span class="n">120</span>) <span class="c">// $/hora</span>
+  <span class="k">const</span> [a, setA] = <span class="f">useState</span>(<span class="n">80</span>)  <span class="c">// % automatizable</span>
+
+  <span class="k">const</span> horas = <span class="f">Math</span>.<span class="f">round</span>(p * h * <span class="n">4.33</span> * (a/<span class="n">100</span>))
+  <span class="k">const</span> ahorroMes  = horas * c
+  <span class="k">const</span> ahorroAnio = ahorroMes * <span class="n">12</span>
+
+  <span class="k">return</span> (
+    &lt;<span class="f">Panel</span>&gt;
+      &lt;<span class="f">Slider</span> label=<span class="s">"Personas"</span> value={p} onChange={setP} /&gt;
+      &lt;<span class="f">Slider</span> label=<span class="s">"Horas/sem"</span> value={h} onChange={setH} /&gt;
+      &lt;<span class="f">Metric</span> label=<span class="s">"Ahorro / año"</span> value={<span class="f">money</span>(ahorroAnio)} /&gt;
+    &lt;/<span class="f">Panel</span>&gt;
+  )
+}`,
+inv:`<span class="c">// Panel de inventario — alerta de bajo mínimo</span>
+<span class="k">function</span> <span class="f">Inventario</span>({ productos }) {
+  <span class="k">const</span> bajos = productos.<span class="f">filter</span>(p =&gt; p.stock &lt; p.min)
+
+  <span class="k">return</span> (
+    &lt;&gt;
+      {bajos.length &gt; <span class="n">0</span> &amp;&amp;
+        &lt;<span class="f">Alert</span> tipo=<span class="s">"warning"</span>&gt;
+          {bajos.length} productos bajo mínimo
+        &lt;/<span class="f">Alert</span>&gt;}
+      &lt;<span class="f">Tabla</span>&gt;
+        {productos.<span class="f">map</span>(p =&gt; (
+          &lt;<span class="f">Fila</span> alerta={p.stock &lt; p.min} key={p.id}&gt;
+            &lt;<span class="f">Barra</span> valor={p.stock} max={<span class="n">50</span>} /&gt;
+            &lt;<span class="f">Estatus</span> stock={p.stock} min={p.min} /&gt;
+          &lt;/<span class="f">Fila</span>&gt;
+        ))}
+      &lt;/<span class="f">Tabla</span>&gt;
+    &lt;/&gt;
+  )
+}`,
+agenda:`<span class="c">// Portal de reservas — Supabase</span>
+<span class="k">async function</span> <span class="f">reservar</span>({ servicio, dia, hora }) {
+  <span class="c">// evita doble reserva del mismo horario</span>
+  <span class="k">const</span> { data: ocupado } = <span class="k">await</span> supabase
+    .<span class="f">from</span>(<span class="s">'citas'</span>)
+    .<span class="f">select</span>(<span class="s">'id'</span>)
+    .<span class="f">eq</span>(<span class="s">'dia'</span>, dia).<span class="f">eq</span>(<span class="s">'hora'</span>, hora)
+
+  <span class="k">if</span> (ocupado?.length) <span class="k">return</span> { error: <span class="s">'Horario ocupado'</span> }
+
+  <span class="k">return</span> <span class="k">await</span> supabase.<span class="f">from</span>(<span class="s">'citas'</span>).<span class="f">insert</span>({
+    servicio, dia, hora, estado: <span class="s">'confirmada'</span>
+  })
+}`
+};
+
+// ---------- Router ----------
+function render(){
+  const body=$('ideBody');
+  if(curView==='code'){
+    body.innerHTML=`<pre class="code">${CODE[curTab]}</pre>`;
+    return;
+  }
+  if(curTab==='cotz'){body.innerHTML=cotzPreview();cotzInit();}
+  else if(curTab==='inv'){body.innerHTML=invPreview();invRender();}
+  else{body.innerHTML=agPreview();agInit();}
+}
+$('tabs').querySelectorAll('.tab').forEach(el=>el.addEventListener('click',()=>{
+  curTab=el.dataset.t;$('tabs').querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t===el));render();
+}));
+$('toggle').querySelectorAll('button').forEach(el=>el.addEventListener('click',()=>{
+  curView=el.dataset.v;$('toggle').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===el));render();
+}));
+render();
 </script>
 </body>
 </html>
