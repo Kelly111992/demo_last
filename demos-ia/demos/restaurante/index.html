@@ -1129,6 +1129,7 @@ CÓMO TOMAS LA ORDEN
    Si el cliente YA especificó la preferencia, NO vuelvas a preguntar — anótala directo con [ADD:id:nota].
    NUNCA re-confirmes items que el cliente YA pidió. Si dijo "con agua de jamaica", la quiere — no preguntes "¿le va bien la jamaica?", solo anótala.
    Regla: pregunta PRIMERO si falta info, espera respuesta, LUEGO agrega con nota.
+   CASO CLAVE (preferencia tardía): si ya habías agregado el platillo (ej. la michelada) y luego preguntaste el término/tipo, cuando el cliente responde "bien picosa" NO uses [ADD] otra vez — usa [NOTE:id:nota] para ponerle la nota al que ya está. Ejemplo: michelada ya en carrito + cliente dice "bien picosa" → [NOTE:8:bien picosa]. Emitir [ADD:8:bien picosa] duplicaría la michelada.
 
 4. PAIRING PROACTIVO — 1 sugerencia breve después de anotar platillo principal:
    - Birria → "¿Le traigo una agua de jamaica para acompañar?"
@@ -1155,10 +1156,12 @@ CÓMO TOMAS LA ORDEN
    "qué recomiendas" → "La birria es la especialidad de la casa, muy buena. ¿Le traigo una?"
    "algo de beber" → agua de jamaica o michelada.
 
-9. CONFIRMAR ANTES DE CERRAR:
-   Cuando el cliente diga "ya está", "mándalo", "listo", "confirmo", "eso es todo":
-   PRIMERO repite la orden completa, LUEGO emite [RESUMEN].
-   Ejemplo: "Entonces le mando: dos tacos con salsa verde, una birria con cebolla y una agua de jamaica. ¿Así está bien? [RESUMEN]"
+9. CONFIRMAR ANTES DE CERRAR — [RESUMEN] OBLIGATORIO:
+   El cliente cierra el pedido con CUALQUIERA de estas frases (o parecidas):
+   "ya está", "mándalo", "listo", "confirmo", "eso es todo", "ya con eso", "cierra/ciérrame la cuenta", "la cuenta", "cóbrame", "es para mesa/llevar/domicilio", "ya no quiero nada más", "sería todo".
+   En ESE turno DEBES: repetir la orden completa en una frase + emitir [RESUMEN] al final. SIEMPRE el comando [RESUMEN].
+   Ejemplo: "Entonces le mando: dos tacos con salsa verde y una michelada bien picosa. [RESUMEN]"
+   PROHIBIDO responder solo "¿sería todo por ahora?" sin [RESUMEN] cuando el cliente ya dijo que cierra. Si ya cerró, muestra el ticket con [RESUMEN]; no agregues otro paso de pregunta.
 
 10. CIERRE CON TIEMPO Y "PROVECHO":
     Cuando el cliente confirma el ticket del [RESUMEN] (ej: "sí", "confirmo", "está bien"):
@@ -1176,13 +1179,18 @@ CÓMO TOMAS LA ORDEN
 COMANDOS PERMITIDOS (invisibles para el cliente)
 ═══════════════════════════════════════════════
 [ADD:id] — agregar 1 unidad sin nota. Ej: [ADD:4]
-[ADD:id:nota] — agregar 1 unidad con nota. Ej: [ADD:2:término medio]
+[ADD:id:nota] — agregar 1 unidad NUEVA con nota. Ej: [ADD:2:término medio]
+[NOTE:id:nota] — ponerle preferencia a un platillo que YA está en el carrito, SIN duplicarlo. Ej: [NOTE:8:bien picosa]
 [REMOVE:id] — quitar 1 unidad. Ej: [REMOVE:4]
 [RESUMEN] — mostrar ticket de confirmación al cliente
 Para 2+ unidades del mismo platillo, repite [ADD:id]: [ADD:4][ADD:4] = 2 tacos.
 
+REGLA DE ORO PARA NOTAS:
+- Si el platillo NO está en el carrito → agrégalo con su nota: [ADD:id:nota].
+- Si el platillo YA está en el carrito (lo agregaste antes) y el cliente recién especifica cómo lo quiere → usa [NOTE:id:nota]. NUNCA emitas otro [ADD] para eso, porque duplicarías el platillo y le cobrarías de más.
+
 PROHIBIDO inventar otros comandos como [RESERVA], [INFO], [PEDIDO], [CONFIRM], etc.
-Solo existen: [ADD:id[:nota]], [REMOVE:id], [RESUMEN]. Ningún otro.`;
+Solo existen: [ADD:id[:nota]], [NOTE:id:nota], [REMOVE:id], [RESUMEN]. Ningún otro.`;
 }
 
 function addToCart(itemId, notes = '') {
@@ -1200,6 +1208,28 @@ function removeFromCart(itemId) {
   if (idx === -1) return;
   if (state.cart[idx].qty > 1) { state.cart[idx].qty--; }
   else { state.cart.splice(idx, 1); }
+  renderCart();
+  updateCartBadge();
+}
+
+// Asigna una nota a un item que YA está en el carrito, sin duplicarlo.
+// Prefiere la línea sin nota; si no existe, la última línea de ese platillo.
+function setItemNote(itemId, note) {
+  const noteClean = (note || '').trim();
+  let idx = state.cart.findIndex(i => i.id === itemId && !i.notes);
+  if (idx === -1) {
+    for (let j = state.cart.length - 1; j >= 0; j--) {
+      if (state.cart[j].id === itemId) { idx = j; break; }
+    }
+  }
+  if (idx === -1) { addToCart(itemId, noteClean); return; } // no estaba → agrégalo
+  state.cart[idx].notes = noteClean;
+  // Fusiona con una línea gemela (mismo id + misma nota) si existe
+  const twinIdx = state.cart.findIndex((i, j) => j !== idx && i.id === itemId && i.notes === noteClean);
+  if (twinIdx !== -1) {
+    state.cart[twinIdx].qty += state.cart[idx].qty;
+    state.cart.splice(idx, 1);
+  }
   renderCart();
   updateCartBadge();
 }
@@ -1501,6 +1531,11 @@ function parseAICommands(reply) {
   // [REMOVE:id]
   clean = clean.replace(/\[REMOVE:([0-9,\s]*)\]/gi, (_, ids) => {
     ids.split(',').map(s => parseInt(s.trim())).filter(n => n > 0).forEach(id => removeFromCart(id));
+    return '';
+  });
+  // [NOTE:id:nota] → poner preferencia a un item YA en el carrito (no duplica)
+  clean = clean.replace(/\[NOTE:([0-9]+):([^\]]+)\]/gi, (_, id, note) => {
+    setItemNote(parseInt(id), note);
     return '';
   });
   // [CONFIRM] legacy — el prompt nuevo no lo usa pero mantenemos parser
