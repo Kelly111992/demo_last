@@ -1,15 +1,35 @@
 /**
  * ClaveAI — Vercel Serverless Function
- * Proxy hacia Google Gemini 2.5 Flash
+ * Proxy a un LLM vía endpoint OpenAI-compatible.
+ * Proveedor por prioridad: Groq (si GROQ_API_KEY) → Gemini (si GOOGLE_API_KEY).
+ * Así el cambio a Groq es sin downtime: en cuanto exista GROQ_API_KEY, se usa.
  */
 
 const https = require('https');
 
-const CONFIG = {
-  GOOGLE_API_KEY: (process.env.GOOGLE_API_KEY || '').trim(),
-  MODEL:          process.env.MODEL || 'gemini-2.5-flash',
-  MAX_TOKENS:     2048,
-};
+const GROQ_KEY   = (process.env.GROQ_API_KEY || '').trim();
+const GOOGLE_KEY = (process.env.GOOGLE_API_KEY || '').trim();
+
+// Selección de proveedor
+const PROVIDER = GROQ_KEY
+  ? {
+      name:     'groq',
+      key:      GROQ_KEY,
+      hostname: 'api.groq.com',
+      path:     '/openai/v1/chat/completions',
+      model:    process.env.MODEL || 'llama-3.3-70b-versatile',
+      extra:    {},
+    }
+  : {
+      name:     'gemini',
+      key:      GOOGLE_KEY,
+      hostname: 'generativelanguage.googleapis.com',
+      path:     '/v1beta/openai/chat/completions',
+      model:    process.env.MODEL || 'gemini-2.5-flash',
+      extra:    { reasoning_effort: 'none' },
+    };
+
+const MAX_TOKENS = 2048;
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -19,8 +39,8 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }
   if (req.method !== 'POST')    { res.status(405).json({ error: 'Método no permitido' }); return; }
 
-  if (!CONFIG.GOOGLE_API_KEY) {
-    res.status(500).json({ error: 'GOOGLE_API_KEY no configurada en Vercel' });
+  if (!PROVIDER.key) {
+    res.status(500).json({ error: 'Falta API key: configura GROQ_API_KEY (o GOOGLE_API_KEY) en Vercel' });
     return;
   }
 
@@ -37,20 +57,20 @@ module.exports = async function handler(req, res) {
   ];
 
   const payload = JSON.stringify({
-    model:            CONFIG.MODEL,
-    max_tokens:       CONFIG.MAX_TOKENS,
-    messages:         fullMessages,
-    reasoning_effort: 'none',
+    model:      PROVIDER.model,
+    max_tokens: MAX_TOKENS,
+    messages:   fullMessages,
+    ...PROVIDER.extra,
   });
 
   return new Promise((resolve) => {
     const options = {
-      hostname: 'generativelanguage.googleapis.com',
-      path:     '/v1beta/openai/chat/completions',
+      hostname: PROVIDER.hostname,
+      path:     PROVIDER.path,
       method:   'POST',
       headers: {
         'Content-Type':   'application/json',
-        'Authorization':  `Bearer ${CONFIG.GOOGLE_API_KEY}`,
+        'Authorization':  `Bearer ${PROVIDER.key}`,
         'Content-Length': Buffer.byteLength(payload),
       },
     };
@@ -67,11 +87,11 @@ module.exports = async function handler(req, res) {
           }
           const text = json.choices?.[0]?.message?.content || '';
           const finish = json.choices?.[0]?.finish_reason;
-          if (!text) console.warn('Gemini respuesta vacía. finish_reason:', finish, 'usage:', json.usage);
+          if (!text) console.warn(`[${PROVIDER.name}] respuesta vacía. finish_reason:`, finish, 'usage:', json.usage);
           res.status(200).json({ content: [{ type: 'text', text }] });
           resolve();
         } catch (e) {
-          res.status(500).json({ error: 'Error parseando respuesta de Gemini' });
+          res.status(500).json({ error: `Error parseando respuesta de ${PROVIDER.name}` });
           resolve();
         }
       });
