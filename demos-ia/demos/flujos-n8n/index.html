@@ -58,8 +58,8 @@ h1 .g{background:linear-gradient(100deg,var(--accent),var(--accent2));-webkit-ba
 .run-btn:disabled{opacity:.55;cursor:not-allowed}
 
 /* trigger message */
-.trigger-bar{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:center;background:rgba(37,211,102,0.04)}
-.wa-avatar{width:38px;height:38px;border-radius:50%;background:var(--wa);display:grid;place-items:center;flex-shrink:0}
+.trigger-bar{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:center;background:rgba(255,255,255,0.015);transition:background .3s}
+.wa-avatar{width:38px;height:38px;border-radius:50%;background:var(--wa);display:grid;place-items:center;flex-shrink:0;font-size:19px}
 .wa-avatar svg{width:20px;height:20px;fill:#04310f}
 .trigger-msg{flex:1;min-width:0}
 .trigger-from{font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-bottom:3px}
@@ -92,6 +92,7 @@ h1 .g{background:linear-gradient(100deg,var(--accent),var(--accent2));-webkit-ba
 .b-trigger{background:rgba(74,222,128,.16);color:var(--green)}
 .b-ai{background:rgba(192,132,252,.16);color:var(--purple)}
 .b-action{background:rgba(255,109,90,.16);color:var(--accent)}
+.b-logic{background:rgba(96,165,250,.16);color:var(--blue)}
 /* connectors */
 .conn{width:34px;display:flex;align-items:center;flex-shrink:0;position:relative}
 .conn::before{content:'';width:100%;height:2px;background:var(--border2);border-radius:2px}
@@ -185,21 +186,14 @@ h1 .g{background:linear-gradient(100deg,var(--accent),var(--accent2));-webkit-ba
 <div class="editor-wrap">
   <div class="editor">
     <div class="ed-bar">
-      <div class="ed-title"><span class="diamond">◆</span> Flujo: Cita automática por WhatsApp</div>
+      <div class="ed-title"><span class="diamond">◆</span> Flujo: <span id="flowName">Cita automática por WhatsApp</span></div>
       <span class="ed-active">Activo</span>
       <div class="ed-spacer"></div>
       <select class="ed-sel" id="scenarioSel"></select>
       <button class="run-btn" id="runBtn">▶ Ejecutar flujo</button>
     </div>
 
-    <div class="trigger-bar">
-      <div class="wa-avatar"><svg viewBox="0 0 24 24"><path d="M.06 24l1.68-6.14A11.9 11.9 0 0 1 .16 11.9C.16 5.34 5.5 0 12.06 0a11.8 11.8 0 0 1 8.4 3.49 11.8 11.8 0 0 1 3.48 8.41c0 6.56-5.34 11.9-11.9 11.9a11.9 11.9 0 0 1-5.7-1.45L.06 24zM6.6 20.2c1.68.99 3.28 1.58 5.4 1.58 5.45 0 9.9-4.44 9.9-9.88 0-5.46-4.43-9.9-9.9-9.9-5.46 0-9.9 4.44-9.9 9.9 0 2.24.66 3.92 1.76 5.6l-.98 3.58 3.72-.98z"/></svg></div>
-      <div class="trigger-msg">
-        <div class="trigger-from" id="trigFrom"></div>
-        <div class="trigger-text" id="trigText"></div>
-      </div>
-      <span class="trigger-tag">Mensaje entrante</span>
-    </div>
+    <div class="trigger-bar" id="triggerBar"></div>
 
     <div class="canvas"><div class="flow" id="flow"></div></div>
   </div>
@@ -230,7 +224,7 @@ h1 .g{background:linear-gradient(100deg,var(--accent),var(--accent2));-webkit-ba
   <div class="cards">
     <div class="fcard"><div class="ic">🧠</div><h3>Entiende, no solo responde</h3><p>La IA lee el mensaje en lenguaje natural y extrae nombre, servicio y fecha, aunque el cliente escriba informal.</p></div>
     <div class="fcard"><div class="ic">⚡</div><h3>Actúa en tus apps</h3><p>Crea el evento en Calendar, guarda el lead en Sheets/CRM y responde al cliente — todo en segundos.</p></div>
-    <div class="fcard"><div class="ic">🔔</div><h3>Mantiene a tu equipo al día</h3><p>Cada cita nueva llega a tu equipo por Telegram o correo. Nadie se entera tarde, nada se pierde.</p></div>
+    <div class="fcard"><div class="ic">🔔</div><h3>Mantiene a tu equipo al día</h3><p>Cada cita, pago o reseña llega a tu equipo por correo o WhatsApp interno. Nadie se entera tarde, nada se pierde.</p></div>
   </div>
 </section>
 
@@ -245,7 +239,7 @@ h1 .g{background:linear-gradient(100deg,var(--accent),var(--accent2));-webkit-ba
     <div class="logo-chip"><span>📧</span>Gmail</div>
     <div class="logo-chip"><span>💳</span>Stripe</div>
     <div class="logo-chip"><span>🧠</span>IA · Gemini</div>
-    <div class="logo-chip"><span>✈️</span>Telegram</div>
+    <div class="logo-chip"><span>📸</span>Instagram</div>
     <div class="logo-chip"><span>🌐</span>APIs / Webhooks</div>
   </div>
 </section>
@@ -266,62 +260,116 @@ h1 .g{background:linear-gradient(100deg,var(--accent),var(--accent2));-webkit-ba
 </footer>
 
 <script>
-// ── Escenarios (simulados, sin conexiones reales) ──
-const SCENARIOS = [
-  {
-    label:'💇 Salón de belleza',
-    from:'+52 33 1847 2210',
-    text:'Hola! Me das cita para corte y barba el viernes a las 5 de la tarde? Soy Juan Pérez 🙌',
-    ai:{nombre:'Juan Pérez',servicio:'Corte + barba',fecha:'Vie 14 mar',hora:'17:00'},
-    negocio:'Studio Glam', dur:'45 min', responsable:'Estilista: Diana R.', hoja:'Citas · Marzo', fila:128,
-    conf:'¡Listo, Juan! ✅ Tu cita de *Corte + barba* quedó el *viernes 14 de marzo a las 5:00 pm* en Studio Glam. Si necesitas reagendar, solo responde este mensaje 💈'
-  },
-  {
-    label:'🏥 Clínica / consultorio',
-    from:'+52 33 2093 5510',
-    text:'Buenas tardes, necesito una consulta general para el lunes en la mañana. Me llamo Sofía Ramírez.',
-    ai:{nombre:'Sofía Ramírez',servicio:'Consulta general',fecha:'Lun 17 mar',hora:'09:30'},
-    negocio:'Clínica Salud+', dur:'30 min', responsable:'Dra. Elena Ríos', hoja:'Agenda · Marzo', fila:341,
-    conf:'¡Hola Sofía! ✅ Agendé tu *consulta general* para el *lunes 17 de marzo a las 9:30 am* con la Dra. Elena Ríos en Clínica Salud+. Llega 10 min antes, por favor 🩺'
-  },
-  {
-    label:'🔧 Taller automotriz',
-    from:'+52 33 3388 7742',
-    text:'Quiero llevar mi carro a un cambio de aceite, puede ser el sábado temprano? soy Roberto Díaz',
-    ai:{nombre:'Roberto Díaz',servicio:'Cambio de aceite',fecha:'Sáb 15 mar',hora:'09:00'},
-    negocio:'AutoPro Taller', dur:'40 min', responsable:'Mecánico: Miguel S.', hoja:'Citas taller', fila:87,
-    conf:'¡Va, Roberto! ✅ Tu *cambio de aceite* quedó el *sábado 15 de marzo a las 9:00 am* en AutoPro Taller. Déjanos las llaves en recepción, en ~40 min está listo 🔧'
-  }
-];
+// ── Flujos de automatización (SIMULADOS · sin conexiones ni credenciales reales) ──
+const WA='<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#04310f"><path d="M.06 24l1.68-6.14A11.9 11.9 0 0 1 .16 11.9C.16 5.34 5.5 0 12.06 0a11.8 11.8 0 0 1 8.4 3.49 11.8 11.8 0 0 1 3.48 8.41c0 6.56-5.34 11.9-11.9 11.9a11.9 11.9 0 0 1-5.7-1.45L.06 24z"/></svg>';
+const KIND={
+  wa:{bg:'var(--wa)',av:WA,tint:'rgba(37,211,102,0.05)',tag:'#25d366'},
+  clock:{bg:'rgba(251,191,36,.9)',av:'⏰',tint:'rgba(251,191,36,0.05)',tag:'#fbbf24'},
+  check:{bg:'var(--green)',av:'✅',tint:'rgba(74,222,128,0.05)',tag:'#4ade80'}
+};
 
-// ── Nodos del flujo ──
-const NODES = [
-  {ic:'💬',iconBg:'rgba(37,211,102,.15)',name:'WhatsApp',op:'Trigger · mensaje',badge:'b-trigger',bt:'Trigger'},
-  {ic:'🧠',iconBg:'rgba(192,132,252,.15)',name:'IA · Gemini',op:'Extraer datos',badge:'b-ai',bt:'IA'},
-  {ic:'📅',iconBg:'rgba(96,165,250,.15)',name:'Google Calendar',op:'Crear evento',badge:'b-action',bt:'Acción'},
-  {ic:'📊',iconBg:'rgba(74,222,128,.15)',name:'Google Sheets',op:'Guardar lead',badge:'b-action',bt:'Acción'},
-  {ic:'💬',iconBg:'rgba(37,211,102,.15)',name:'WhatsApp',op:'Responder',badge:'b-action',bt:'Acción'},
-  {ic:'✈️',iconBg:'rgba(56,176,227,.15)',name:'Telegram',op:'Avisar al equipo',badge:'b-action',bt:'Acción'}
+const FLOWS=[
+{
+  sel:'📅 Captura y agenda de citas',
+  name:'Cita automática por WhatsApp',
+  trigger:{kind:'wa',from:'+52 33 1847 2210 · WhatsApp Business',text:'Hola! Me das cita para corte y barba el viernes a las 5 de la tarde? Soy Juan Pérez 🙌',tag:'Mensaje entrante'},
+  nodes:[
+    {ic:'💬',bg:'rgba(37,211,102,.15)',name:'WhatsApp',op:'Trigger · mensaje',badge:'b-trigger',bt:'Trigger'},
+    {ic:'🧠',bg:'rgba(192,132,252,.15)',name:'IA · Gemini',op:'Extraer datos',badge:'b-ai',bt:'IA'},
+    {ic:'📅',bg:'rgba(96,165,250,.15)',name:'Google Calendar',op:'Crear evento',badge:'b-action',bt:'Acción'},
+    {ic:'📊',bg:'rgba(74,222,128,.15)',name:'Google Sheets',op:'Guardar lead',badge:'b-action',bt:'Acción'},
+    {ic:'💬',bg:'rgba(37,211,102,.15)',name:'WhatsApp',op:'Responder',badge:'b-action',bt:'Acción'},
+    {ic:'📧',bg:'rgba(234,67,53,.15)',name:'Gmail',op:'Avisar al equipo',badge:'b-action',bt:'Acción'}
+  ],
+  steps:[
+    {tag:'[WhatsApp]',color:'#25d366',log:'Mensaje de <b>+52 33 1847 2210</b> recibido',out:'from: <b>+52 33 1847 2210</b><br>"Hola! Me das cita…"'},
+    {tag:'[IA·Gemini]',color:'#c084fc',log:'Intención: <b>agendar cita</b> · confianza 0.97',out:'👤 <b>Juan Pérez</b><br>✂ Corte + barba<br>📆 Vie 14 mar · 17:00'},
+    {tag:'[Calendar]',color:'#60a5fa',log:'Evento creado: <b>Corte + barba</b> · Vie 14 mar 17:00',out:'evt_1128 ✓<br>Vie 14 mar · 17:00'},
+    {tag:'[Sheets]',color:'#4ade80',log:'Fila <b>#128</b> agregada en "Citas · Marzo"',out:'hoja: Citas · Marzo<br>fila <b>#128</b> ✓'},
+    {tag:'[WhatsApp]',color:'#25d366',log:'Confirmación enviada a <b>Juan Pérez</b>',out:'status: <b>sent</b> ✓<br>to: +52 33 1847 2210'},
+    {tag:'[Gmail]',color:'#ea4335',log:'Correo de aviso enviado a <b>recepción@studioglam.mx</b>',out:'to: recepción@…<br>status: <b>enviado</b> ✓'}
+  ],
+  results:[
+    {icon:'📅',bg:'rgba(96,165,250,.15)',title:'Evento creado · Studio Glam',body:'<b>Corte + barba</b> — Juan Pérez<div class="kvs"><span class="kv">📆 <b>Vie 14 mar</b></span><span class="kv">🕐 <b>17:00</b> · 45 min</span><span class="kv">Estilista: Diana R.</span></div><div style="margin-top:7px;font-size:12px;color:var(--green)">🔔 Recordatorio 1h antes activado</div>'},
+    {icon:'📊',bg:'rgba(74,222,128,.15)',title:'Lead guardado · Citas · Marzo',body:'<div class="kvs"><span class="kv">Fila <b>#128</b></span><span class="kv">Juan Pérez</span><span class="kv">+52 33 1847 2210</span><span class="kv">Corte + barba</span><span class="kv">Fuente: <b>WhatsApp</b></span></div>'},
+    {icon:'💬',bg:'rgba(37,211,102,.15)',title:'Confirmación enviada al cliente',body:'<div class="wa-bubble">¡Listo, Juan! ✅ Tu cita de <b>Corte + barba</b> quedó el <b>viernes 14 de marzo a las 5:00 pm</b> en Studio Glam. Si necesitas reagendar, solo responde este mensaje 💈</div>'},
+    {icon:'📧',bg:'rgba(234,67,53,.15)',title:'Equipo notificado por correo',body:'<div class="tg-bubble" style="background:rgba(234,67,53,.08);border-color:rgba(234,67,53,.25)">📧 <b>Nueva cita agendada</b><br>Juan Pérez · Corte + barba · Vie 14 mar 17:00<br><span style="color:var(--muted);font-size:12px">Para: recepción@studioglam.mx</span></div>'}
+  ]
+},
+{
+  sel:'💰 Cobranza automática',
+  name:'Cobranza y recordatorio de pago',
+  trigger:{kind:'clock',from:'Programación · todos los días 9:00 am',text:'Revisa las facturas por cobrar y envía recordatorios a los clientes con saldo vencido.',tag:'Se ejecuta solo'},
+  nodes:[
+    {ic:'⏰',bg:'rgba(251,191,36,.15)',name:'Programación',op:'Diario · 9:00 am',badge:'b-trigger',bt:'Trigger'},
+    {ic:'📊',bg:'rgba(74,222,128,.15)',name:'Google Sheets',op:'Leer facturas',badge:'b-action',bt:'Acción'},
+    {ic:'🔎',bg:'rgba(96,165,250,.15)',name:'Filtro',op:'Solo vencidas',badge:'b-logic',bt:'Lógica'},
+    {ic:'🧠',bg:'rgba(192,132,252,.15)',name:'IA · Gemini',op:'Redacta mensaje',badge:'b-ai',bt:'IA'},
+    {ic:'💬',bg:'rgba(37,211,102,.15)',name:'WhatsApp',op:'Recordatorio',badge:'b-action',bt:'Acción'},
+    {ic:'📊',bg:'rgba(74,222,128,.15)',name:'Google Sheets',op:'Marca "recordado"',badge:'b-action',bt:'Acción'}
+  ],
+  steps:[
+    {tag:'[Cron]',color:'#fbbf24',log:'Disparo programado · <b>9:00 am</b>',out:'trigger: <b>diario</b><br>09:00 am ✓'},
+    {tag:'[Sheets]',color:'#4ade80',log:'Leídas <b>48</b> filas de "Cuentas por cobrar"',out:'48 facturas leídas'},
+    {tag:'[Filtro]',color:'#60a5fa',log:'<b>3</b> facturas vencidas encontradas',out:'vencidas: <b>3</b><br>$28,900 total'},
+    {tag:'[IA·Gemini]',color:'#c084fc',log:'Redacta recordatorio cordial personalizado',out:'tono: cordial<br>3 mensajes listos'},
+    {tag:'[WhatsApp]',color:'#25d366',log:'Recordatorio enviado a <b>Comercial López</b> (+2)',out:'enviados: <b>3</b> ✓'},
+    {tag:'[Sheets]',color:'#4ade80',log:'3 filas marcadas como <b>"recordado hoy"</b>',out:'actualizadas: 3 ✓'}
+  ],
+  results:[
+    {icon:'🔎',bg:'rgba(96,165,250,.15)',title:'3 facturas vencidas detectadas',body:'<div class="kvs"><span class="kv"><b>F-2043</b> · Comercial López · <b>$12,400</b></span><span class="kv"><b>F-2051</b> · Dulcería Mari · <b>$7,900</b></span><span class="kv"><b>F-2058</b> · Ferre Uribe · <b>$8,600</b></span></div><div style="margin-top:7px;font-size:12px;color:var(--yellow)">💰 $28,900 en cartera por recuperar</div>'},
+    {icon:'💬',bg:'rgba(37,211,102,.15)',title:'Recordatorio enviado al cliente',body:'<div class="wa-bubble">Hola, le saluda <b>AutoPartes del Centro</b> 👋 Le recordamos con gusto su factura <b>F-2043</b> por <b>$12,400</b>, con vencimiento el 11 de marzo. Puede pagar por transferencia o en tienda. ¡Gracias por su preferencia! 🙏</div>'},
+    {icon:'📊',bg:'rgba(74,222,128,.15)',title:'Registro actualizado',body:'<div class="kvs"><span class="kv">3 facturas · <b>recordado hoy</b></span><span class="kv">Próximo aviso: <b>+3 días</b></span></div><div style="margin-top:7px;font-size:12px;color:var(--green)">✓ Cobranza sin perseguir clientes a mano</div>'}
+  ]
+},
+{
+  sel:'⭐ Reseñas Google (reputación)',
+  name:'Reseñas de Google post-servicio',
+  trigger:{kind:'check',from:'Evento del sistema · servicio completado',text:'Se cerró el servicio "Corte de Juan Pérez". Dispara el seguimiento para pedir una reseña.',tag:'Disparador'},
+  nodes:[
+    {ic:'✅',bg:'rgba(74,222,128,.15)',name:'Servicio cerrado',op:'Trigger · evento',badge:'b-trigger',bt:'Trigger'},
+    {ic:'⏳',bg:'rgba(251,191,36,.15)',name:'Espera 2 h',op:'Delay',badge:'b-logic',bt:'Espera'},
+    {ic:'💬',bg:'rgba(37,211,102,.15)',name:'WhatsApp',op:'Pide opinión',badge:'b-action',bt:'Acción'},
+    {ic:'🧠',bg:'rgba(192,132,252,.15)',name:'IA · Gemini',op:'Analiza respuesta',badge:'b-ai',bt:'IA'},
+    {ic:'🔎',bg:'rgba(96,165,250,.15)',name:'Filtro',op:'¿Contento?',badge:'b-logic',bt:'Lógica'},
+    {ic:'💬',bg:'rgba(37,211,102,.15)',name:'WhatsApp',op:'Envía link Google',badge:'b-action',bt:'Acción'}
+  ],
+  steps:[
+    {tag:'[Evento]',color:'#4ade80',log:'Servicio <b>"Corte de Juan Pérez"</b> cerrado',out:'cliente: Juan Pérez<br>servicio ✓'},
+    {tag:'[Espera]',color:'#fbbf24',log:'Espera <b>2 h</b> para no ser invasivo',out:'delay: 2h ✓'},
+    {tag:'[WhatsApp]',color:'#25d366',log:'Mensaje de seguimiento enviado a <b>Juan</b>',out:'¿Qué tal tu visita?<br>enviado ✓'},
+    {tag:'[IA·Gemini]',color:'#c084fc',log:'Respuesta analizada · sentimiento <b>positivo 0.94</b>',out:'😊 positivo<br>score 0.94'},
+    {tag:'[Filtro]',color:'#60a5fa',log:'Cliente <b>contento</b> → pedir reseña pública',out:'rama: <b>feliz</b> ✓'},
+    {tag:'[WhatsApp]',color:'#25d366',log:'Link de <b>Google Reviews</b> enviado a Juan',out:'link enviado ✓<br>g.page/…'}
+  ],
+  results:[
+    {icon:'💬',bg:'rgba(37,211,102,.15)',title:'Seguimiento enviado (2h después)',body:'<div class="wa-bubble">¡Hola Juan! 👋 Gracias por visitarnos hoy en <b>Studio Glam</b>. ¿Qué tal quedó tu corte? Tu opinión nos ayuda muchísimo 🙌</div>'},
+    {icon:'🧠',bg:'rgba(192,132,252,.15)',title:'IA analizó la respuesta',body:'Cliente respondió: <i>"Quedó excelente, muy recomendable!"</i><div class="kvs"><span class="kv">Sentimiento: <b>Positivo</b></span><span class="kv">Score: <b>0.94</b></span><span class="kv">Acción: <b>pedir reseña</b></span></div>'},
+    {icon:'⭐',bg:'rgba(251,191,36,.15)',title:'Link de reseña Google enviado',body:'<div class="wa-bubble">¡Nos encanta, Juan! 🌟 ¿Nos regalas 30 segundos para dejar tu reseña? Ayuda a que más gente nos conozca 👉 g.page/StudioGlam/review</div><div style="margin-top:7px;font-size:12px;color:var(--yellow)">⭐ Clientes felices → más reseñas de 5★, en automático</div>'}
+  ]
+}
 ];
 
 const sel=document.getElementById('scenarioSel');
 const flow=document.getElementById('flow');
+const triggerBar=document.getElementById('triggerBar');
+const flowName=document.getElementById('flowName');
 const consoleEl=document.getElementById('console');
 const resultsEl=document.getElementById('results');
 const runBtn=document.getElementById('runBtn');
 const runTime=document.getElementById('runTime');
 let running=false, cur=0;
 
-SCENARIOS.forEach((s,i)=>{const o=document.createElement('option');o.value=i;o.textContent=s.label;sel.appendChild(o);});
+FLOWS.forEach((f,i)=>{const o=document.createElement('option');o.value=i;o.textContent=f.sel;sel.appendChild(o);});
 
-function buildFlow(){
+function buildFlow(f){
   flow.innerHTML='';
-  NODES.forEach((n,i)=>{
+  f.nodes.forEach((n,i)=>{
     if(i>0){const c=document.createElement('div');c.className='conn';c.id='conn'+i;flow.appendChild(c);}
     const el=document.createElement('div');
     el.className='node pending';el.id='node'+i;
     el.innerHTML=`<span class="badge ${n.badge}">${n.bt}</span>
-      <div class="node-head"><div class="node-ic" style="background:${n.iconBg}">${n.ic}</div>
+      <div class="node-head"><div class="node-ic" style="background:${n.bg}">${n.ic}</div>
       <div class="node-info"><div class="node-name">${n.name}</div><div class="node-op">${n.op}</div></div></div>
       <div class="node-status"><div class="sp"></div><div class="ok">✓</div></div>
       <div class="node-out"></div>`;
@@ -329,16 +377,20 @@ function buildFlow(){
     flow.appendChild(el);
   });
 }
-function loadScenario(){
-  const s=SCENARIOS[cur=+sel.value];
-  document.getElementById('trigFrom').textContent=s.from+' · WhatsApp Business';
-  document.getElementById('trigText').textContent=s.text;
-  buildFlow();
+function loadFlow(){
+  const f=FLOWS[cur=+sel.value];
+  flowName.textContent=f.name;
+  const k=KIND[f.trigger.kind];
+  triggerBar.style.background=k.tint;
+  triggerBar.innerHTML=`<div class="wa-avatar" style="background:${k.bg}">${k.av}</div>
+    <div class="trigger-msg"><div class="trigger-from">${f.trigger.from}</div><div class="trigger-text">${f.trigger.text}</div></div>
+    <span class="trigger-tag" style="color:${k.tag};border-color:${k.tag}55">${f.trigger.tag}</span>`;
+  buildFlow(f);
   consoleEl.innerHTML='<div class="console-empty">▶ Presiona "Ejecutar flujo" para ver el proceso en vivo…</div>';
-  resultsEl.innerHTML='<div class="results-empty">Los resultados aparecerán aquí:<br>evento de calendario, fila en la hoja,<br>confirmación al cliente y aviso al equipo.</div>';
+  resultsEl.innerHTML='<div class="results-empty">Los resultados aparecerán aquí conforme<br>el flujo ejecuta cada paso.</div>';
   runTime.textContent='';
 }
-sel.addEventListener('change',()=>{if(!running)loadScenario();});
+sel.addEventListener('change',()=>{if(!running)loadFlow();});
 
 const wait=ms=>new Promise(r=>setTimeout(r,ms));
 function ts(){return new Date().toLocaleTimeString('es-MX',{hour12:false})+'.'+String(Date.now()%1000).padStart(3,'0');}
@@ -347,62 +399,38 @@ function log(tag,color,msg,ok){
   d.innerHTML=`<span class="ts">${ts()}</span><span class="tag" style="color:${color}">${tag}</span><span class="msg">${msg}</span>`;
   consoleEl.appendChild(d);consoleEl.scrollTop=consoleEl.scrollHeight;
 }
-function rcard(icon,bg,title,bodyHTML){
+function rcard(r){
   const d=document.createElement('div');d.className='rcard';
-  d.innerHTML=`<div class="rcard-head"><span class="ic" style="background:${bg}">${icon}</span>${title}<span class="chk">✓</span></div><div class="rcard-body">${bodyHTML}</div>`;
+  d.innerHTML=`<div class="rcard-head"><span class="ic" style="background:${r.bg}">${r.icon}</span>${r.title}<span class="chk">✓</span></div><div class="rcard-body">${r.body}</div>`;
   resultsEl.appendChild(d);
 }
 
 async function runFlow(){
   if(running)return;running=true;
   runBtn.disabled=true;runBtn.textContent='⏳ Ejecutando…';sel.disabled=true;
-  const s=SCENARIOS[cur];const t0=performance.now();
+  const f=FLOWS[cur];const t0=performance.now();
   consoleEl.innerHTML='';resultsEl.innerHTML='';runTime.textContent='';
   document.querySelectorAll('.node').forEach(n=>{n.className='node pending';});
-  log('[start]','#fbbf24',`Flujo <b>Cita automática</b> disparado`,false);
+  log('[start]','#fbbf24',`Flujo <b>${f.name}</b> disparado`,false);
   await wait(400);
-
-  const steps=[
-    {color:'#25d366',tag:'[WhatsApp]',run:async(n)=>{log('[WhatsApp]','#25d366',`Mensaje de <b>${s.from}</b> recibido`);n.querySelector('.node-out').innerHTML=`from: <b>${s.from}</b><br>"${s.text.slice(0,34)}…"`;}},
-    {color:'#c084fc',tag:'[IA·Gemini]',run:async(n)=>{log('[IA·Gemini]','#c084fc',`Intención: <b>agendar cita</b> · confianza 0.97`);n.querySelector('.node-out').innerHTML=`👤 <b>${s.ai.nombre}</b><br>✂ ${s.ai.servicio}<br>📆 ${s.ai.fecha} · ${s.ai.hora}`;}},
-    {color:'#60a5fa',tag:'[Calendar]',run:async(n)=>{log('[Calendar]','#60a5fa',`Evento creado: <b>${s.ai.servicio}</b> · ${s.ai.fecha} ${s.ai.hora}`);n.querySelector('.node-out').innerHTML=`evt_${1000+s.fila} ✓<br>${s.ai.fecha} · ${s.ai.hora}`;}},
-    {color:'#4ade80',tag:'[Sheets]',run:async(n)=>{log('[Sheets]','#4ade80',`Fila <b>#${s.fila}</b> agregada en "${s.hoja}"`);n.querySelector('.node-out').innerHTML=`hoja: ${s.hoja}<br>fila <b>#${s.fila}</b> ✓`;}},
-    {color:'#25d366',tag:'[WhatsApp]',run:async(n)=>{log('[WhatsApp]','#25d366',`Confirmación enviada a <b>${s.ai.nombre}</b>`);n.querySelector('.node-out').innerHTML=`status: <b>sent</b> ✓<br>to: ${s.from}`;}},
-    {color:'#38b0e3',tag:'[Telegram]',run:async(n)=>{log('[Telegram]','#38b0e3',`Aviso enviado al equipo de <b>${s.negocio}</b>`);n.querySelector('.node-out').innerHTML=`chat: Recepción<br>status: <b>delivered</b> ✓`;}}
-  ];
-
-  for(let i=0;i<steps.length;i++){
+  for(let i=0;i<f.steps.length;i++){
     const node=document.getElementById('node'+i);
     node.className='node running';
-    if(i>0){const c=document.getElementById('conn'+i);c.classList.add('active');}
+    if(i>0)document.getElementById('conn'+i).classList.add('active');
     await wait(720);
-    await steps[i].run(node);
+    log(f.steps[i].tag,f.steps[i].color,f.steps[i].log);
+    document.getElementById('out'+i).innerHTML=f.steps[i].out;
     node.className='node done';
     await wait(160);
   }
-
   const secs=((performance.now()-t0)/1000).toFixed(1);
-  log('[done]','#4ade80',`✓ Flujo completado en <b>${secs}s</b> — cliente atendido sin intervención humana`,true);
+  log('[done]','#4ade80',`✓ Flujo completado en <b>${secs}s</b> — sin intervención humana`,true);
   runTime.textContent=secs+'s';
-
-  // Resultados
-  rcard('📅','rgba(96,165,250,.15)',`Evento creado · ${s.negocio}`,
-    `<b>${s.ai.servicio}</b> — ${s.ai.nombre}<div class="kvs"><span class="kv">📆 <b>${s.ai.fecha}</b></span><span class="kv">🕐 <b>${s.ai.hora}</b> · ${s.dur}</span><span class="kv">${s.responsable}</span></div><div style="margin-top:7px;font-size:12px;color:var(--green)">🔔 Recordatorio 1h antes activado</div>`);
-  await wait(200);
-  rcard('📊','rgba(74,222,128,.15)',`Lead guardado · ${s.hoja}`,
-    `<div class="kvs"><span class="kv">Fila <b>#${s.fila}</b></span><span class="kv">${s.ai.nombre}</span><span class="kv">${s.from}</span><span class="kv">${s.ai.servicio}</span><span class="kv">Fuente: <b>WhatsApp</b></span></div>`);
-  await wait(200);
-  rcard('💬','rgba(37,211,102,.15)','Confirmación enviada al cliente',
-    `<div class="wa-bubble">${s.conf.replace(/\*(.*?)\*/g,'<b>$1</b>')}</div>`);
-  await wait(200);
-  rcard('✈️','rgba(56,176,227,.15)','Equipo notificado',
-    `<div class="tg-bubble">🆕 <b>Nueva cita</b> — ${s.ai.nombre}<br>${s.ai.servicio} · ${s.ai.fecha} ${s.ai.hora}<br><span style="color:var(--muted);font-size:12px">Registrada automáticamente por el flujo</span></div>`);
-
+  for(const r of f.results){rcard(r);await wait(220);}
   runBtn.disabled=false;runBtn.textContent='▶ Ejecutar de nuevo';sel.disabled=false;running=false;
 }
-
 runBtn.addEventListener('click',runFlow);
-loadScenario();
+loadFlow();
 </script>
 </body>
 </html>
