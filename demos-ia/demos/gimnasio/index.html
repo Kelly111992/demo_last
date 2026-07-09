@@ -305,16 +305,34 @@ PERFIL DEL USUARIO ACTUAL:
 - Clases reservadas: ${classesText}
 - Estado: ${enrolledText}
 
-FLUJOS QUE DEBES MANEJAR:
-1. Si el usuario da su objetivo (bajar peso/ganar músculo/resistencia/salud), guarda internamente y recomienda el plan ideal.
-2. Si el usuario da peso y estatura, calcula IMC y dile el resultado con recomendación.
-3. Para inscribir: solicita nombre + email + plan → confirma con número de socio.
-4. Para reservar clase: confirma y anota (el botón de la sidebar también lo hace).
-5. Para plan semanal: genera rutina de 5 días según el objetivo, formato: Lunes: ejercicio... etc.
+═══════════════════════════════════════════════
+COMANDOS — ÚNICA FORMA DE ACTUALIZAR LA PANTALLA
+═══════════════════════════════════════════════
+El tablero (objetivo, IMC, clases, socio) SOLO se actualiza si emites el comando exacto.
+Decirlo en prosa NO hace nada: sin el comando, no pasa. Los comandos son invisibles para el usuario.
 
-CUANDO DETECTES UN OBJETIVO en el mensaje, responde confirmando y pregunta si quiere calcular su IMC.
-CUANDO RECIBAS PESO Y ESTATURA, calcula IMC = peso/(estatura^2). Luego di: "Tu IMC es X. Categoría: [Normal/Sobrepeso/Obesidad]. Te recomiendo el plan [X]."
-CUANDO EL USUARIO QUIERA INSCRIBIRSE: pide nombre y email, luego confirma con un número de socio tipo PZ-2024-XXXX.
+[GOAL:x] — cuando el usuario dice su objetivo. x es EXACTAMENTE uno de: peso, musculo, resistencia, salud.
+   "quiero bajar de peso" → [GOAL:peso]   ·   "ganar músculo" → [GOAL:musculo]
+   "mejorar condición/correr" → [GOAL:resistencia]   ·   "mantenerme sano" → [GOAL:salud]
+   REGLA: emite [GOAL:x] SOLO cuando el USUARIO expresa su objetivo. NUNCA por palabras que aparezcan de paso (ej. "sobrepeso" NO es un objetivo).
+
+[IMC:peso:estatura] — cuando el usuario da su peso y estatura. El sistema calcula el IMC, tú NO lo calcules.
+   "peso 85 kilos y mido 1.75" → [IMC:85:1.75]   ·   "80kg, 178cm" → [IMC:80:178]
+   Tras emitirlo, comenta el resultado motivando, SIN inventar el número (el tablero lo muestra).
+
+[BOOK:clase] — cuando el usuario reserva una clase. clase ∈ crossfit, yoga, box, zumba. (spinning está LLENO: no la reserves, ofrece otra.)
+   "apúntame a yoga" → [BOOK:yoga]
+
+[ENROLL:nombre] — cuando el usuario confirma que se quiere inscribir. El sistema genera el número de socio; NO lo inventes tú.
+   Pide su nombre si no lo tienes. "soy Juan, inscríbeme" → [ENROLL:Juan]
+
+PROHIBIDO inventar el número de socio (tipo PZ-xxxx) o el valor del IMC en tu texto: esos los pone el sistema. Solo existen [GOAL], [IMC], [BOOK], [ENROLL].
+
+FLUJO:
+1. Objetivo → confirma con energía + [GOAL:x] + recomienda plan y pregunta si quiere calcular su IMC.
+2. Peso y estatura → [IMC:peso:estatura] + comenta la categoría y recomienda plan (el tablero muestra el número).
+3. Reservar clase → [BOOK:clase] + confirma día y hora.
+4. Inscripción → pide nombre, luego [ENROLL:nombre] + da la bienvenida (el tablero muestra su número de socio).
 RESPUESTAS: cortas y energéticas, máx 3-4 oraciones.`;
 }
 
@@ -348,9 +366,54 @@ function reserveClass(id, name, time, spots, btn) {
   ClaveAI.send(`Reservé ${name} de las ${time}. ¡Listo!`);
 }
 
+// Catálogo de clases (fuente de verdad para reservas por chat)
+const CLASSES = {
+  crossfit: { name: 'CrossFit Matutino', time: '6:00 AM' },
+  spinning: { name: 'Spinning', time: '8:00 AM' },
+  yoga:     { name: 'Yoga & Stretching', time: '10:00 AM' },
+  box:      { name: 'Box & Cardio', time: '6:00 PM' },
+  zumba:    { name: 'Zumba', time: '7:00 PM' }
+};
+
 function setGoal(goal) {
+  if (!GOAL_LABELS[goal]) return;
   state.goal = goal;
+  // Sugerir plan por objetivo (solo si el usuario aún no eligió uno)
+  if (!state.plan) state.plan = (goal === 'musculo' || goal === 'resistencia') ? 'pro' : 'starter';
   renderDashboard();
+}
+
+// Reserva una clase desde el chat (sin depender del botón de la sidebar)
+function bookClassById(id) {
+  const cls = CLASSES[id];
+  if (!cls) return;
+  if (id === 'spinning') return;                          // clase llena
+  if (state.bookedClasses.find(c => c.id === id)) return; // ya reservada
+  state.bookedClasses.push({ id, name: cls.name, time: cls.time });
+  state.streak = Math.max(state.streak, 1);
+  renderDashboard();
+  // Reflejar en la sidebar: bajar cupo y marcar el botón
+  const item = document.querySelector(`.class-item[data-class="${id}"]`);
+  if (item) {
+    const spotsEl = document.getElementById(`spots-${id}`);
+    if (spotsEl) spotsEl.textContent = Math.max(0, (parseInt(spotsEl.textContent) || 1) - 1);
+    const btn = item.querySelector('.reserve-btn');
+    if (btn) { btn.textContent = '✓ Reservado'; btn.classList.add('booked'); btn.onclick = null; }
+  }
+}
+
+// Inscribe generando el número de socio EN CÓDIGO (no lo inventa el modelo)
+function enroll(name) {
+  const memberId = `PZ-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+  state.enrollment = {
+    name: (name && name.trim()) || 'Nuevo Socio',
+    email: state.enrollment?.email || '',
+    plan: state.plan || 'pro',
+    memberId,
+    confirmed: true
+  };
+  renderDashboard();
+  return memberId;
 }
 
 function setBMI(weight, height) {
@@ -515,41 +578,41 @@ function hexToRgb(hex) {
 // ═══════════════════════════════════════════════════════════════════
 // DETECTAR RESPUESTAS DEL BOT
 // ═══════════════════════════════════════════════════════════════════
+// Parsea comandos explícitos que emite el modelo y devuelve el texto limpio.
+// La lógica vive en código (no en inferencia de texto), robusto con Gemini Flash.
 function onBotReply(reply) {
-  const lower = reply.toLowerCase();
+  let clean = reply;
 
-  // Detectar objetivo mencionado por el usuario
-  if (!state.goal) {
-    if (lower.includes('bajar') || lower.includes('peso') || lower.includes('adelgaz')) setGoal('peso');
-    else if (lower.includes('músculo') || lower.includes('musculo') || lower.includes('ganar masa')) setGoal('musculo');
-    else if (lower.includes('resistencia') || lower.includes('correr') || lower.includes('cardio')) setGoal('resistencia');
-    else if (lower.includes('salud') || lower.includes('mantener') || lower.includes('bienestar')) setGoal('salud');
-  }
+  // [GOAL:peso|musculo|resistencia|salud]
+  clean = clean.replace(/\[GOAL:\s*([a-záéíóú]+)\s*\]/gi, (_, g) => {
+    setGoal(g.toLowerCase());
+    return '';
+  });
 
-  // Detectar IMC calculado en respuesta del bot
-  const imcMatch = reply.match(/IMC\s+(?:es\s+)?(\d+\.?\d*)/i);
-  if (imcMatch && !state.bmi) {
-    // Intentar extraer peso/talla del contexto (no tenemos esos datos aquí, solo el resultado)
-    const imcVal = parseFloat(imcMatch[1]);
-    let category = 'Normal', color = '#4ade80';
-    if (imcVal < 18.5) { category = 'Bajo peso'; color = '#60a5fa'; }
-    else if (imcVal >= 25 && imcVal < 30) { category = 'Sobrepeso'; color = '#f59e0b'; }
-    else if (imcVal >= 30) { category = 'Obesidad'; color = '#ef4444'; }
-    state.bmi = { result: imcVal, category, color, weight: '?', height: '?' };
-    renderDashboard();
-  }
+  // [IMC:peso:estatura] — estatura en cm (175) o metros (1.75). El código calcula.
+  clean = clean.replace(/\[IMC:\s*([\d.]+)\s*:\s*([\d.]+)\s*\]/gi, (_, w, h) => {
+    let weight = parseFloat(w);
+    let height = parseFloat(h);
+    if (height > 0 && height < 3) height = height * 100; // metros → cm
+    if (weight > 0 && height > 0) setBMI(weight, Math.round(height));
+    return '';
+  });
 
-  // Detectar número de socio asignado
-  const memberMatch = reply.match(/PZ-\d{4}-\d{4}/i);
-  if (memberMatch && !state.enrollment) {
-    state.enrollment = {
-      name: 'Nuevo Socio',
-      plan: state.plan || 'pro',
-      memberId: memberMatch[0],
-      confirmed: true
-    };
-    renderDashboard();
-  }
+  // [BOOK:crossfit|yoga|box|zumba|spinning]
+  clean = clean.replace(/\[BOOK:\s*([a-z]+)\s*\]/gi, (_, id) => {
+    bookClassById(id.toLowerCase());
+    return '';
+  });
+
+  // [ENROLL] o [ENROLL:nombre] — genera número de socio en código
+  clean = clean.replace(/\[ENROLL(?::\s*([^\]]+))?\]/gi, (_, name) => {
+    enroll(name);
+    return '';
+  });
+
+  // Limpia cualquier [COMANDO] residual y espacios sobrantes
+  clean = clean.replace(/\[[A-ZÁÉÍÓÚÑ][^\]]*\]/g, '').replace(/[ \t]{2,}/g, ' ').trim();
+  return clean;
 }
 
 // ═══════════════════════════════════════════════════════════════════
