@@ -861,6 +861,69 @@ body {
   </div>
 </div>
 
+<!-- GALERÍA DE SITIOS WEB -->
+<style>
+.webgal{max-width:1200px;margin:0 auto;padding:10px 24px 40px}
+.webgal .wg-head{display:flex;align-items:baseline;justify-content:space-between;gap:20px;margin-bottom:8px;flex-wrap:wrap}
+.webgal .wg-lbl{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-a)}
+.webgal h2{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(26px,3vw,38px);font-weight:800;letter-spacing:-1px;color:var(--text);line-height:1.08;margin:16px 0 10px}
+.webgal .wg-p{font-size:14px;color:var(--sub);max-width:560px;line-height:1.7;margin-bottom:34px}
+.wg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.wg-card{border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--bg);transition:transform .3s cubic-bezier(.2,.6,.2,1),border-color .3s,box-shadow .3s;text-decoration:none;display:block}
+.wg-card:hover{transform:translateY(-6px);border-color:var(--border2);box-shadow:0 18px 50px rgba(0,0,0,.28)}
+.wg-bar{display:flex;align-items:center;gap:6px;padding:10px 12px;border-bottom:1px solid var(--border)}
+.wg-bar i{width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.wg-url{margin-left:8px;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wg-shot{aspect-ratio:16/11;overflow:hidden;position:relative}
+.wg-shot img{width:100%;height:100%;object-fit:cover;transition:transform 1.1s cubic-bezier(.2,.7,.2,1)}
+.wg-card:hover .wg-shot img{transform:scale(1.06)}
+.wg-shot .wg-badge{position:absolute;top:10px;left:10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:100px;background:rgba(0,0,0,.55);color:#fff;backdrop-filter:blur(6px)}
+.wg-foot{padding:14px 15px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.wg-foot .nm{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:15px;color:var(--text);letter-spacing:-.02em}
+.wg-foot .ty{font-size:11px;color:var(--sub);margin-top:1px}
+.wg-foot .go{font-size:15px;color:var(--brand-a);transition:transform .2s}
+.wg-card:hover .wg-foot .go{transform:translate(3px,-3px)}
+.wg-real{position:relative}
+.wg-real::after{content:'EN VIVO';position:absolute;top:10px;right:10px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;padding:4px 8px;border-radius:100px;background:var(--brand-b);color:#04120e;font-weight:600}
+@media(max-width:980px){.wg-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.wg-grid{grid-template-columns:1fr}}
+</style>
+<section class="webgal">
+  <div class="wg-head">
+    <span class="wg-lbl">// Sitios web · portafolio</span>
+    <span class="wg-lbl" style="color:var(--sub)">Diseño, dominio, hosting y SSL — llave en mano</span>
+  </div>
+  <h2>Sitios que <span style="background:linear-gradient(100deg,var(--brand-a),var(--brand-b));-webkit-background-clip:text;background-clip:text;color:transparent">diseñamos</span>.</h2>
+  <p class="wg-p">Cada uno hecho a la medida de su marca. Haz clic y navégalos en vivo — así se ve la calidad que entregamos a nuestros clientes.</p>
+  <div class="wg-grid">
+
+    <a class="wg-card wg-real" href="https://claveai.com.mx/" target="_blank" rel="noopener">
+      <div class="wg-bar"><i></i><i></i><i></i><span class="wg-url">claveai.com.mx</span></div>
+      <div class="wg-shot"><span class="wg-badge">Agencia</span><img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=700&q=80" alt="ClaveAI"></div>
+      <div class="wg-foot"><div><div class="nm">ClaveAI</div><div class="ty">Nuestro sitio real</div></div><span class="go">↗</span></div>
+    </a>
+
+    <a class="wg-card" href="sitios/brasa/index.html" target="_blank" rel="noopener">
+      <div class="wg-bar"><i></i><i></i><i></i><span class="wg-url">brasa.mx</span></div>
+      <div class="wg-shot"><span class="wg-badge">Restaurante</span><img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?w=700&q=80" alt="BRASA"></div>
+      <div class="wg-foot"><div><div class="nm">BRASA</div><div class="ty">Cocina de autor</div></div><span class="go">↗</span></div>
+    </a>
+
+    <a class="wg-card" href="sitios/kairo/index.html" target="_blank" rel="noopener">
+      <div class="wg-bar"><i></i><i></i><i></i><span class="wg-url">kairo.io</span></div>
+      <div class="wg-shot"><span class="wg-badge">SaaS / Tech</span><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=700&q=80" alt="Kairo"></div>
+      <div class="wg-foot"><div><div class="nm">Kairo</div><div class="ty">Startup de software</div></div><span class="go">↗</span></div>
+    </a>
+
+    <a class="wg-card" href="sitios/vertice/index.html" target="_blank" rel="noopener">
+      <div class="wg-bar"><i></i><i></i><i></i><span class="wg-url">vertice.mx</span></div>
+      <div class="wg-shot"><span class="wg-badge">Inmobiliaria</span><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=700&q=80" alt="VÉRTICE"></div>
+      <div class="wg-foot"><div><div class="nm">VÉRTICE</div><div class="ty">Bienes raíces de lujo</div></div><span class="go">↗</span></div>
+    </a>
+
+  </div>
+</section>
+
 <!-- FOOTER -->
 <div class="footer">
   <p class="foot-txt">Para que los chats funcionen, <strong>corre el servidor primero</strong></p>

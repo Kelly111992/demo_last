@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VÉRTICE · Bienes Raíces de Autor</title>
+<meta name="description" content="VÉRTICE — propiedades de lujo y arquitectura de autor en Guadalajara y la Riviera.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1ea; --paper2:#ece7dc; --ink:#16130f; --soft:#5c554a; --line:#d9d2c4;
+  --accent:#8a6d3b; --serif:'Fraunces',serif; --sans:'Jost',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-weight:300;line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}img{display:block;max-width:100%}
+.shell{max-width:1240px;margin:0 auto;padding:0 40px}
+.eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--accent);font-weight:400}
+.reveal{opacity:0;transform:translateY(36px);transition:1s cubic-bezier(.2,.7,.2,1)}.reveal.in{opacity:1;transform:none}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:24px 40px;transition:.35s;mix-blend-mode:difference}
+nav.solid{mix-blend-mode:normal;background:rgba(244,241,234,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:16px 40px}
+.brand{font-family:var(--serif);font-weight:400;font-size:23px;letter-spacing:.28em;padding-left:.28em;color:#fff}
+nav.solid .brand{color:var(--ink)}
+.nl{display:flex;gap:34px;align-items:center;font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:#fff}
+nav.solid .nl{color:var(--ink)}
+.nl a{opacity:.85;transition:.2s}.nl a:hover{opacity:1}
+.nl .cta{border:1px solid currentColor;padding:9px 18px;opacity:1}
+@media(max-width:860px){.nl a:not(.cta){display:none}}
+
+/* HERO */
+header{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:stretch}
+.hero-l{display:flex;flex-direction:column;justify-content:center;padding:120px 60px 60px 40px}
+.hero-l .eyebrow{opacity:0;animation:rise .9s .2s forwards}
+.hero-l h1{font-family:var(--serif);font-weight:300;font-size:clamp(48px,6.4vw,92px);line-height:.98;letter-spacing:-.02em;margin:22px 0 28px}
+.hero-l h1 em{font-style:italic;color:var(--accent)}
+.hero-l h1 span{display:block;opacity:0;animation:rise 1s cubic-bezier(.2,.7,.2,1) forwards}
+.hero-l h1 span:nth-child(1){animation-delay:.3s}.hero-l h1 span:nth-child(2){animation-delay:.44s}
+.hero-l p{max-width:400px;color:var(--soft);font-size:16px;line-height:1.9;opacity:0;animation:rise 1s .66s forwards}
+.hero-l .acts{display:flex;gap:22px;align-items:center;margin-top:40px;opacity:0;animation:rise 1s .82s forwards;flex-wrap:wrap}
+.btn{font-size:12px;letter-spacing:.16em;text-transform:uppercase;padding:16px 32px;transition:.3s;cursor:pointer;border:1px solid var(--ink)}
+.btn-d{background:var(--ink);color:var(--paper)}.btn-d:hover{background:transparent;color:var(--ink)}
+.link-u{position:relative;padding-bottom:4px;letter-spacing:.1em;text-transform:uppercase;font-size:12px}
+.link-u::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--ink);transform:scaleX(.4);transform-origin:left;transition:.3s}.link-u:hover::after{transform:scaleX(1)}
+.hero-r{position:relative;overflow:hidden}
+.hero-r img{width:100%;height:100%;object-fit:cover;filter:saturate(.95) contrast(1.03);transform:scale(1.04);animation:zoom 12s ease-out forwards}
+.hero-r .cap{position:absolute;bottom:32px;left:32px;background:rgba(244,241,234,.94);padding:16px 22px;backdrop-filter:blur(6px)}
+.hero-r .cap .p{font-family:var(--serif);font-size:22px}.hero-r .cap .a{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin-top:3px}
+@keyframes rise{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:none}}
+@keyframes zoom{to{transform:scale(1)}}
+@media(max-width:860px){header{grid-template-columns:1fr}.hero-r{min-height:52vh;order:-1}.hero-l{padding:110px 40px 60px}}
+
+section{padding:130px 0}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:64px;flex-wrap:wrap}
+.sec-head h2{font-family:var(--serif);font-weight:300;font-size:clamp(34px,5vw,62px);line-height:1;letter-spacing:-.01em}
+.sec-head h2 em{font-style:italic;color:var(--accent)}
+
+/* featured split */
+.feat-prop{display:grid;grid-template-columns:1.15fr .85fr;gap:0;border:1px solid var(--line)}
+.feat-prop .im{overflow:hidden;min-height:520px}
+.feat-prop .im img{width:100%;height:100%;object-fit:cover;transition:1.4s cubic-bezier(.2,.7,.2,1)}
+.feat-prop:hover .im img{transform:scale(1.05)}
+.feat-prop .info{padding:56px 50px;display:flex;flex-direction:column;justify-content:center;background:var(--paper2)}
+.feat-prop .info h3{font-family:var(--serif);font-weight:300;font-size:clamp(30px,3.4vw,44px);line-height:1.05;margin:16px 0 20px}
+.feat-prop .info p{color:var(--soft);line-height:1.9;margin-bottom:28px;max-width:380px}
+.specs{display:flex;gap:34px;margin-bottom:34px;flex-wrap:wrap}
+.spec .v{font-family:var(--serif);font-size:30px}.spec .l{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin-top:2px}
+.price-tag{font-family:var(--serif);font-size:30px;color:var(--accent);margin-bottom:26px}
+@media(max-width:860px){.feat-prop{grid-template-columns:1fr}.feat-prop .im{min-height:340px}.feat-prop .info{padding:40px 32px}}
+
+/* grid listings */
+.props{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+.prop{cursor:pointer}
+.prop .im{overflow:hidden;aspect-ratio:4/5;margin-bottom:18px}
+.prop .im img{width:100%;height:100%;object-fit:cover;transition:1.2s cubic-bezier(.2,.7,.2,1);filter:saturate(.96)}
+.prop:hover .im img{transform:scale(1.06)}
+.prop .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.prop h4{font-family:var(--serif);font-weight:400;font-size:22px}
+.prop .pr{font-family:var(--serif);color:var(--accent);font-size:18px;white-space:nowrap}
+.prop .meta{font-size:12.5px;letter-spacing:.05em;color:var(--soft);margin-top:6px;text-transform:uppercase}
+@media(max-width:860px){.props{grid-template-columns:1fr;gap:40px}}
+
+/* stats editorial */
+.editorial{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.editorial .big{font-family:var(--serif);font-weight:300;font-style:italic;font-size:clamp(28px,3.4vw,40px);line-height:1.32}
+.editorial .big b{font-style:normal;font-weight:400;color:var(--accent)}
+.st-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line)}
+.st{background:var(--paper);padding:38px 28px}
+.st .v{font-family:var(--serif);font-size:clamp(36px,4.4vw,54px);line-height:1}
+.st .l{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-top:10px}
+@media(max-width:860px){.editorial{grid-template-columns:1fr;gap:40px}}
+
+/* CTA */
+.contact{position:relative;overflow:hidden;padding:120px 40px;text-align:center;color:#fff}
+.contact::before{content:'';position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=80') center/cover;filter:brightness(.42);z-index:-1}
+.contact h2{font-family:var(--serif);font-weight:300;font-size:clamp(36px,5.4vw,68px);line-height:1.02;margin-bottom:22px}
+.contact h2 em{font-style:italic}
+.contact p{max-width:440px;margin:0 auto 38px;opacity:.86;font-size:16px}
+.contact .btn{border-color:#fff;color:#fff}.contact .btn:hover{background:#fff;color:var(--ink)}
+
+/* footer */
+footer{padding:70px 0 40px;border-top:1px solid var(--line)}
+.fg{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:44px;margin-bottom:48px}
+.fg .brand{color:var(--ink);margin-bottom:16px;display:inline-block}
+.fg p{color:var(--soft);font-size:14px;line-height:1.8;max-width:300px}
+.fg h4{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.fg a{display:block;color:var(--soft);font-size:14.5px;margin-bottom:10px;transition:.2s}.fg a:hover{color:var(--ink)}
+.fb{border-top:1px solid var(--line);padding-top:24px;display:flex;justify-content:space-between;font-size:12.5px;color:var(--soft);flex-wrap:wrap;gap:10px}
+.fb a{color:var(--accent)}
+@media(max-width:860px){.fg{grid-template-columns:1fr;gap:30px}}
+.ribbon{position:fixed;bottom:16px;right:16px;z-index:60;background:var(--ink);color:var(--paper);border-radius:100px;padding:9px 16px;font-size:12px;transition:.25s}
+.ribbon:hover{background:var(--accent)}.ribbon b{font-weight:500}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="brand">VÉRTICE</div>
+  <div class="nl">
+    <a href="#portafolio">Portafolio</a>
+    <a href="#nosotros">Nosotros</a>
+    <a href="#contacto" class="cta">Agendar cita</a>
+  </div>
+</nav>
+
+<header>
+  <div class="hero-l">
+    <div class="eyebrow">Bienes raíces de autor · desde 2009</div>
+    <h1><span>Espacios que</span><span>se <em>habitan</em>,</span><span style="animation-delay:.56s">no se ocupan.</span></h1>
+    <p>Curamos propiedades excepcionales donde la arquitectura, la luz y la ubicación se encuentran. Una selección para quien busca más que una casa.</p>
+    <div class="acts">
+      <a href="#portafolio" class="btn btn-d">Ver portafolio</a>
+      <a href="#contacto" class="link-u">Agendar asesoría →</a>
+    </div>
+  </div>
+  <div class="hero-r">
+    <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1400&q=80" alt="Residencia de lujo">
+    <div class="cap"><div class="p">Casa Bruma</div><div class="a">Zapopan · $18.5M MXN</div></div>
+  </div>
+</header>
+
+<section id="destacada" class="shell">
+  <div class="sec-head reveal">
+    <h2>Propiedad <em>destacada</em></h2>
+    <span class="eyebrow">01 / selección del mes</span>
+  </div>
+  <div class="feat-prop reveal">
+    <div class="im"><img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80" alt="Casa Palma"></div>
+    <div class="info">
+      <span class="eyebrow">Puerta de Hierro · Zapopan</span>
+      <h3>Casa Palma</h3>
+      <p>Arquitectura contemporánea de doble altura, patios interiores y una paleta de piedra, madera y luz natural. Diseñada para vivir dentro y fuera.</p>
+      <div class="specs">
+        <div class="spec"><div class="v">4</div><div class="l">Recámaras</div></div>
+        <div class="spec"><div class="v">5.5</div><div class="l">Baños</div></div>
+        <div class="spec"><div class="v">620</div><div class="l">m² constr.</div></div>
+      </div>
+      <div class="price-tag">$24,900,000 MXN</div>
+      <a href="#contacto" class="link-u">Solicitar recorrido privado →</a>
+    </div>
+  </div>
+</section>
+
+<section id="portafolio" class="shell">
+  <div class="sec-head reveal">
+    <h2>El <em>portafolio</em></h2>
+    <span class="eyebrow" style="max-width:260px;line-height:2;text-align:right">Una selección viva · +80 propiedades disponibles</span>
+  </div>
+  <div class="props">
+    <article class="prop reveal">
+      <div class="im"><img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=800&q=80" alt="Villa Sereno"></div>
+      <div class="row"><h4>Villa Sereno</h4><span class="pr">$32.5M</span></div>
+      <div class="meta">Chapala · 5 rec · 780 m²</div>
+    </article>
+    <article class="prop reveal" style="transition-delay:.1s">
+      <div class="im"><img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80" alt="Loft Andares"></div>
+      <div class="row"><h4>Loft Andares</h4><span class="pr">$8.9M</span></div>
+      <div class="meta">Zapopan · 2 rec · 140 m²</div>
+    </article>
+    <article class="prop reveal" style="transition-delay:.2s">
+      <div class="im"><img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&q=80" alt="Casa Horizonte"></div>
+      <div class="row"><h4>Casa Horizonte</h4><span class="pr">$15.2M</span></div>
+      <div class="meta">Valle Real · 4 rec · 410 m²</div>
+    </article>
+  </div>
+</section>
+
+<section id="nosotros" class="shell">
+  <div class="editorial reveal">
+    <div class="big">Durante <b>15 años</b> hemos acompañado a familias e inversionistas a encontrar no una propiedad, sino <b>un lugar</b> en el mundo.</div>
+    <div class="st-grid">
+      <div class="st"><div class="v">$4.2B</div><div class="l">Transaccionados</div></div>
+      <div class="st"><div class="v">640+</div><div class="l">Familias atendidas</div></div>
+      <div class="st"><div class="v">15</div><div class="l">Años de trayectoria</div></div>
+      <div class="st"><div class="v">98%</div><div class="l">Clientes que refieren</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="contacto" style="padding:0">
+  <div class="contact reveal">
+    <div class="eyebrow" style="color:#e8dcc4;margin-bottom:20px">Conversemos</div>
+    <h2>Encontremos tu <em>siguiente</em> lugar.</h2>
+    <p>Agenda una asesoría privada. Sin compromiso, con la discreción que tu decisión merece.</p>
+    <a href="#" class="btn">Agendar cita →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="shell">
+    <div class="fg">
+      <div>
+        <span class="brand" style="font-family:var(--serif);font-size:22px;letter-spacing:.28em">VÉRTICE</span>
+        <p>Bienes raíces de autor. Av. Patria 2100, Puerta de Hierro, Zapopan, Jalisco.</p>
+      </div>
+      <div><h4>Explorar</h4><a href="#">Portafolio</a><a href="#">Preventa</a><a href="#">Inversión</a><a href="#">Renta premium</a></div>
+      <div><h4>Contacto</h4><a href="#">+52 33 2200 1500</a><a href="#">hola@vertice.mx</a><a href="#">Instagram ↗</a></div>
+    </div>
+    <div class="fb">
+      <span>© 2026 VÉRTICE Bienes Raíces · Cédula profesional inmobiliaria</span>
+      <span>Sitio de ejemplo diseñado por <a href="https://claveai.com.mx" target="_blank">ClaveAI</a></span>
+    </div>
+  </div>
+</footer>
+
+<a class="ribbon" href="../../index.html">◂ Ejemplo de <b>ClaveAI</b></a>
+
+<script>
+const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.14});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('solid',scrollY>60));
+</script>
+</body>
+</html>
