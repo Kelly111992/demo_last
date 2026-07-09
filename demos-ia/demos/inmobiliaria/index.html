@@ -316,12 +316,27 @@ PERFIL DEL LEAD ACTUAL:
 - Propiedades en favoritos: ${favsText}
 - Visita agendada: ${visitText}
 
-FLUJOS:
-1. CALIFICACIÓN: Si no hay lead, haz 4 preguntas: nombre, presupuesto, zona preferida, ¿comprar/rentar/invertir?
-2. HIPOTECARIA: Si preguntan mensualidad, da un estimado rápido. Fórmula: P * r * (1+r)^n / ((1+r)^n - 1), donde r=tasa_mensual.
-3. COMPARADOR: Si comparan 2 props, presenta tabla en el chat.
-4. VISITA: Solicita: propiedad, nombre, fecha, hora → confirma con asesor asignado.
-5. ROI: Para inversores: plusvalía + renta potencial + años de recuperación.
+═══════════════════════════════════════════════
+COMANDOS — ÚNICA FORMA DE ACTUALIZAR EL PANEL
+═══════════════════════════════════════════════
+El panel (perfil del lead y visita) SOLO cambia con el comando exacto. Decirlo en prosa NO hace nada. Son invisibles para el cliente.
+
+[LEAD:campo:valor] — a medida que el cliente da sus datos de calificación. Un comando por dato.
+   campo ∈ name, budget, zone, purpose (purpose = comprar / rentar / invertir).
+   "me llamo Juan" → [LEAD:name:Juan]   ·   "busco en Zapopan" → [LEAD:zone:Zapopan]
+   "tengo 5 millones" → [LEAD:budget:$5M]   ·   "quiero invertir" → [LEAD:purpose:invertir]
+   Emite [LEAD:...] SOLO con datos que el CLIENTE dé, nunca por palabras sueltas de tu propio texto.
+
+[VISIT:propiedad:fecha] — cuando el cliente agenda una visita. El sistema genera el folio y asigna asesor; NO los inventes tú.
+   "quiero ver la Casa Puerta de Hierro el sábado 12pm" → [VISIT:Casa Puerta de Hierro:sábado 12pm]
+
+PROHIBIDO inventar el folio (AR-##### / APX-####): lo pone el sistema. Solo existen [LEAD] y [VISIT].
+
+FLUJO:
+1. Calificación: 4 preguntas (nombre, presupuesto, zona, comprar/rentar/invertir) → emite [LEAD:campo:valor] con cada respuesta.
+2. Hipotecaria: estimado con P·r·(1+r)^n/((1+r)^n−1), r=tasa_mensual.
+3. Comparador: tabla en el chat si comparan 2 propiedades.
+4. Visita: reúne propiedad + fecha → [VISIT:propiedad:fecha] (el panel muestra el folio y el asesor).
 Respuestas cortas y elegantes, máx 3 oraciones.`;
 }
 
@@ -442,27 +457,44 @@ function renderVisit() {
 // ═══════════════════════════════════════════════════════════════════
 // DETECTAR RESPUESTAS DEL BOT
 // ═══════════════════════════════════════════════════════════════════
-function onBotReply(reply) {
-  // Detectar nombre en respuesta (si el bot lo repite)
-  if (!state.lead) {
-    const lower = reply.toLowerCase();
-    if (lower.includes('presupuesto') || lower.includes('zona') || lower.includes('buscar')) {
-      state.lead = { name: 'Cliente' };
-      renderLead();
-    }
-  }
+// Asigna un dato de calificación del lead sin duplicar la tarjeta.
+function setLeadField(field, value) {
+  const allowed = ['name', 'budget', 'zone', 'purpose'];
+  if (!allowed.includes(field)) return;
+  if (!state.lead) state.lead = {};
+  state.lead[field] = value;
+  renderLead();
+}
 
-  // Detectar visita confirmada
-  const folioMatch = reply.match(/AR-\d{5}/i) || reply.match(/APX-\d{4}/i);
-  if (folioMatch && !state.visit) {
-    state.visit = {
-      property: state.favorites[0]?.name || 'Propiedad de interés',
-      agent: 'Carlos Mendoza',
-      date: 'Próximamente',
-      folio: folioMatch[0]
-    };
-    renderVisit();
-  }
+// Agenda visita generando el folio EN CÓDIGO (no lo inventa el modelo).
+function scheduleVisit(property, date) {
+  state.visit = {
+    property: property || state.favorites[0]?.name || 'Propiedad de interés',
+    agent: 'Carlos Mendoza',
+    date: date || 'Por confirmar',
+    folio: `AR-${Math.floor(10000 + Math.random() * 90000)}`
+  };
+  renderVisit();
+}
+
+// Parser de comandos explícitos (robusto con modelos no-frontera).
+function onBotReply(reply) {
+  let clean = reply;
+
+  // [LEAD:campo:valor] — campo ∈ name, budget, zone, purpose
+  clean = clean.replace(/\[LEAD:\s*(name|budget|zone|purpose)\s*:\s*([^\]]+?)\s*\]/gi, (_, f, v) => {
+    setLeadField(f.toLowerCase(), v.trim());
+    return '';
+  });
+
+  // [VISIT:propiedad:fecha] — agenda visita (folio generado por el sistema)
+  clean = clean.replace(/\[VISIT:\s*([^:\]]+?)\s*:\s*([^\]]+?)\s*\]/gi, (_, prop, date) => {
+    if (!state.visit) scheduleVisit(prop.trim(), date.trim());
+    return '';
+  });
+
+  clean = clean.replace(/\[[A-ZÁÉÍÓÚÑ][^\]]*\]/g, '').replace(/[ \t]{2,}/g, ' ').trim();
+  return clean;
 }
 
 // ═══════════════════════════════════════════════════════════════════

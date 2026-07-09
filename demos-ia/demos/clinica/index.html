@@ -475,9 +475,24 @@ ESTADO ACTUAL DEL PACIENTE:
 - ${symptomsInfo}
 - ${appointmentInfo}
 
-Si el paciente menciona síntomas, haz 2-3 preguntas de triaje y sugiere la especialidad adecuada.
-Si el paciente quiere agendar cita, guía el proceso: especialidad → fecha → hora → datos.
-Al confirmar cita, genera folio tipo CSP-2024-XXXX y confirma los datos.
+═══════════════════════════════════════════════
+COMANDOS — ÚNICA FORMA DE ACTUALIZAR EL PANEL
+═══════════════════════════════════════════════
+El panel (especialidad, horario, paciente, cita) SOLO cambia con el comando exacto. Decirlo en prosa NO hace nada. Son invisibles para el paciente.
+
+[SPECIALTY:id] — cuando defines/sugieres la especialidad. id ∈ general, odontologia, laboratorio, cardiologia, traumatologia, oftalmologia, psicologia.
+   "por ese dolor conviene Cardiología" → [SPECIALTY:cardiologia]
+[SLOT:hora] — cuando el paciente elige horario. Horarios disponibles hoy: 09:00, 10:00, 10:30, 11:30, 12:00, 12:30, 16:00. Usa ese formato exacto (con cero inicial).
+   "a las diez y media" → [SLOT:10:30]
+[PATIENT:nombre] — cuando el paciente da su nombre. "soy Laura Gómez" → [PATIENT:Laura Gómez]
+[CONFIRM] — cuando confirmas la cita (ya hay especialidad + horario + nombre). El sistema genera el folio; NO lo inventes tú.
+
+PROHIBIDO inventar el folio (CSP-####): lo pone el sistema con [CONFIRM]. Solo existen [SPECIALTY], [SLOT], [PATIENT], [CONFIRM].
+
+FLUJO:
+1. Síntomas → 2-3 preguntas de triaje + [SPECIALTY:id] de la que recomiendes. NUNCA das diagnósticos médicos.
+2. Agendar → guía especialidad → horario ([SLOT]) → nombre ([PATIENT]).
+3. Confirmar → [CONFIRM] (el panel muestra el folio y los datos).
 Respuestas cortas (máx 3-4 oraciones).`;
 }
 
@@ -691,6 +706,70 @@ function selectSpecialty(name) {
   ClaveAI.send(`Me interesa la especialidad de ${name}`);
 }
 
+// ── Mapeo de ids cortos (sin acentos) → nombre de especialidad ──
+const SPECIALTY_IDS = {
+  general: 'Medicina General', odontologia: 'Odontología', laboratorio: 'Laboratorio',
+  cardiologia: 'Cardiología', traumatologia: 'Traumatología', oftalmologia: 'Oftalmología',
+  psicologia: 'Psicología'
+};
+
+// Selecciona especialidad desde el chat (sin el eco de ClaveAI.send).
+function setSpecialtyById(id) {
+  const name = SPECIALTY_IDS[id];
+  if (!name) return;
+  state.specialty = name;
+  state.doctor = SERVICES[name]?.doctor || null;
+  document.querySelectorAll('.service-card').forEach(card => {
+    card.classList.remove('selected');
+    if (card.querySelector('.service-name')?.textContent === name) card.classList.add('selected');
+  });
+  renderAvailableSlots();
+}
+
+// Fija el horario desde el chat.
+function setSlotByChat(time) {
+  state.slot = { date: 'hoy', time };
+  document.querySelectorAll('.slot-btn').forEach(btn => {
+    btn.classList.remove('selected');
+    if (btn.textContent.trim() === time) btn.classList.add('selected');
+  });
+}
+
+// Registra al paciente desde el chat.
+function setPatientByChat(name) {
+  setPatientProfile({ name: (name || '').trim() || 'Paciente', isNew: true, insurance: null });
+}
+
+// Confirma la cita generando folio EN CÓDIGO (sin alerts ni eco).
+function confirmAppointmentChat() {
+  if (!state.specialty || !state.slot || !state.patient) return;
+  state.appointment = {
+    folio: `CSP-2026-${Math.floor(1000 + Math.random() * 9000)}`,
+    specialty: state.specialty,
+    slot: state.slot,
+    patient: state.patient.name,
+    confirmed: true
+  };
+  renderAppointment();
+}
+
+// Parser de comandos explícitos (robusto con modelos no-frontera).
+function onBotReply(reply) {
+  let clean = reply;
+
+  // [SPECIALTY:id]
+  clean = clean.replace(/\[SPECIALTY:\s*([a-z]+)\s*\]/gi, (_, id) => { setSpecialtyById(id.toLowerCase()); return ''; });
+  // [PATIENT:nombre]
+  clean = clean.replace(/\[PATIENT:\s*([^\]]+?)\s*\]/gi, (_, name) => { setPatientByChat(name); return ''; });
+  // [SLOT:hora]
+  clean = clean.replace(/\[SLOT:\s*([^\]]+?)\s*\]/gi, (_, t) => { setSlotByChat(t.trim()); return ''; });
+  // [CONFIRM] → cita con folio generado por el sistema
+  clean = clean.replace(/\[CONFIRM\]/gi, () => { if (!state.appointment) confirmAppointmentChat(); return ''; });
+
+  clean = clean.replace(/\[[A-ZÁÉÍÓÚÑ][^\]]*\]/g, '').replace(/[ \t]{2,}/g, ' ').trim();
+  return clean;
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // INICIALIZACIÓN
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -698,6 +777,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Inicializar MesaIA con system prompt dinámico
   ClaveAI.init({
     system: getSystemPrompt,
+    onReply: onBotReply,
     welcomeMessage: `Hola, bienvenido a **Clínica Salud+** 🏥\n\nSoy tu asistente virtual. Puedo ayudarte a:\n• Agendar una cita médica\n• Orientarte sobre qué especialidad necesitas\n• Consultar precios y horarios\n• Ver resultados de laboratorio\n\n¿En qué te puedo ayudar hoy?`
   });
 

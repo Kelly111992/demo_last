@@ -336,11 +336,26 @@ ESTADO ACTUAL DE LA CITA:
 - Total: ${totalText}
 - Cita agendada: ${apptText}
 
-FLUJOS:
-1. CONSULTA DE COLOR: Si la clienta pide consulta, haz 3 preguntas: tipo de cabello, tono actual, tono deseado → da recomendación técnica.
-2. AGENDAR: Confirma estilista, servicios, fecha y hora → genera folio tipo SG-XXXX.
-3. PAQUETE NOVIA: Pregunta fecha de boda, servicios deseados, si quiere prueba previa → da cotización completa.
-4. DESCUENTO: Si llevan 2+ servicios, ofrece 10% en el segundo.
+═══════════════════════════════════════════════
+COMANDOS — ÚNICA FORMA DE ACTUALIZAR EL PANEL
+═══════════════════════════════════════════════
+El panel de la cita SOLO cambia con el comando exacto. Decirlo en prosa NO hace nada. Son invisibles para la clienta.
+
+[STYLIST:id] — cuando elige estilista. id ∈ diana (color/balayage), valeria (uñas/maquillaje), ana (facial/spa).
+   "quiero con Diana" → [STYLIST:diana]
+[SERVICE:id] — cuando pide un servicio. id ∈ corte, tinte, balayage, keratina, peinado, manicure, pedicure, acrilicas, facial, masaje, maquillaje.
+   "quiero un balayage y manicure" → [SERVICE:balayage][SERVICE:manicure]
+[SLOT:hora] — cuando elige horario. Slots: 10am, 11:30am, 1pm, 3pm, 5pm.
+   "a la 1pm" → [SLOT:1pm]
+[CONFIRM] — cuando confirma su cita (ya hay estilista + al menos un servicio). El sistema genera el folio; NO lo inventes tú.
+   "agéndala", "confirmo" → [CONFIRM]
+
+PROHIBIDO inventar el folio (tipo SG-####): lo pone el sistema al recibir [CONFIRM]. Solo existen [STYLIST], [SERVICE], [SLOT], [CONFIRM].
+
+FLUJO:
+1. Consulta de color: haz 3 preguntas (tipo de cabello, tono actual, tono deseado) → recomendación técnica.
+2. Servicios/estilista → emite [SERVICE:id] y [STYLIST:id] al vuelo. Si lleva 2+ servicios, ofrece 10% en el segundo.
+3. Agendar → [SLOT:hora] + [CONFIRM] (el panel muestra el folio y la hora).
 Respuestas cortas y entusiastas, máx 3 oraciones.`;
 }
 
@@ -377,6 +392,52 @@ function toggleService(id, name, price, time) {
 
 function requestBridalPackage() {
   ClaveAI.send('Quiero información sobre el paquete novia. Tengo una boda próximamente y me gustaría cotizar todos los servicios necesarios.');
+}
+
+// ── Catálogos (fuente de verdad para acciones por chat) ──
+const STYLISTS = {
+  diana:   { name: 'Diana Reyes', specialty: 'Colorimetría / Balayage', rating: 4.9 },
+  valeria: { name: 'Valeria Mora', specialty: 'Uñas / Maquillaje', rating: 4.8 },
+  ana:     { name: 'Ana López', specialty: 'Facial / Spa', rating: 4.9 }
+};
+const SERVICES = {
+  corte:{name:'Corte de cabello',price:250,time:45}, tinte:{name:'Tinte completo',price:850,time:150},
+  balayage:{name:'Balayage / Highlights',price:1400,time:180}, keratina:{name:'Tratamiento keratina',price:1200,time:120},
+  peinado:{name:'Peinado + secado',price:350,time:60}, manicure:{name:'Manicure semipermanente',price:280,time:60},
+  pedicure:{name:'Pedicure spa',price:320,time:90}, acrilicas:{name:'Uñas acrílicas',price:580,time:120},
+  facial:{name:'Limpieza facial profunda',price:650,time:60}, masaje:{name:'Masaje relajante',price:550,time:60},
+  maquillaje:{name:'Maquillaje social',price:750,time:90}
+};
+
+// Selecciona estilista desde el chat (sin depender del botón)
+function selectStylistById(id) {
+  const s = STYLISTS[id];
+  if (!s) return;
+  state.stylist = { id, name: s.name, specialty: s.specialty, rating: s.rating };
+  document.querySelectorAll('.stylist-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`[data-stylist="${id}"]`)?.classList.add('selected');
+  renderAppointmentBuilder();
+}
+
+// Agrega servicio desde el chat (idempotente, sincroniza sidebar y totales)
+function addServiceById(id) {
+  const svc = SERVICES[id];
+  if (!svc || state.services.find(s => s.id === id)) return;
+  state.services.push({ id, name: svc.name, price: svc.price, time: svc.time });
+  document.querySelector(`[data-svc="${id}"]`)?.classList.add('selected');
+  const chk = document.getElementById(`check-${id}`);
+  if (chk) chk.textContent = '✓';
+  state.totalPrice = state.services.reduce((sum, s) => sum + s.price, 0);
+  state.totalTime = state.services.reduce((sum, s) => sum + s.time, 0);
+  renderAppointmentBuilder();
+}
+
+// Confirma la cita generando el folio EN CÓDIGO
+function confirmAppointmentChat(time) {
+  if (!state.stylist || state.services.length === 0) return;
+  if (time) state.slot = { date: 'hoy', time };
+  state.appointment = { folio: `SG-${Math.floor(1000 + Math.random() * 9000)}`, confirmed: true };
+  renderAppointmentBuilder();
 }
 
 function bookAppointment() {
@@ -445,18 +506,22 @@ function renderAppointmentBuilder() {
 // ═══════════════════════════════════════════════════════════════════
 // DETECTAR RESPUESTAS DEL BOT
 // ═══════════════════════════════════════════════════════════════════
+// Parser de comandos explícitos (robusto con modelos no-frontera).
 function onBotReply(reply) {
-  const folioMatch = reply.match(/SG-\d{4}/i);
-  if (folioMatch && !state.appointment && state.services.length > 0) {
-    state.appointment = { folio: folioMatch[0], confirmed: true };
+  let clean = reply;
+  let pendingTime = null;
 
-    // Extraer hora si está en la respuesta
-    const timeMatch = reply.match(/(\d{1,2}:\d{2}(?:am|pm)?)/i);
-    if (timeMatch) {
-      state.slot = { date: 'Próximamente', time: timeMatch[1] };
-    }
-    renderAppointmentBuilder();
-  }
+  // [SLOT:hora] — guarda la hora elegida (se aplica al confirmar)
+  clean = clean.replace(/\[SLOT:\s*([^\]]+?)\s*\]/gi, (_, t) => { pendingTime = t.trim(); if (state.appointment) state.slot = { date:'hoy', time: pendingTime }; return ''; });
+  // [STYLIST:diana|valeria|ana]
+  clean = clean.replace(/\[STYLIST:\s*([a-z]+)\s*\]/gi, (_, id) => { selectStylistById(id.toLowerCase()); return ''; });
+  // [SERVICE:id]
+  clean = clean.replace(/\[SERVICE:\s*([a-z]+)\s*\]/gi, (_, id) => { addServiceById(id.toLowerCase()); return ''; });
+  // [CONFIRM] → genera folio en código (requiere estilista + al menos 1 servicio)
+  clean = clean.replace(/\[CONFIRM\]/gi, () => { confirmAppointmentChat(pendingTime); return ''; });
+
+  clean = clean.replace(/\[[A-ZÁÉÍÓÚÑ][^\]]*\]/g, '').replace(/[ \t]{2,}/g, ' ').trim();
+  return clean;
 }
 
 // ═══════════════════════════════════════════════════════════════════

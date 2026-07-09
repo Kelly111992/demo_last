@@ -354,11 +354,30 @@ ASSESSMENT (5 preguntas clave — haz UNA a la vez):
 4. ¿Han intentado antes alguna solución digital? ¿Por qué no funcionó?
 5. Si pudieras automatizar UNA sola cosa hoy, ¿qué sería?
 
-FLUJOS:
-1. ASSESSMENT: Si no hay lead, haz el assessment UNA pregunta a la vez.
-2. ROI: Si preguntan ROI, di los números del cálculo en el dashboard y explica el payback.
-3. PROPUESTA: Cuando hayas hecho el assessment, genera propuesta con ID tipo VP-XXXX con los módulos recomendados.
-4. DEMO: Para agendar: pide nombre, empresa, fecha preferida → genera ID de reunión tipo DM-XXXX.
+═══════════════════════════════════════════════
+COMANDOS — ÚNICA FORMA DE ACTUALIZAR EL PANEL
+═══════════════════════════════════════════════
+El panel (perfil del lead, propuesta, demo) SOLO cambia con el comando exacto. Decirlo en prosa NO hace nada. Son invisibles para el prospecto.
+
+[LEAD:campo:valor] — a medida que el prospecto da sus datos. Un comando por dato.
+   campo ∈ name, company, industry, size. industry ∈ restaurante, clinica, inmobiliaria, ecommerce, taller, salon, otro.
+   "soy Ana de Tacos El Güero" → [LEAD:name:Ana][LEAD:company:Tacos El Güero][LEAD:industry:restaurante]
+   "somos 12 personas" → [LEAD:size:12]
+   Emite [LEAD:...] SOLO con datos que el PROSPECTO dé, nunca por palabras sueltas de tu propio texto.
+
+[MODULE:id] — cuando recomiendas/acepta un módulo. id ∈ chat, ventas, automatizacion, analitica.
+   "les va bien Chat IA + WhatsApp" → [MODULE:chat][MODULE:automatizacion]
+[PROPOSAL] — cuando armas la propuesta (tras el assessment). El sistema genera el ID; NO lo inventes tú.
+[DEMO:fecha] — cuando agendas la demo. El sistema genera el ID; NO lo inventes tú.
+   "el martes a las 5" → [DEMO:martes 5pm]
+
+PROHIBIDO inventar IDs (VP-#### / DM-####): los pone el sistema con [PROPOSAL] y [DEMO]. Solo existen [LEAD], [MODULE], [PROPOSAL], [DEMO].
+
+FLUJO:
+1. Assessment: una pregunta a la vez; con cada respuesta emite [LEAD:campo:valor].
+2. ROI: explica ahorro y payback del tablero.
+3. Propuesta: recomienda módulos con [MODULE:id] y arma con [PROPOSAL].
+4. Demo: reúne fecha → [DEMO:fecha].
 Respuestas cortas y estratégicas, máx 3-4 oraciones. Siempre termina con UNA pregunta para avanzar.`;
 }
 
@@ -478,60 +497,77 @@ function renderLead() {
 // ═══════════════════════════════════════════════════════════════════
 // DETECTAR RESPUESTAS DEL BOT
 // ═══════════════════════════════════════════════════════════════════
+const VENTAS_MODULES = {
+  chat:          { name: 'Chat IA 24/7', price: 1500 },
+  ventas:        { name: 'Agente de ventas', price: 800 },
+  automatizacion:{ name: 'Automatización', price: 600 },
+  analitica:     { name: 'Analítica IA', price: 400 }
+};
+
+// Asigna un dato del lead sin duplicar la tarjeta.
+function setLeadField(field, value) {
+  const allowed = ['name', 'company', 'industry', 'size'];
+  if (!allowed.includes(field)) return;
+  if (!state.lead) state.lead = {};
+  if (field === 'industry') value = value.toLowerCase();
+  state.lead[field] = value;
+  renderLead();
+}
+
+// Agrega módulo desde el chat (idempotente, sincroniza sidebar + total).
+function addModuleById(id) {
+  const mod = VENTAS_MODULES[id];
+  if (!mod || state.modules.find(m => m.id === id)) return;
+  state.modules.push({ id, name: mod.name, price: mod.price });
+  state.totalMonthly = state.modules.reduce((s, m) => s + m.price, 0);
+  document.querySelector(`[data-mod="${id}"]`)?.classList.add('selected');
+  const chk = document.getElementById(`mod-check-${id}`);
+  if (chk) chk.textContent = '✓';
+}
+
+// Agenda la demo generando el ID EN CÓDIGO.
+function scheduleDemo(date) {
+  state.demoScheduled = { id: `DM-${Math.floor(1000 + Math.random() * 9000)}`, date: date || 'Por confirmar', confirmed: true };
+  const container = document.getElementById('demoSection');
+  if (container) container.innerHTML = `
+    <div class="dash-label" style="margin-top:8px">Demo agendada</div>
+    <div class="demo-card">
+      <div class="demo-id">📅 ${state.demoScheduled.id}</div>
+      <div class="demo-detail">Demo en vivo confirmada${date ? ' · ' + date : ''}.<br>Recibirás el link de reunión por WhatsApp.</div>
+    </div>
+  `;
+}
+
+// Parser de comandos explícitos (robusto con modelos no-frontera).
 function onBotReply(reply) {
-  const lower = reply.toLowerCase();
+  let clean = reply;
 
-  // Detectar industria del lead
-  if (!state.lead) {
-    let industry = null;
-    if (lower.includes('restaurante') || lower.includes('taquería') || lower.includes('comida')) industry = 'restaurante';
-    else if (lower.includes('clínica') || lower.includes('consultorio') || lower.includes('médico')) industry = 'clinica';
-    else if (lower.includes('inmobiliaria') || lower.includes('propiedad') || lower.includes('bienes raíces')) industry = 'inmobiliaria';
-    else if (lower.includes('tienda') || lower.includes('e-commerce') || lower.includes('ecommerce')) industry = 'ecommerce';
-    else if (lower.includes('taller') || lower.includes('mecánico') || lower.includes('automotriz')) industry = 'taller';
-    else if (lower.includes('salón') || lower.includes('belleza') || lower.includes('peluquería')) industry = 'salon';
+  // [LEAD:campo:valor] — campo ∈ name, company, industry, size
+  clean = clean.replace(/\[LEAD:\s*(name|company|industry|size)\s*:\s*([^\]]+?)\s*\]/gi, (_, f, v) => {
+    setLeadField(f.toLowerCase(), v.trim());
+    return '';
+  });
 
-    if (industry) {
-      state.lead = { industry, company: '', name: '' };
-      renderLead();
+  // [MODULE:id] — id ∈ chat, ventas, automatizacion, analitica
+  clean = clean.replace(/\[MODULE:\s*([a-z]+)\s*\]/gi, (_, id) => { addModuleById(id.toLowerCase()); return ''; });
+
+  // [PROPOSAL] — genera propuesta con ID en código (si no hay módulos, incluye Chat IA base)
+  clean = clean.replace(/\[PROPOSAL\]/gi, () => {
+    if (!state.proposal) {
+      if (state.modules.length === 0) addModuleById('chat');
+      generateProposal();
     }
-  }
+    return '';
+  });
 
-  // Detectar propuesta ID en respuesta
-  const proposalMatch = reply.match(/VP-\d{4}/i);
-  if (proposalMatch && !state.proposal && state.modules.length === 0) {
-    // Auto-seleccionar Chat IA como módulo base
-    state.modules = [{ id: 'chat', name: 'Chat IA 24/7', price: 1500 }];
-    state.totalMonthly = 1500;
-    document.querySelector('[data-mod="chat"]').classList.add('selected');
-    document.getElementById('mod-check-chat').textContent = '✓';
-    state.proposal = { id: proposalMatch[0], items: state.modules, investment: 1500, timeline: '5-7 días' };
-    renderProposal();
-  }
+  // [DEMO:fecha] — agenda demo con ID en código
+  clean = clean.replace(/\[DEMO:\s*([^\]]+?)\s*\]/gi, (_, date) => {
+    if (!state.demoScheduled) scheduleDemo(date.trim());
+    return '';
+  });
 
-  // Detectar demo agendada
-  const demoMatch = reply.match(/DM-\d{4}/i);
-  if (demoMatch && !state.demoScheduled) {
-    state.demoScheduled = { id: demoMatch[0], date: 'Próximamente', confirmed: true };
-    const container = document.getElementById('demoSection');
-    container.innerHTML = `
-      <div class="dash-label" style="margin-top:8px">Demo agendada</div>
-      <div class="demo-card">
-        <div class="demo-id">📅 ${demoMatch[0]}</div>
-        <div class="demo-detail">Demo en vivo confirmada.<br>Recibirás el link de reunión por WhatsApp.</div>
-      </div>
-    `;
-  }
-
-  // Actualizar lead con info detectada
-  if (state.lead) {
-    // Detectar nombre de empresa
-    const companyMatch = reply.match(/"([^"]+)"|([A-Z][a-z]+ [A-Z][a-z]+)/);
-    if (companyMatch && !state.lead.company) {
-      // No extraemos del bot reply para evitar falsos positivos
-    }
-    renderLead();
-  }
+  clean = clean.replace(/\[[A-ZÁÉÍÓÚÑ][^\]]*\]/g, '').replace(/[ \t]{2,}/g, ' ').trim();
+  return clean;
 }
 
 // ═══════════════════════════════════════════════════════════════════

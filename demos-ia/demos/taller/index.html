@@ -308,13 +308,25 @@ SÍNTOMAS REPORTADOS: ${symptomsText}
 SERVICIOS COTIZADOS: ${servicesText} — Total: $${totalText}
 CITA: ${apptText}
 
-FLUJOS:
-1. REGISTRO DE VEHÍCULO: Si el cliente menciona su carro (marca/modelo/año), confirma y menciona que lo registraste.
-   Responde como: "Registré tu [marca] [modelo] [año]. Ahora cuéntame qué le pasa."
-2. DIAGNÓSTICO: Si dan síntomas, sugiere 2-3 causas probables y los servicios recomendados.
-3. COTIZACIÓN: Los servicios seleccionados aparecen en el dashboard. Para confirmar, pide fecha y hora preferida.
-4. CITA: Asigna mecánico especialista según el servicio, genera folio APT-XXXXX.
-5. Siempre menciona la garantía de 3 meses.
+═══════════════════════════════════════════════
+COMANDOS — ÚNICA FORMA DE ACTUALIZAR EL PANEL
+═══════════════════════════════════════════════
+El panel (vehículo, cotización, cita) SOLO cambia con el comando exacto. Decirlo en prosa NO hace nada. Son invisibles para el cliente.
+
+[CAR:marca:modelo:año] — cuando el cliente da su vehículo. Opcional el km al final: [CAR:marca:modelo:año:km].
+   "tengo un Nissan Sentra 2019" → [CAR:Nissan:Sentra:2019]   ·   "Mazda 3 2021, 40 mil km" → [CAR:Mazda:3:2021:40000]
+[SERVICE:id] — cuando cotiza un servicio. id ∈ aceite, afinacion-menor, afinacion-mayor, frenos, alineacion, scanner, electrico, suspension, transmision, previaje.
+   "necesito frenos y cambio de aceite" → [SERVICE:frenos][SERVICE:aceite]
+[APPOINTMENT:fecha:hora] — cuando agenda la cita. El sistema genera el folio y asigna mecánico; NO los inventes tú.
+   "el viernes a las 10" → [APPOINTMENT:viernes:10:00 AM]
+
+PROHIBIDO inventar el folio (APT-#####) o el modelo del auto: eso lo pone el sistema / lo dice el cliente. Solo existen [CAR], [SERVICE], [APPOINTMENT].
+
+FLUJO:
+1. Registro: pide marca/modelo/año → [CAR:...] + "listo, registrado. ¿Qué le pasa?".
+2. Diagnóstico: ante síntomas, sugiere 2-3 causas probables + servicios; emite [SERVICE:id] de los que acepte.
+3. Cita: reúne fecha + hora → [APPOINTMENT:fecha:hora] (el panel muestra folio y mecánico).
+4. Menciona siempre la garantía de 3 meses.
 Respuestas cortas y directas, máx 3 oraciones.`;
 }
 
@@ -466,51 +478,71 @@ function hexToRgb(hex) {
 // ═══════════════════════════════════════════════════════════════════
 // DETECTAR RESPUESTAS DEL BOT
 // ═══════════════════════════════════════════════════════════════════
-function onBotReply(reply) {
-  const lower = reply.toLowerCase();
+// ── Catálogo de servicios (fuente de verdad para chat) ──
+const TALLER_SERVICES = {
+  'aceite':{name:'Cambio de aceite',price:450}, 'afinacion-menor':{name:'Afinación menor',price:850},
+  'afinacion-mayor':{name:'Afinación mayor',price:1800}, 'frenos':{name:'Frenos completos',price:2200},
+  'alineacion':{name:'Alineación y balanceo',price:380}, 'scanner':{name:'Diagnóstico escáner',price:350},
+  'electrico':{name:'Sistema eléctrico',price:600}, 'suspension':{name:'Revisión suspensión',price:280},
+  'transmision':{name:'Transmisión automática',price:950}, 'previaje':{name:'Revisión pre-viaje',price:490}
+};
 
-  // Detectar registro de vehículo en respuesta del bot
-  if (!state.vehicle) {
-    // El bot confirma el vehículo registrado
-    const carMatch = reply.match(/registré?\s+(tu\s+)?([A-Za-záéíóúÁÉÍÓÚñÑ]+)\s+([A-Za-záéíóúÁÉÍÓÚñÑ0-9]+)\s+(\d{4})/i);
-    if (carMatch || (lower.includes('registr') && (lower.includes('nissan') || lower.includes('toyota') || lower.includes('honda') || lower.includes('chevrolet') || lower.includes('ford') || lower.includes('volkswagen') || lower.includes('kia') || lower.includes('hyundai')))) {
-      // Extraer datos del texto del usuario (el último mensaje)
-      extractVehicleFromContext();
-    }
-  }
-
-  // Detectar folio de cita en respuesta del bot
-  const folioMatch = reply.match(/APT-\d{5}/i);
-  if (folioMatch && !state.appointment) {
-    const mechanics = ['Miguel S.', 'Javier R.', 'Omar V.'];
-    state.appointment = {
-      folio: folioMatch[0],
-      mechanic: mechanics[Math.floor(Math.random() * mechanics.length)],
-      date: 'Próximamente',
-      time: '10:00 AM'
-    };
-    renderAppointment();
-  }
+// Registra el vehículo con datos reales del comando (no scraping).
+function setVehicle(brand, model, year, km) {
+  state.vehicle = {
+    brand: (brand || '').trim(),
+    model: (model || '').trim(),
+    year: (year || '').trim(),
+    km: km ? parseInt(String(km).replace(/[^\d]/g, '')) : null
+  };
+  renderVehicle();
 }
 
-function extractVehicleFromContext() {
-  // Intentar extraer desde los mensajes del historial de chat
-  const bubbles = document.querySelectorAll('.msg.user .msg-bubble');
-  const allText = Array.from(bubbles).map(b => b.textContent).join(' ').toLowerCase();
+// Agrega servicio desde el chat (idempotente, sincroniza sidebar).
+function addServiceById(id) {
+  const svc = TALLER_SERVICES[id];
+  if (!svc || state.services.find(s => s.id === id)) return;
+  state.services.push({ id, name: svc.name, price: svc.price, time: 0 });
+  const row = document.querySelector(`[data-svc="${id}"]`);
+  if (row) row.classList.add('selected');
+  const chk = document.getElementById(`chk-${id}`);
+  if (chk) chk.textContent = '✓';
+  renderQuote();
+}
 
-  const brands = ['nissan', 'toyota', 'honda', 'chevrolet', 'ford', 'volkswagen', 'kia', 'hyundai', 'mazda', 'seat'];
-  let detectedBrand = '';
-  brands.forEach(b => { if (allText.includes(b)) detectedBrand = b.charAt(0).toUpperCase() + b.slice(1); });
+// Agenda la cita generando el folio EN CÓDIGO y asignando mecánico.
+function scheduleAppointment(date, time) {
+  const mechanics = ['Miguel S.', 'Javier R.', 'Omar V.'];
+  state.appointment = {
+    folio: `APT-${Math.floor(10000 + Math.random() * 90000)}`,
+    mechanic: mechanics[Math.floor(Math.random() * mechanics.length)],
+    date: date || 'Por confirmar',
+    time: time || '10:00 AM'
+  };
+  renderAppointment();
+}
 
-  const yearMatch = allText.match(/\b(201[5-9]|202[0-4])\b/);
-  const year = yearMatch ? yearMatch[1] : '2020';
-  const kmMatch = allText.match(/(\d{1,3},?\d{3})\s*km/);
-  const km = kmMatch ? parseInt(kmMatch[1].replace(',', '')) : null;
+// Parser de comandos explícitos (robusto con modelos no-frontera).
+function onBotReply(reply) {
+  let clean = reply;
 
-  if (detectedBrand) {
-    state.vehicle = { brand: detectedBrand, model: 'Versátil', year, km: km || 65000 };
-    renderVehicle();
-  }
+  // [CAR:marca:modelo:año] o [CAR:marca:modelo:año:km]
+  clean = clean.replace(/\[CAR:\s*([^:\]]+?)\s*:\s*([^:\]]+?)\s*:\s*(\d{4})\s*(?::\s*([^\]]+?)\s*)?\]/gi, (_, brand, model, year, km) => {
+    setVehicle(brand, model, year, km);
+    return '';
+  });
+
+  // [SERVICE:id] (ids con guion, ej. afinacion-mayor)
+  clean = clean.replace(/\[SERVICE:\s*([a-z-]+)\s*\]/gi, (_, id) => { addServiceById(id.toLowerCase()); return ''; });
+
+  // [APPOINTMENT:fecha:hora] → cita con folio generado por el sistema
+  clean = clean.replace(/\[APPOINTMENT:\s*([^:\]]+?)\s*:\s*([^\]]+?)\s*\]/gi, (_, date, time) => {
+    if (!state.appointment) scheduleAppointment(date.trim(), time.trim());
+    return '';
+  });
+
+  clean = clean.replace(/\[[A-ZÁÉÍÓÚÑ][^\]]*\]/g, '').replace(/[ \t]{2,}/g, ' ').trim();
+  return clean;
 }
 
 // ═══════════════════════════════════════════════════════════════════

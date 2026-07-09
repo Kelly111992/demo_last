@@ -335,11 +335,25 @@ ESTADO ACTUAL DE LA RESERVACIÓN:
 - Nivel de lealtad: ${state.loyalty.tier} con ${state.loyalty.points} puntos
 - Reservación: ${reservationText}
 
-FLUJOS:
-1. Para confirmar reservación: necesitas nombre completo, email. Genera folio tipo HCB-XXXXX y confirma.
-2. Si preguntan por servicios durante estadía: muestra el panel de concierge.
-3. Respuestas cortas y elegantes, máx 3 oraciones.
-4. Siempre ofrece extras relevantes (spa para parejas, transfer si vuela).`;
+═══════════════════════════════════════════════
+COMANDOS — ÚNICA FORMA DE ACTUALIZAR EL PANEL
+═══════════════════════════════════════════════
+El panel de reservación SOLO cambia con el comando exacto. Decirlo en prosa NO hace nada. Son invisibles para el huésped.
+
+[ROOM:id] — cuando el huésped elige habitación. id ∈ estandar, deluxe, presidencial, familiar.
+   "quiero la suite deluxe" → [ROOM:deluxe]   ·   "la presidencial" → [ROOM:presidencial]
+[EXTRA:id] — cuando pide un extra. id ∈ desayuno, spa, traslado, decoracion.
+   "agrégame el desayuno" → [EXTRA:desayuno]   ·   "quiero spa" → [EXTRA:spa]
+[CONFIRM] — cuando el huésped confirma la reservación (ya hay habitación elegida). El sistema genera el folio; NO lo inventes tú.
+   "confírmala", "resérvala", "adelante" → [CONFIRM]
+
+PROHIBIDO inventar el folio (tipo HCB-#####): lo pone el sistema al recibir [CONFIRM]. Solo existen [ROOM], [EXTRA], [CONFIRM].
+
+FLUJO:
+1. Habitación → [ROOM:id] + confirma con elegancia y ofrece un extra relevante (spa para parejas, transfer si vuela).
+2. Extra pedido → [EXTRA:id] + confirma.
+3. Confirmar → pide nombre/email si no los tienes, luego [CONFIRM] + da la bienvenida (el panel muestra el folio).
+Respuestas cortas y elegantes, máx 3 oraciones.`;
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -404,6 +418,34 @@ function requestConcierge(service) {
   ClaveAI.send(`Necesito ${service} en mi habitación, por favor.`);
 }
 
+// ── Catálogo (fuente de verdad para acciones por chat) ──
+const ROOMS = {
+  estandar:     { name: 'Estándar', price: 1200 },
+  deluxe:       { name: 'Suite Deluxe', price: 2400 },
+  presidencial: { name: 'Suite Presidencial', price: 4800 },
+  familiar:     { name: 'Familiar', price: 1850 }
+};
+
+// Selecciona habitación desde el chat (sin depender del botón)
+function selectRoomById(id) {
+  const r = ROOMS[id];
+  if (!r) return;
+  state.room = { id, name: r.name, pricePerNight: r.price };
+  document.querySelectorAll('.room-card').forEach(c => c.classList.remove('selected'));
+  document.querySelector(`[data-room="${id}"]`)?.classList.add('selected');
+  renderBooking();
+}
+
+// Agrega un extra desde el chat (idempotente, sincroniza la sidebar)
+function addExtraById(id) {
+  if (!EXTRAS_CONFIG[id] || state.extras.includes(id)) return;
+  state.extras.push(id);
+  document.querySelector(`[data-extra="${id}"]`)?.classList.add('selected');
+  const chk = document.getElementById(`check-${id}`);
+  if (chk) chk.textContent = '✓';
+  renderBooking();
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // RENDERIZADO DEL DASHBOARD
 // ═══════════════════════════════════════════════════════════════════
@@ -464,16 +506,31 @@ function confirmBooking() {
   ClaveAI.send(`Confirmo la reservación: ${state.room.name}, ${state.dates.checkin} al ${state.dates.checkout} (${state.dates.nights} noches). ${state.extras.length > 0 ? 'Con extras: ' + state.extras.map(e => EXTRAS_CONFIG[e]?.name).join(', ') + '.' : ''} Total: $${state.reservation.total.toLocaleString('es-MX')}.`);
 }
 
+// Parser de comandos explícitos (robusto con modelos no-frontera).
 function onBotReply(reply) {
-  const folioMatch = reply.match(/HCB-\d{5}/i);
-  if (folioMatch && !state.reservation && state.room) {
-    state.reservation = {
-      folio: folioMatch[0],
-      total: calculateTotal(),
-      confirmed: true
-    };
-    renderBooking();
-  }
+  let clean = reply;
+
+  // [ROOM:estandar|deluxe|presidencial|familiar]
+  clean = clean.replace(/\[ROOM:\s*([a-z]+)\s*\]/gi, (_, id) => { selectRoomById(id.toLowerCase()); return ''; });
+
+  // [EXTRA:desayuno|spa|traslado|decoracion]
+  clean = clean.replace(/\[EXTRA:\s*([a-z]+)\s*\]/gi, (_, id) => { addExtraById(id.toLowerCase()); return ''; });
+
+  // [CONFIRM] → genera folio en código (requiere habitación + fechas, que vienen por defecto)
+  clean = clean.replace(/\[CONFIRM\]/gi, () => {
+    if (state.room && state.dates && !state.reservation) {
+      state.reservation = {
+        folio: `HCB-${Math.floor(10000 + Math.random() * 90000)}`,
+        total: calculateTotal(),
+        confirmed: true
+      };
+      renderBooking();
+    }
+    return '';
+  });
+
+  clean = clean.replace(/\[[A-ZÁÉÍÓÚÑ][^\]]*\]/g, '').replace(/[ \t]{2,}/g, ' ').trim();
+  return clean;
 }
 
 // ═══════════════════════════════════════════════════════════════════
