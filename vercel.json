@@ -16,6 +16,10 @@
       "dest": "/demos-ia/api/chat.js"
     },
     {
+      "src": "/",
+      "dest": "/demos-ia/portada/index.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/demos-ia/$1"
     }
