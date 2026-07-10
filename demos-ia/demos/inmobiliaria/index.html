@@ -485,6 +485,10 @@ function scheduleVisit(property, date) {
     folio: `AR-${Math.floor(10000 + Math.random() * 90000)}`
   };
   renderVisit();
+  if (window.ClaveFX) {
+    ClaveFX.toast(`📅 Visita agendada: ${state.visit.property}`, state.visit.folio);
+    ClaveFX.flash('#visitSection');
+  }
 }
 
 // Parser de comandos explícitos (robusto con modelos no-frontera).
@@ -516,6 +520,7 @@ ClaveAI.init({
   welcomeMessage: `Bienvenido a **Apex Realty** 🏠\n\nSoy Valentina, tu asesora inmobiliaria. Tengo acceso a más de **80 propiedades** en la ZMG — casas, departamentos, preventa e inversión.\n\nPuedes filtrar las propiedades en la izquierda, guardar tus favoritas con ♡, o calcular tu mensualidad hipotecaria.\n\n¿Estás buscando comprar, rentar o invertir?`
 });
 </script>
+<script src="../../assets/feedback.js"></script>
 <script src="../../assets/responsive.js"></script>
 </body>
 </html>

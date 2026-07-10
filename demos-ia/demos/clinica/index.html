@@ -249,6 +249,19 @@ body { background: var(--bg); }
 .insight-tag { font-size: 9.5px; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; font-weight: 600; }
 .insight-title { font-family: var(--font-display); font-size: 14px; color: var(--text); margin-top: 7px; line-height: 1.4; font-style: italic; }
 .insight-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+/* HORARIOS + CITA (constructor de reservación) */
+.slots-label { font-size: 11px; font-weight: 600; color: var(--muted); margin: 2px 0 8px; }
+.slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-bottom: 6px; }
+.slot-btn { padding: 9px 4px; border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 9px; font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; transition: all .14s; }
+.slot-btn:hover:not(:disabled) { border-color: var(--accent); background: #f0f6ff; color: var(--accent); }
+.slot-btn.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
+.slot-btn:disabled, .slot-btn.unavailable { opacity: .4; cursor: not-allowed; text-decoration: line-through; }
+.appointment-card { background: linear-gradient(135deg, #eff6ff, #f0f9ff); border: 1px solid #bfdbfe; border-radius: 12px; padding: 14px; margin-top: 8px; }
+.appointment-folio { font-weight: 700; color: var(--accent); font-size: 13px; letter-spacing: .5px; margin-bottom: 8px; }
+.appointment-details { font-size: 12px; color: var(--text); line-height: 1.9; }
+.appointment-details strong { font-size: 13px; }
+.appointment-status { color: #16a34a; font-weight: 600; font-size: 12px; margin-top: 4px; }
 </style>
 </head>
 <body>
@@ -376,7 +389,11 @@ body { background: var(--bg); }
       <div class="stat-card"><div class="stat-val">4.8★</div><div class="stat-label">Satisfacción</div><div class="stat-delta">Muy bueno</div></div>
     </div>
 
-    <div class="dash-label">Próximas citas</div>
+    <div class="dash-label" style="margin-top:18px">Mi reservación</div>
+    <div id="slotsContainer"></div>
+    <div id="appointmentDisplay"></div>
+
+    <div class="dash-label" style="margin-top:18px">Próximas citas</div>
 
     <div class="appt-item">
       <div class="appt-time">10:00</div>
@@ -734,15 +751,18 @@ function setSpecialtyById(id) {
     if (card.querySelector('.service-name')?.textContent === name) card.classList.add('selected');
   });
   renderAvailableSlots();
+  if (window.ClaveFX) ClaveFX.toast(`🩺 Especialidad: ${name}`);
 }
 
 // Fija el horario desde el chat.
 function setSlotByChat(time) {
   state.slot = { date: 'hoy', time };
+  let matched = null;
   document.querySelectorAll('.slot-btn').forEach(btn => {
     btn.classList.remove('selected');
-    if (btn.textContent.trim() === time) btn.classList.add('selected');
+    if (btn.textContent.trim() === time) { btn.classList.add('selected'); matched = btn; }
   });
+  if (window.ClaveFX) { ClaveFX.toast(`🕐 Horario reservado: ${time}`); if (matched) ClaveFX.flash(matched); }
 }
 
 // Registra al paciente desde el chat.
@@ -761,6 +781,10 @@ function confirmAppointmentChat() {
     confirmed: true
   };
   renderAppointment();
+  if (window.ClaveFX) {
+    ClaveFX.toast(`✓ Cita confirmada: ${state.specialty}`, state.appointment.folio);
+    ClaveFX.flash('#appointmentDisplay');
+  }
 }
 
 // Parser de comandos explícitos (robusto con modelos no-frontera).
@@ -811,6 +835,7 @@ window.selectSlot = selectSlot;
 window.confirmAppointment = confirmAppointment;
 window.checkLabResults = checkLabResults;
 </script>
+<script src="../../assets/feedback.js"></script>
 <script src="../../assets/responsive.js"></script>
 </body>
 </html>

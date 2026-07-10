@@ -449,6 +449,10 @@ function generateProposal() {
     timeline: '5-7 días hábiles'
   };
   renderProposal();
+  if (window.ClaveFX) {
+    ClaveFX.toast(`📄 Propuesta ${id} lista`, `$${state.totalMonthly.toLocaleString('es-MX')}/mes`);
+    ClaveFX.flash('#proposalSection');
+  }
 }
 
 function renderProposalIfReady() {
@@ -533,6 +537,10 @@ function addModuleById(id) {
   document.querySelector(`[data-mod="${id}"]`)?.classList.add('selected');
   const chk = document.getElementById(`mod-check-${id}`);
   if (chk) chk.textContent = '✓';
+  if (window.ClaveFX) {
+    ClaveFX.toast(`✓ Módulo agregado: ${mod.name}`, `$${mod.price.toLocaleString('es-MX')}/mes`);
+    ClaveFX.flash(`[data-mod="${id}"]`);
+  }
 }
 
 // Agenda la demo generando el ID EN CÓDIGO.
@@ -546,6 +554,10 @@ function scheduleDemo(date) {
       <div class="demo-detail">Demo en vivo confirmada${date ? ' · ' + date : ''}.<br>Recibirás el link de reunión por WhatsApp.</div>
     </div>
   `;
+  if (window.ClaveFX) {
+    ClaveFX.toast(`📅 Demo agendada${date ? ': ' + date : ''}`);
+    ClaveFX.flash('#demoSection');
+  }
 }
 
 // Parser de comandos explícitos (robusto con modelos no-frontera).
@@ -589,6 +601,7 @@ ClaveAI.init({
   welcomeMessage: `¡Hola! Soy **Alex**, tu asesor comercial de IA 👋\n\nAyudo a negocios a implementar inteligencia artificial para vender más, atender mejor y automatizar lo que hoy les quita tiempo.\n\nPuedes:\n• Explorar **casos de éxito** por industria en la izquierda\n• Seleccionar **módulos** y ver el costo de tu solución\n• **Calcular tu ROI** con la calculadora del dashboard\n\n¿Me cuentas a qué se dedica tu negocio?`
 });
 </script>
+<script src="../../assets/feedback.js"></script>
 <script src="../../assets/responsive.js"></script>
 </body>
 </html>

@@ -427,6 +427,10 @@ function selectStylistById(id) {
   document.querySelectorAll('.stylist-card').forEach(c => c.classList.remove('selected'));
   document.querySelector(`[data-stylist="${id}"]`)?.classList.add('selected');
   renderAppointmentBuilder();
+  if (window.ClaveFX) {
+    ClaveFX.toast(`💇 Estilista: ${s.name}`, s.specialty);
+    ClaveFX.flash(`[data-stylist="${id}"]`);
+  }
 }
 
 // Agrega servicio desde el chat (idempotente, sincroniza sidebar y totales)
@@ -440,6 +444,10 @@ function addServiceById(id) {
   state.totalPrice = state.services.reduce((sum, s) => sum + s.price, 0);
   state.totalTime = state.services.reduce((sum, s) => sum + s.time, 0);
   renderAppointmentBuilder();
+  if (window.ClaveFX) {
+    ClaveFX.toast(`✓ Servicio agregado: ${svc.name}`, `$${svc.price}`);
+    ClaveFX.flash(`[data-svc="${id}"]`);
+  }
 }
 
 // Confirma la cita generando el folio EN CÓDIGO
@@ -543,6 +551,7 @@ ClaveAI.init({
   welcomeMessage: `¡Hola, bienvenida a **Studio Glam**! ✨\n\nSoy Luna, tu asistente. Puedo ayudarte a:\n\n• Elegir tu **estilista** y **servicios** (usa los checkboxes de la izquierda)\n• Agendar tu **cita** con el mejor horario\n• Hacer una **consulta de color** personalizada\n• Cotizar el **paquete novia** 👰\n\n¿En qué te puedo consentir hoy? 💅`
 });
 </script>
+<script src="../../assets/feedback.js"></script>
 <script src="../../assets/responsive.js"></script>
 </body>
 </html>

@@ -1211,6 +1211,11 @@ function addToCart(itemId, notes = '') {
   else { state.cart.push({ ...item, qty: 1, notes }); }
   renderCart();
   updateCartBadge();
+  // Feedback: el usuario debe enterarse de qué se agregó (toast visible también en móvil)
+  if (window.ClaveFX) {
+    ClaveFX.toast(`✓ ${item.name} agregado`, `$${item.price}`);
+    ClaveFX.flash('#cartTotal');
+  }
 }
 
 function removeFromCart(itemId) {
@@ -1720,6 +1725,7 @@ document.addEventListener('DOMContentLoaded', () => {
 </div>
 
 <script>window.MOBILE_TABS=[{i:"🍽️",l:"Menú"},{i:"💬",l:"Chat"},{i:"🛒",l:"Carrito"}];</script>
+<script src="../../assets/feedback.js"></script>
 <script src="../../assets/responsive.js"></script>
 </body>
 </html>

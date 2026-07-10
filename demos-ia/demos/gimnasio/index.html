@@ -410,6 +410,10 @@ function bookClassById(id) {
     const btn = item.querySelector('.reserve-btn');
     if (btn) { btn.textContent = '✓ Reservado'; btn.classList.add('booked'); btn.onclick = null; }
   }
+  if (window.ClaveFX) {
+    ClaveFX.toast(`✓ Clase reservada: ${cls.name}`, cls.time);
+    ClaveFX.flash(`.class-item[data-class="${id}"]`);
+  }
 }
 
 // Inscribe generando el número de socio EN CÓDIGO (no lo inventa el modelo)
@@ -634,6 +638,7 @@ ClaveAI.init({
   welcomeMessage: `¡Bienvenido a **PowerZone Gym**! 💪\n\nSoy Max, tu Coach IA. Para empezar bien — ¿cuál es tu objetivo principal?\n\n🔥 **Bajar peso** · 💪 **Ganar músculo** · 🏃 **Resistencia** · ❤️ **Salud general**\n\nElige una opción o escríbeme directamente.`
 });
 </script>
+<script src="../../assets/feedback.js"></script>
 <script src="../../assets/responsive.js"></script>
 </body>
 </html>
