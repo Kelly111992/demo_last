@@ -121,6 +121,19 @@ body{background:var(--bg)}
 .insight-title{font-family:var(--font-display);font-size:15px;font-style:italic;color:var(--text);margin-top:8px;line-height:1.4;font-weight:400}
 .insight-sub{font-size:11px;color:var(--muted);margin-top:5px}
 
+/* FEEDBACK al agregar/actualizar desde el chat */
+@keyframes rowFlash{0%{background:rgba(26,95,106,0.30)}100%{background:transparent}}
+.booking-row.flash-update{animation:rowFlash 1.6s ease-out}
+@keyframes itemFlash{0%,100%{transform:scale(1)}35%{transform:scale(1.035)}}
+.extra-item.flash-update{animation:itemFlash .55s ease-out}
+.hc-toast{position:fixed;left:50%;bottom:max(22px,env(safe-area-inset-bottom));transform:translateX(-50%) translateY(24px);
+  background:var(--accent);color:#fff;padding:13px 20px;border-radius:10px;font-size:13.5px;font-weight:600;font-family:var(--font-body);
+  box-shadow:0 10px 34px rgba(0,0,0,0.32);z-index:3000;opacity:0;transition:opacity .28s ease,transform .28s ease;
+  pointer-events:none;display:flex;align-items:center;gap:9px;max-width:88vw;line-height:1.3}
+.hc-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.hc-toast .ht-amt{background:rgba(255,255,255,0.22);padding:2px 8px;border-radius:6px;font-weight:700;white-space:nowrap}
+@media(max-width:768px){.hc-toast{bottom:calc(58px + max(14px,env(safe-area-inset-bottom)))}}
+
 @media(max-width:768px){.sidebar,.dashboard{display:none}.app{grid-template-columns:1fr}}
 </style>
 </head>
@@ -428,6 +441,24 @@ function requestConcierge(service) {
   ClaveAI.send(`Necesito ${service} en mi habitación, por favor.`);
 }
 
+// ── Feedback visual: toast + resalte de fila ──
+let hcToastTimer;
+function hcToast(msg, amount) {
+  let t = document.getElementById('hcToast');
+  if (!t) { t = document.createElement('div'); t.id = 'hcToast'; t.className = 'hc-toast'; document.body.appendChild(t); }
+  t.innerHTML = msg + (amount ? ` <span class="ht-amt">${amount}</span>` : '');
+  requestAnimationFrame(() => t.classList.add('show'));
+  clearTimeout(hcToastTimer);
+  hcToastTimer = setTimeout(() => t.classList.remove('show'), 3400);
+}
+function flashEl(sel) {
+  const el = document.querySelector(sel);
+  if (!el) return;
+  el.classList.remove('flash-update');
+  void el.offsetWidth;               // reinicia la animación
+  el.classList.add('flash-update');
+}
+
 // ── Catálogo (fuente de verdad para acciones por chat) ──
 const ROOMS = {
   estandar:     { name: 'Estándar', price: 1200 },
@@ -440,20 +471,31 @@ const ROOMS = {
 function selectRoomById(id) {
   const r = ROOMS[id];
   if (!r) return;
+  const changed = !state.room || state.room.id !== id;
   state.room = { id, name: r.name, pricePerNight: r.price };
   document.querySelectorAll('.room-card').forEach(c => c.classList.remove('selected'));
   document.querySelector(`[data-room="${id}"]`)?.classList.add('selected');
   renderBooking();
+  if (changed) {
+    flashEl('[data-row="room"]'); flashEl('[data-row="total"]');
+    hcToast(`🛏 Habitación: <b>${r.name}</b>`, `$${r.price.toLocaleString('es-MX')}/noche`);
+  }
 }
 
 // Agrega un extra desde el chat (idempotente, sincroniza la sidebar)
 function addExtraById(id) {
-  if (!EXTRAS_CONFIG[id] || state.extras.includes(id)) return;
+  const cfg = EXTRAS_CONFIG[id];
+  if (!cfg || state.extras.includes(id)) return;
   state.extras.push(id);
   document.querySelector(`[data-extra="${id}"]`)?.classList.add('selected');
   const chk = document.getElementById(`check-${id}`);
   if (chk) chk.textContent = '✓';
   renderBooking();
+  // Feedback: resalta la fila del panel + el ítem de la barra + toast (visible también en móvil)
+  flashEl(`[data-row="extra-${id}"]`); flashEl('[data-row="total"]'); flashEl(`[data-extra="${id}"]`);
+  const nights = state.dates?.nights || 1;
+  const price = cfg.perNight ? cfg.price * nights : cfg.price;
+  hcToast(`✓ <b>${cfg.name}</b> agregado`, `+$${price.toLocaleString('es-MX')}`);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -468,7 +510,7 @@ function renderBooking() {
 
   let rows = '';
   if (state.room) {
-    rows += `<div class="booking-row"><span class="label">${state.room.name}</span><span class="value">$${state.room.pricePerNight.toLocaleString('es-MX')}/noche</span></div>`;
+    rows += `<div class="booking-row" data-row="room"><span class="label">${state.room.name}</span><span class="value">$${state.room.pricePerNight.toLocaleString('es-MX')}/noche</span></div>`;
   }
   if (state.dates) {
     rows += `<div class="booking-row"><span class="label">Fechas</span><span class="value">${state.dates.checkin} → ${state.dates.checkout}</span></div>`;
@@ -478,7 +520,7 @@ function renderBooking() {
     const cfg = EXTRAS_CONFIG[e];
     if (cfg) {
       const price = cfg.perNight ? cfg.price * (nights || 1) : cfg.price;
-      rows += `<div class="booking-row"><span class="label">+ ${cfg.name}</span><span class="value">$${price.toLocaleString('es-MX')}</span></div>`;
+      rows += `<div class="booking-row" data-row="extra-${e}"><span class="label">+ ${cfg.name}</span><span class="value">$${price.toLocaleString('es-MX')}</span></div>`;
     }
   });
 
@@ -487,7 +529,7 @@ function renderBooking() {
       <div class="booking-card" style="border-color:rgba(26,95,106,0.4);background:linear-gradient(135deg,rgba(26,95,106,0.08),rgba(45,138,152,0.04))">
         <div class="booking-folio">✓ ${state.reservation.folio}</div>
         ${rows}
-        <div class="booking-row"><span class="label">Total</span><span class="value booking-total">$${total.toLocaleString('es-MX')}</span></div>
+        <div class="booking-row" data-row="total"><span class="label">Total</span><span class="value booking-total">$${total.toLocaleString('es-MX')}</span></div>
         <div style="margin-top:10px;font-size:11px;color:var(--accent2)">Confirmación enviada por email ✉️</div>
       </div>
     `;
@@ -498,7 +540,7 @@ function renderBooking() {
     container.innerHTML = `
       <div class="booking-card">
         ${rows}
-        ${total > 0 ? `<div class="booking-row"><span class="label">Total estimado</span><span class="value booking-total">$${total.toLocaleString('es-MX')}</span></div>` : ''}
+        ${total > 0 ? `<div class="booking-row" data-row="total"><span class="label">Total estimado</span><span class="value booking-total">$${total.toLocaleString('es-MX')}</span></div>` : ''}
         ${(state.room && state.dates) ? `<button onclick="confirmBooking()" style="width:100%;margin-top:10px;padding:10px;background:var(--accent);border:none;border-radius:4px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font-body)">Confirmar reservación</button>` : '<div style="font-size:11px;color:var(--muted);margin-top:8px;text-align:center">Selecciona habitación y fechas para continuar</div>'}
       </div>
     `;
