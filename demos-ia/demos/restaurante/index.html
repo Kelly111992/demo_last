@@ -13,13 +13,13 @@
 <meta property="og:image:height" content="1024">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://demos-claveai.vercel.app/assets/logo-claveai.png">
-<title>La Mesa Bonita — Agente IA</title>
+<title>La Mesa Bonita â Agente IA</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/base.css">
 <style>
-/* ══════════════════════════════════════════════
-   TOKENS — Fine Dining
-══════════════════════════════════════════════ */
+/* ââââââââââââââââââââââââââââââââââââââââââââââ
+   TOKENS â Fine Dining
+ââââââââââââââââââââââââââââââââââââââââââââââ */
 :root {
   --bg:         #060402;
   --bg2:        #0c0906;
@@ -42,9 +42,9 @@
   --input-field-bg: rgba(0,0,0,0.35);
 }
 
-/* ══════════════════════════════════════════════
+/* ââââââââââââââââââââââââââââââââââââââââââââââ
    BASE
-══════════════════════════════════════════════ */
+ââââââââââââââââââââââââââââââââââââââââââââââ */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
 html { height: 100%; }
@@ -74,9 +74,9 @@ body::before {
   background-size: 180px;
 }
 
-/* ══════════════════════════════════════════════
+/* ââââââââââââââââââââââââââââââââââââââââââââââ
    HEADER
-══════════════════════════════════════════════ */
+ââââââââââââââââââââââââââââââââââââââââââââââ */
 .header {
   height: 60px;
   background: rgba(6,4,2,0.94);
@@ -128,9 +128,9 @@ body::before {
   60%      { opacity: .7; box-shadow: 0 0 0 5px rgba(201,169,110,0); }
 }
 
-/* ══════════════════════════════════════════════
+/* ââââââââââââââââââââââââââââââââââââââââââââââ
    APP LAYOUT
-══════════════════════════════════════════════ */
+ââââââââââââââââââââââââââââââââââââââââââââââ */
 .app {
   display: grid;
   grid-template-columns: 260px 1fr 278px;
@@ -138,9 +138,9 @@ body::before {
   position: relative; z-index: 1;
 }
 
-/* ══════════════════════════════════════════════
+/* ââââââââââââââââââââââââââââââââââââââââââââââ
    SIDEBAR
-══════════════════════════════════════════════ */
+ââââââââââââââââââââââââââââââââââââââââââââââ */
 .sidebar {
   background: rgba(255,255,255,0.012);
   border-right: 1px solid var(--border);
@@ -265,9 +265,9 @@ body::before {
 .address-input:focus { outline: none; border-color: var(--accent); }
 .address-input::placeholder { color: var(--muted); }
 
-/* ══════════════════════════════════════════════
+/* ââââââââââââââââââââââââââââââââââââââââââââââ
    CHAT MAIN
-══════════════════════════════════════════════ */
+ââââââââââââââââââââââââââââââââââââââââââââââ */
 .chat-main {
   display: flex; flex-direction: column;
   background: transparent; position: relative;
@@ -298,7 +298,7 @@ body::before {
   font-family: var(--font-mono); letter-spacing: .5px;
 }
 
-/* ── Overrides for base.css ── */
+/* ââ Overrides for base.css ââ */
 .chat-messages {
   flex: 1; overflow-y: auto;
   padding: 24px 28px;
@@ -394,9 +394,9 @@ body::before {
 .send-btn:hover { filter: brightness(1.12); transform: scale(1.04); }
 .send-btn svg { width: 18px; height: 18px; fill: var(--bg); }
 
-/* ══════════════════════════════════════════════
+/* ââââââââââââââââââââââââââââââââââââââââââââââ
    DASHBOARD
-══════════════════════════════════════════════ */
+ââââââââââââââââââââââââââââââââââââââââââââââ */
 .dashboard {
   background: rgba(255,255,255,0.012);
   border-left: 1px solid var(--border);
@@ -595,9 +595,9 @@ body::before {
 }
 .insight-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
 
-/* ══════════════════════════════════════════════
-   ORDER TICKET — burbuja de confirmación en chat
-══════════════════════════════════════════════ */
+/* ââââââââââââââââââââââââââââââââââââââââââââââ
+   ORDER TICKET â burbuja de confirmaciÃ³n en chat
+ââââââââââââââââââââââââââââââââââââââââââââââ */
 .order-ticket {
   background: rgba(201,169,110,0.07);
   border: 1px solid rgba(201,169,110,0.25);
@@ -674,7 +674,7 @@ body::before {
 }
 .ticket-btn-edit:hover { border-color: var(--accent); color: var(--accent); }
 
-/* Recibo post-confirmación */
+/* Recibo post-confirmaciÃ³n */
 .order-receipt {
   background: rgba(201,169,110,0.05);
   border: 1px solid rgba(201,169,110,0.2);
@@ -749,9 +749,9 @@ body::before {
 }
 .modal-btn.confirm:hover { filter: brightness(1.1); }
 
-/* ══════════════════════════════════════════════
+/* ââââââââââââââââââââââââââââââââââââââââââââââ
    MOBILE NAV
-══════════════════════════════════════════════ */
+ââââââââââââââââââââââââââââââââââââââââââââââ */
 .mobile-nav { display: none; }
 .mobile-search-wrap { display: none; }
 .sidebar-scroll { display: contents; }
@@ -837,9 +837,9 @@ body::before {
   .sidebar-scroll { display: flex; flex-direction: column; flex: 1; overflow-y: auto; }
 }
 
-/* ══════════════════════════════════════════════
+/* ââââââââââââââââââââââââââââââââââââââââââââââ
    SCROLLBARS
-══════════════════════════════════════════════ */
+ââââââââââââââââââââââââââââââââââââââââââââââ */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
@@ -849,26 +849,26 @@ body::before {
 
 <header class="header">
   <div class="logo">
-    <div class="logo-gem">✦</div>
+    <div class="logo-gem">â¦</div>
     La Mesa Bonita
-    <span class="logo-sub">· Tlaquepaque</span>
+    <span class="logo-sub">Â· Tlaquepaque</span>
   </div>
   <div class="live-badge"><span class="status-dot"></span>Agente IA activo</div>
 </header>
 
 <div class="app">
 
-  <!-- SIDEBAR: Menú -->
+  <!-- SIDEBAR: MenÃº -->
   <aside class="sidebar">
 
     <div class="mobile-search-wrap" style="display:none" id="mobileSearchWrap">
       <div class="mobile-search-inner">
-        <span class="mobile-search-icon">🔍</span>
+        <span class="mobile-search-icon">ð</span>
         <input type="text" class="mobile-search-input" id="mobileSearch" placeholder="Buscar platillo o bebida..." oninput="filterSearch(this.value)">
       </div>
     </div>
 
-    <div class="sidebar-label" id="sidebarLabel" style="padding-top:14px">Menú del día</div>
+    <div class="sidebar-label" id="sidebarLabel" style="padding-top:14px">MenÃº del dÃ­a</div>
 
     <div class="dietary-filters">
       <button class="dietary-filter-btn" data-dietary="vegetariano">Vegetariano</button>
@@ -886,7 +886,7 @@ body::before {
     </div>
 
     <div class="address-section" id="addressSection">
-      <input type="text" class="address-input" id="addressInput" placeholder="Dirección de entrega" oninput="state.address = this.value">
+      <input type="text" class="address-input" id="addressInput" placeholder="DirecciÃ³n de entrega" oninput="state.address = this.value">
     </div>
 
     <div class="sidebar-scroll">
@@ -894,12 +894,12 @@ body::before {
     <div class="cat-name">Especialidades</div>
     <div class="menu-item" data-item-id="1">
       <img class="item-img" src="https://images.unsplash.com/photo-1624300629298-e9de39c13be5?w=400&h=300&fit=crop&q=85&auto=format" alt="Birria">
-      <div class="item-body"><div class="item-name">Birria de res</div><div class="item-desc">Con consomé y tortillas</div><div class="item-price">$185</div></div>
+      <div class="item-body"><div class="item-name">Birria de res</div><div class="item-desc">Con consomÃ© y tortillas</div><div class="item-price">$185</div></div>
       <button class="plus-btn">+</button>
     </div>
     <div class="menu-item" data-item-id="2">
       <img class="item-img" src="https://images.unsplash.com/photo-1558030006-450675393462?w=400&h=300&fit=crop&q=85&auto=format" alt="Arrachera">
-      <div class="item-body"><div class="item-name">Arrachera a la parrilla</div><div class="item-desc">Con guarnición y salsas</div><div class="item-price">$220</div></div>
+      <div class="item-body"><div class="item-name">Arrachera a la parrilla</div><div class="item-desc">Con guarniciÃ³n y salsas</div><div class="item-price">$220</div></div>
       <button class="plus-btn">+</button>
     </div>
     <div class="menu-item" data-item-id="3">
@@ -933,7 +933,7 @@ body::before {
     </div>
     <div class="menu-item" data-item-id="8">
       <img class="item-img" src="https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&h=300&fit=crop&q=85&auto=format" alt="Michelada">
-      <div class="item-body"><div class="item-name">Michelada</div><div class="item-desc">Clamato, limón y chamoy</div><div class="item-price">$85</div></div>
+      <div class="item-body"><div class="item-name">Michelada</div><div class="item-desc">Clamato, limÃ³n y chamoy</div><div class="item-price">$85</div></div>
       <button class="plus-btn">+</button>
     </div>
     <div class="divider"></div>
@@ -954,22 +954,22 @@ body::before {
   <!-- CHAT -->
   <main class="chat-main">
     <div class="chat-header">
-      <div class="bot-avatar"><span id="botAvatarEmoji">✦</span></div>
+      <div class="bot-avatar"><span id="botAvatarEmoji">â¦</span></div>
       <div>
-        <div class="bot-name">Chef IA — Asistente 24/7</div>
-        <div class="bot-status"><span class="status-dot"></span>En línea · Responde en segundos</div>
+        <div class="bot-name">Chef IA â Asistente 24/7</div>
+        <div class="bot-status"><span class="status-dot"></span>En lÃ­nea Â· Responde en segundos</div>
       </div>
     </div>
     <div class="chat-messages" id="chatMessages"></div>
     <div class="quick-replies" id="quickReplies">
       <button class="qr-btn" onclick="sendQuick('Quiero 2 tacos y una michelada')">2 tacos + michelada</button>
       <button class="qr-btn" onclick="sendQuick('Una birria de res con agua de jamaica')">Birria + agua fresca</button>
-      <button class="qr-btn" onclick="sendQuick('¿Qué me recomiendas para cenar hoy?')">¿Qué recomiendas?</button>
-      <button class="qr-btn" onclick="sendQuick('Quiero hacer una reservación para esta noche')">Reservación</button>
-      <button class="qr-btn" onclick="sendQuick('¿Hacen domicilio? ¿Cuánto tarda?')">Domicilio</button>
+      <button class="qr-btn" onclick="sendQuick('Â¿QuÃ© me recomiendas para cenar hoy?')">Â¿QuÃ© recomiendas?</button>
+      <button class="qr-btn" onclick="sendQuick('Quiero hacer una reservaciÃ³n para esta noche')">ReservaciÃ³n</button>
+      <button class="qr-btn" onclick="sendQuick('Â¿Hacen domicilio? Â¿CuÃ¡nto tarda?')">Domicilio</button>
     </div>
     <div class="chat-input-area">
-      <textarea class="chat-input" id="chatInput" placeholder="Escríbele al agente..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+      <textarea class="chat-input" id="chatInput" placeholder="EscrÃ­bele al agente..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
       <button class="send-btn" onclick="sendMessage()"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg></button>
     </div>
   </main>
@@ -981,12 +981,12 @@ body::before {
       <div class="stat-card">
         <div class="stat-val">$4,820</div>
         <div class="stat-label">Ventas hoy</div>
-        <div class="stat-delta">↑ +12% vs ayer</div>
+        <div class="stat-delta">â +12% vs ayer</div>
       </div>
       <div class="stat-card">
         <div class="stat-val">34</div>
         <div class="stat-label">Pedidos</div>
-        <div class="stat-delta">↑ +7 mesa</div>
+        <div class="stat-delta">â +7 mesa</div>
       </div>
       <div class="stat-card">
         <div class="stat-val">$142</div>
@@ -1007,15 +1007,15 @@ body::before {
         <button class="order-type-btn" data-type="domicilio" onclick="setOrderType('domicilio')">Domicilio</button>
       </div>
       <div class="address-section-mobile" id="addressSectionMobile" style="display:none;margin-top:8px">
-        <input type="text" class="address-input" placeholder="Dirección de entrega" oninput="state.address = this.value">
+        <input type="text" class="address-input" placeholder="DirecciÃ³n de entrega" oninput="state.address = this.value">
       </div>
     </div>
 
     <div class="dash-label">Tu pedido</div>
     <div class="cart-section" id="cartContainer">
       <div class="cart-empty" id="cartEmpty">
-        Carrito vacío<br>
-        <span style="opacity:.55;font-size:11px;font-family:var(--font-body)">Agrega platillos con el botón +</span>
+        Carrito vacÃ­o<br>
+        <span style="opacity:.55;font-size:11px;font-family:var(--font-body)">Agrega platillos con el botÃ³n +</span>
       </div>
       <div class="cart-items" id="cartItems"></div>
       <div class="cart-total-row">
@@ -1039,7 +1039,7 @@ body::before {
 
     <div class="insight-card" style="margin-top:16px">
       <div class="insight-tag">Sugerencia IA</div>
-      <div class="insight-title">Activa "2×1 en birria después de las 8pm" los lunes</div>
+      <div class="insight-title">Activa "2Ã1 en birria despuÃ©s de las 8pm" los lunes</div>
       <div class="insight-sub">Los lunes bajan 34% en ventas nocturnas</div>
     </div>
   </aside>
@@ -1063,14 +1063,14 @@ let state = {
 };
 
 const MENU_ITEMS = [
-  { id: 1, name: 'Birria de res', price: 185, desc: 'Con consomé y tortillas', dietary: ['sinGluten'] },
-  { id: 2, name: 'Arrachera a la parrilla', price: 220, desc: 'Con guarnición y salsas', dietary: ['sinGluten'] },
+  { id: 1, name: 'Birria de res', price: 185, desc: 'Con consomÃ© y tortillas', dietary: ['sinGluten'] },
+  { id: 2, name: 'Arrachera a la parrilla', price: 220, desc: 'Con guarniciÃ³n y salsas', dietary: ['sinGluten'] },
   { id: 3, name: 'Pozole rojo', price: 145, desc: 'Grande con tostadas', dietary: [] },
   { id: 4, name: 'Orden de tacos (3)', price: 95, desc: 'Pastor, carnitas o barbacoa', dietary: [] },
   { id: 5, name: 'Tostadas de tinga', price: 75, desc: 'Con crema y queso', dietary: [] },
   { id: 6, name: 'Enchiladas verdes', price: 110, desc: 'Con pollo y crema', dietary: [] },
   { id: 7, name: 'Agua fresca', price: 35, desc: 'Jamaica, horchata o tamarindo', dietary: ['vegetariano', 'sinGluten'] },
-  { id: 8, name: 'Michelada', price: 85, desc: 'Clamato, limón y chamoy', dietary: ['vegetariano', 'sinGluten'] },
+  { id: 8, name: 'Michelada', price: 85, desc: 'Clamato, limÃ³n y chamoy', dietary: ['vegetariano', 'sinGluten'] },
   { id: 9, name: 'Flan napolitano', price: 65, desc: 'Casero, con cajeta', dietary: ['vegetariano', 'sinGluten'] },
   { id: 10, name: 'Churros con chocolate', price: 70, desc: 'Orden de 4 piezas', dietary: ['vegetariano'] }
 ];
@@ -1078,129 +1078,129 @@ const MENU_ITEMS = [
 function getSystemPrompt() {
   const cartSummary = state.cart.length > 0
     ? state.cart.map(i => `${i.qty}x ${i.name}${i.notes ? ` (${i.notes})` : ''}`).join(', ')
-    : 'carrito vacío';
+    : 'carrito vacÃ­o';
   const orderInfo = state.orderStatus
     ? `Pedido #${state.orderNum}: ${state.orderStatus}, tipo: ${state.orderType}`
     : 'sin pedido activo';
   const reservationInfo = state.reservation
-    ? `Reservación: ${state.reservation.people} personas, ${state.reservation.date} ${state.reservation.time}`
-    : 'sin reservación';
+    ? `ReservaciÃ³n: ${state.reservation.people} personas, ${state.reservation.date} ${state.reservation.time}`
+    : 'sin reservaciÃ³n';
 
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? 'Buenos días' : hour < 19 ? 'Buenas tardes' : 'Buenas noches';
+  const greeting = hour < 12 ? 'Buenos dÃ­as' : hour < 19 ? 'Buenas tardes' : 'Buenas noches';
 
-  return `Eres Tomás, mesero con 8 años en "La Mesa Bonita" — restaurante tradicional de Tlaquepaque, Jalisco, famoso por su birria y su arrachera. Atiendes a clientes reales como mesero real. NUNCA menciones que eres IA, demo, simulación o ambiente virtual.
+  return `Eres TomÃ¡s, mesero con 8 aÃ±os en "La Mesa Bonita" â restaurante tradicional de Tlaquepaque, Jalisco, famoso por su birria y su arrachera. Atiendes a clientes reales como mesero real. NUNCA menciones que eres IA, demo, simulaciÃ³n o ambiente virtual.
 
-HORA ACTUAL: ${hour}:00 — saluda con "${greeting}" en el primer turno.
+HORA ACTUAL: ${hour}:00 â saluda con "${greeting}" en el primer turno.
 
-MENÚ (usa estos IDs en los comandos):
+MENÃ (usa estos IDs en los comandos):
 1=Birria de res $185 | 2=Arrachera a la parrilla $220 | 3=Pozole rojo $145
 4=Orden de tacos (3) $95 | 5=Tostadas de tinga $75 | 6=Enchiladas verdes $110
 7=Agua fresca $35 | 8=Michelada $85 | 9=Flan napolitano $65 | 10=Churros con chocolate $70
 
-Horarios: L-D 8am-11pm. Juárez 234, Tlaquepaque. Domicilio desde $150, gratis en pedidos +$400.
+Horarios: L-D 8am-11pm. JuÃ¡rez 234, Tlaquepaque. Domicilio desde $150, gratis en pedidos +$400.
 
 ESTADO:
 - Carrito: ${cartSummary}
 - ${orderInfo}
 - ${reservationInfo}
 
-═══════════════════════════════════════════════
+âââââââââââââââââââââââââââââââââââââââââââââââ
 TU PERSONALIDAD
-═══════════════════════════════════════════════
-- Arranca hablando de USTED. Baja a TÚ solo si el cliente tutea primero.
-- Español mexicano natural: "sale", "enseguida", "con mucho gusto", "¿le va bien...?", "se lo traigo".
-- Cálido pero no empalagoso. Directo como mesero que conoce su oficio.
-- Máximo 3 oraciones por respuesta. Sin listas con viñetas. Prosa natural.
-- La birria es la especialidad de la casa — cuando te pregunten qué recomiendas, ofrécela.
+âââââââââââââââââââââââââââââââââââââââââââââââ
+- Arranca hablando de USTED. Baja a TÃ solo si el cliente tutea primero.
+- EspaÃ±ol mexicano natural: "sale", "enseguida", "con mucho gusto", "Â¿le va bien...?", "se lo traigo".
+- CÃ¡lido pero no empalagoso. Directo como mesero que conoce su oficio.
+- MÃ¡ximo 3 oraciones por respuesta. Sin listas con viÃ±etas. Prosa natural.
+- La birria es la especialidad de la casa â cuando te pregunten quÃ© recomiendas, ofrÃ©cela.
 
-═══════════════════════════════════════════════
-CÓMO TOMAS LA ORDEN
-═══════════════════════════════════════════════
+âââââââââââââââââââââââââââââââââââââââââââââââ
+CÃMO TOMAS LA ORDEN
+âââââââââââââââââââââââââââââââââââââââââââââââ
 
-1. ANOTAR AL CARRITO — OBLIGATORIO con comando:
-   Cualquier platillo que pida → responde breve + [ADD:id].
+1. ANOTAR AL CARRITO â OBLIGATORIO con comando:
+   Cualquier platillo que pida â responde breve + [ADD:id].
    Ejemplo: "quiero 2 tacos y una michelada"
-   → "Sale, dos tacos y una michelada. [ADD:4][ADD:4][ADD:8]"
-   NUNCA preguntes "¿lo anoto?" — simplemente anota.
-   CRÍTICO: decir en prosa "le agrego una agua" SIN emitir [ADD:7] NO agrega nada al carrito. El comando [ADD:id] es la única acción real — si no lo emites, el platillo no existe en el sistema.
+   â "Sale, dos tacos y una michelada. [ADD:4][ADD:4][ADD:8]"
+   NUNCA preguntes "Â¿lo anoto?" â simplemente anota.
+   CRÃTICO: decir en prosa "le agrego una agua" SIN emitir [ADD:7] NO agrega nada al carrito. El comando [ADD:id] es la Ãºnica acciÃ³n real â si no lo emites, el platillo no existe en el sistema.
 
-2. NOTAS Y PREFERENCIAS — usa [ADD:id:nota] cuando el cliente especifique cómo lo quiere:
-   "tacos sin cebolla" → [ADD:4:sin cebolla]
-   "arrachera término medio" → [ADD:2:término medio]
-   "michelada bien picosa" → [ADD:8:bien picosa]
+2. NOTAS Y PREFERENCIAS â usa [ADD:id:nota] cuando el cliente especifique cÃ³mo lo quiere:
+   "tacos sin cebolla" â [ADD:4:sin cebolla]
+   "arrachera tÃ©rmino medio" â [ADD:2:tÃ©rmino medio]
+   "michelada bien picosa" â [ADD:8:bien picosa]
    La nota aparece impresa en el ticket y en la cocina.
 
 3. PREGUNTAR PREFERENCIA antes de anotar, cuando el platillo lo amerite:
-   - Arrachera → "¿Cómo le gusta el término? ¿bien cocida o término medio?"
-   - Birria o Pozole → "¿Con cebolla y cilantro, o sin?"
-   - Tacos → "¿Salsa roja o verde? ¿picoso o suave?"
-   - Michelada → "¿Suave, normal o bien picosa?"
-   Si el cliente YA especificó la preferencia, NO vuelvas a preguntar — anótala directo con [ADD:id:nota].
-   NUNCA re-confirmes items que el cliente YA pidió. Si dijo "con agua de jamaica", la quiere — no preguntes "¿le va bien la jamaica?", solo anótala.
+   - Arrachera â "Â¿CÃ³mo le gusta el tÃ©rmino? Â¿bien cocida o tÃ©rmino medio?"
+   - Birria o Pozole â "Â¿Con cebolla y cilantro, o sin?"
+   - Tacos â "Â¿Salsa roja o verde? Â¿picoso o suave?"
+   - Michelada â "Â¿Suave, normal o bien picosa?"
+   Si el cliente YA especificÃ³ la preferencia, NO vuelvas a preguntar â anÃ³tala directo con [ADD:id:nota].
+   NUNCA re-confirmes items que el cliente YA pidiÃ³. Si dijo "con agua de jamaica", la quiere â no preguntes "Â¿le va bien la jamaica?", solo anÃ³tala.
    Regla: pregunta PRIMERO si falta info, espera respuesta, LUEGO agrega con nota.
-   CASO CLAVE (preferencia tardía): si ya habías agregado el platillo (ej. la michelada) y luego preguntaste el término/tipo, cuando el cliente responde "bien picosa" NO uses [ADD] otra vez — usa [NOTE:id:nota] para ponerle la nota al que ya está. Ejemplo: michelada ya en carrito + cliente dice "bien picosa" → [NOTE:8:bien picosa]. Emitir [ADD:8:bien picosa] duplicaría la michelada.
+   CASO CLAVE (preferencia tardÃ­a): si ya habÃ­as agregado el platillo (ej. la michelada) y luego preguntaste el tÃ©rmino/tipo, cuando el cliente responde "bien picosa" NO uses [ADD] otra vez â usa [NOTE:id:nota] para ponerle la nota al que ya estÃ¡. Ejemplo: michelada ya en carrito + cliente dice "bien picosa" â [NOTE:8:bien picosa]. Emitir [ADD:8:bien picosa] duplicarÃ­a la michelada.
 
-4. PAIRING PROACTIVO — 1 sugerencia breve después de anotar platillo principal:
-   - Birria → "¿Le traigo una agua de jamaica para acompañar?"
-   - Arrachera → "¿Se le antoja una michelada con eso?"
-   - Tacos o Enchiladas → "¿Con agua fresca o una michelada?"
-   - Pozole → "¿Una tostada de tinga extra o un agua?"
-   MÁXIMO 1 pairing por turno. Si dice no, no insistas.
-   Si el cliente YA pidió bebida o complemento en el mismo turno, NO sugieras pairing — ya lo cubrió.
+4. PAIRING PROACTIVO â 1 sugerencia breve despuÃ©s de anotar platillo principal:
+   - Birria â "Â¿Le traigo una agua de jamaica para acompaÃ±ar?"
+   - Arrachera â "Â¿Se le antoja una michelada con eso?"
+   - Tacos o Enchiladas â "Â¿Con agua fresca o una michelada?"
+   - Pozole â "Â¿Una tostada de tinga extra o un agua?"
+   MÃXIMO 1 pairing por turno. Si dice no, no insistas.
+   Si el cliente YA pidiÃ³ bebida o complemento en el mismo turno, NO sugieras pairing â ya lo cubriÃ³.
 
-5. QUITAR O REDUCIR — SIEMPRE con [REMOVE:id]:
-   "quita los tacos" / "borra X" → [REMOVE:id] (quita 1 unidad).
-   "solo 1 taco" (tenía 2) → [REMOVE:4].
-   "quita todo" → un [REMOVE:id] por cada platillo distinto.
-   Decir "quito uno" en texto SIN [REMOVE:id] no hace nada. El comando ES la acción.
+5. QUITAR O REDUCIR â SIEMPRE con [REMOVE:id]:
+   "quita los tacos" / "borra X" â [REMOVE:id] (quita 1 unidad).
+   "solo 1 taco" (tenÃ­a 2) â [REMOVE:4].
+   "quita todo" â un [REMOVE:id] por cada platillo distinto.
+   Decir "quito uno" en texto SIN [REMOVE:id] no hace nada. El comando ES la acciÃ³n.
 
-6. MODIFICAR: "cambia X por Y" → [REMOVE:id_x][ADD:id_y] en el mismo mensaje.
+6. MODIFICAR: "cambia X por Y" â [REMOVE:id_x][ADD:id_y] en el mismo mensaje.
 
-7. REDUCIR CANTIDAD: "quiero menos", "solo quiero X unidades" → tantos [REMOVE:id] como unidades sobren.
-   Ejemplo: tenía 3 tacos, quiere 1 → [REMOVE:4][REMOVE:4].
+7. REDUCIR CANTIDAD: "quiero menos", "solo quiero X unidades" â tantos [REMOVE:id] como unidades sobren.
+   Ejemplo: tenÃ­a 3 tacos, quiere 1 â [REMOVE:4][REMOVE:4].
 
-8. LEER INTENCIÓN VAGA — sugiere algo específico del menú:
-   "algo ligero" → tostadas de tinga o pozole.
-   "tengo mucha hambre" → birria o arrachera.
-   "qué recomiendas" → "La birria es la especialidad de la casa, muy buena. ¿Le traigo una?"
-   "algo de beber" → agua de jamaica o michelada.
+8. LEER INTENCIÃN VAGA â sugiere algo especÃ­fico del menÃº:
+   "algo ligero" â tostadas de tinga o pozole.
+   "tengo mucha hambre" â birria o arrachera.
+   "quÃ© recomiendas" â "La birria es la especialidad de la casa, muy buena. Â¿Le traigo una?"
+   "algo de beber" â agua de jamaica o michelada.
 
-9. CONFIRMAR ANTES DE CERRAR — [RESUMEN] OBLIGATORIO:
+9. CONFIRMAR ANTES DE CERRAR â [RESUMEN] OBLIGATORIO:
    El cliente cierra el pedido con CUALQUIERA de estas frases (o parecidas):
-   "ya está", "mándalo", "listo", "confirmo", "eso es todo", "ya con eso", "cierra/ciérrame la cuenta", "la cuenta", "cóbrame", "es para mesa/llevar/domicilio", "ya no quiero nada más", "sería todo".
+   "ya estÃ¡", "mÃ¡ndalo", "listo", "confirmo", "eso es todo", "ya con eso", "cierra/ciÃ©rrame la cuenta", "la cuenta", "cÃ³brame", "es para mesa/llevar/domicilio", "ya no quiero nada mÃ¡s", "serÃ­a todo".
    En ESE turno DEBES: repetir la orden completa en una frase + emitir [RESUMEN] al final. SIEMPRE el comando [RESUMEN].
    Ejemplo: "Entonces le mando: dos tacos con salsa verde y una michelada bien picosa. [RESUMEN]"
-   PROHIBIDO responder solo "¿sería todo por ahora?" sin [RESUMEN] cuando el cliente ya dijo que cierra. Si ya cerró, muestra el ticket con [RESUMEN]; no agregues otro paso de pregunta.
+   PROHIBIDO responder solo "Â¿serÃ­a todo por ahora?" sin [RESUMEN] cuando el cliente ya dijo que cierra. Si ya cerrÃ³, muestra el ticket con [RESUMEN]; no agregues otro paso de pregunta.
 
 10. CIERRE CON TIEMPO Y "PROVECHO":
-    Cuando el cliente confirma el ticket del [RESUMEN] (ej: "sí", "confirmo", "está bien"):
-    "Sale, en 15 a 20 minutos se lo llevo a su mesa. ¡Provecho!"
+    Cuando el cliente confirma el ticket del [RESUMEN] (ej: "sÃ­", "confirmo", "estÃ¡ bien"):
+    "Sale, en 15 a 20 minutos se lo llevo a su mesa. Â¡Provecho!"
 
-11. NUNCA DEJES AIRE MUERTO — siempre abre el siguiente paso:
+11. NUNCA DEJES AIRE MUERTO â siempre abre el siguiente paso:
     Un mesero real nunca termina "Con gusto le agrego otra agua" y se queda callado. Siempre cierra con UNA de estas:
     - Pregunta de preferencia si queda una pendiente.
     - Pairing breve (si aplica regla 4).
-    - "¿Algo más le traigo?" cuando ya anotaste y no hay pairing natural.
-    - "¿Cerramos la orden?" si el carrito ya tiene suficiente para cenar.
+    - "Â¿Algo mÃ¡s le traigo?" cuando ya anotaste y no hay pairing natural.
+    - "Â¿Cerramos la orden?" si el carrito ya tiene suficiente para cenar.
     Silencio al final de la respuesta = mal servicio. Siempre hay un siguiente paso.
 
-═══════════════════════════════════════════════
+âââââââââââââââââââââââââââââââââââââââââââââââ
 COMANDOS PERMITIDOS (invisibles para el cliente)
-═══════════════════════════════════════════════
-[ADD:id] — agregar 1 unidad sin nota. Ej: [ADD:4]
-[ADD:id:nota] — agregar 1 unidad NUEVA con nota. Ej: [ADD:2:término medio]
-[NOTE:id:nota] — ponerle preferencia a un platillo que YA está en el carrito, SIN duplicarlo. Ej: [NOTE:8:bien picosa]
-[REMOVE:id] — quitar 1 unidad. Ej: [REMOVE:4]
-[RESUMEN] — mostrar ticket de confirmación al cliente
+âââââââââââââââââââââââââââââââââââââââââââââââ
+[ADD:id] â agregar 1 unidad sin nota. Ej: [ADD:4]
+[ADD:id:nota] â agregar 1 unidad NUEVA con nota. Ej: [ADD:2:tÃ©rmino medio]
+[NOTE:id:nota] â ponerle preferencia a un platillo que YA estÃ¡ en el carrito, SIN duplicarlo. Ej: [NOTE:8:bien picosa]
+[REMOVE:id] â quitar 1 unidad. Ej: [REMOVE:4]
+[RESUMEN] â mostrar ticket de confirmaciÃ³n al cliente
 Para 2+ unidades del mismo platillo, repite [ADD:id]: [ADD:4][ADD:4] = 2 tacos.
 
 REGLA DE ORO PARA NOTAS:
-- Si el platillo NO está en el carrito → agrégalo con su nota: [ADD:id:nota].
-- Si el platillo YA está en el carrito (lo agregaste antes) y el cliente recién especifica cómo lo quiere → usa [NOTE:id:nota]. NUNCA emitas otro [ADD] para eso, porque duplicarías el platillo y le cobrarías de más.
+- Si el platillo NO estÃ¡ en el carrito â agrÃ©galo con su nota: [ADD:id:nota].
+- Si el platillo YA estÃ¡ en el carrito (lo agregaste antes) y el cliente reciÃ©n especifica cÃ³mo lo quiere â usa [NOTE:id:nota]. NUNCA emitas otro [ADD] para eso, porque duplicarÃ­as el platillo y le cobrarÃ­as de mÃ¡s.
 
 PROHIBIDO inventar otros comandos como [RESERVA], [INFO], [PEDIDO], [CONFIRM], etc.
-Solo existen: [ADD:id[:nota]], [NOTE:id:nota], [REMOVE:id], [RESUMEN]. Ningún otro.`;
+Solo existen: [ADD:id[:nota]], [NOTE:id:nota], [REMOVE:id], [RESUMEN]. NingÃºn otro.`;
 }
 
 function addToCart(itemId, notes = '') {
@@ -1222,8 +1222,8 @@ function removeFromCart(itemId) {
   updateCartBadge();
 }
 
-// Asigna una nota a un item que YA está en el carrito, sin duplicarlo.
-// Prefiere la línea sin nota; si no existe, la última línea de ese platillo.
+// Asigna una nota a un item que YA estÃ¡ en el carrito, sin duplicarlo.
+// Prefiere la lÃ­nea sin nota; si no existe, la Ãºltima lÃ­nea de ese platillo.
 function setItemNote(itemId, note) {
   const noteClean = (note || '').trim();
   let idx = state.cart.findIndex(i => i.id === itemId && !i.notes);
@@ -1232,9 +1232,9 @@ function setItemNote(itemId, note) {
       if (state.cart[j].id === itemId) { idx = j; break; }
     }
   }
-  if (idx === -1) { addToCart(itemId, noteClean); return; } // no estaba → agrégalo
+  if (idx === -1) { addToCart(itemId, noteClean); return; } // no estaba â agrÃ©galo
   state.cart[idx].notes = noteClean;
-  // Fusiona con una línea gemela (mismo id + misma nota) si existe
+  // Fusiona con una lÃ­nea gemela (mismo id + misma nota) si existe
   const twinIdx = state.cart.findIndex((i, j) => j !== idx && i.id === itemId && i.notes === noteClean);
   if (twinIdx !== -1) {
     state.cart[twinIdx].qty += state.cart[idx].qty;
@@ -1272,7 +1272,7 @@ function renderCart() {
         <div class="cart-item-price">$${item.price} c/u</div>
       </div>
       <div class="qty-controls">
-        <button class="qty-btn" onclick="removeFromCart(${item.id})">−</button>
+        <button class="qty-btn" onclick="removeFromCart(${item.id})">â</button>
         <span class="qty-val">${item.qty}</span>
         <button class="qty-btn" onclick="addToCart(${item.id}, '${item.notes}')">+</button>
       </div>
@@ -1324,13 +1324,13 @@ function setOrderType(type) {
 function confirmOrder() {
   if (state.cart.length === 0) return;
   if (!state.orderType) { alert('Por favor selecciona si es para mesa, llevar o domicilio'); return; }
-  if (state.orderType === 'domicilio' && !state.address.trim()) { alert('Por favor ingresa la dirección de entrega'); return; }
+  if (state.orderType === 'domicilio' && !state.address.trim()) { alert('Por favor ingresa la direcciÃ³n de entrega'); return; }
   state.orderNum = Math.floor(1000 + Math.random() * 9000);
   state.orderStatus = 'recibido';
   dbSavePedido();
   startOrderTracker();
   renderOrderTracker();
-  // No enviamos mensaje al chat — confirmFromTicket ya muestra el recibo visual
+  // No enviamos mensaje al chat â confirmFromTicket ya muestra el recibo visual
 }
 
 function startOrderTracker() {
@@ -1348,10 +1348,10 @@ function renderOrderTracker() {
   const trackerContainer = document.getElementById('orderTracker');
   if (!trackerContainer) return;
   const stages = [
-    { id: 'recibido', label: 'Recibido', icon: '📋' },
-    { id: 'preparando', label: 'Preparando', icon: '👨‍🍳' },
-    { id: 'listo', label: 'Listo', icon: '✓' },
-    { id: 'entregado', label: 'Entregado', icon: '✦' }
+    { id: 'recibido', label: 'Recibido', icon: 'ð' },
+    { id: 'preparando', label: 'Preparando', icon: 'ð¨âð³' },
+    { id: 'listo', label: 'Listo', icon: 'â' },
+    { id: 'entregado', label: 'Entregado', icon: 'â¦' }
   ];
   const currentIndex = stages.findIndex(s => s.id === state.orderStatus);
   trackerContainer.innerHTML = `
@@ -1402,12 +1402,12 @@ function makeReservation(data) {
         <div class="reservation-details">
           <div><strong>${state.reservation.people} personas</strong></div>
           <div>${state.reservation.date} a las ${state.reservation.time}</div>
-          ${state.reservation.occasion ? `<div>Ocasión: ${state.reservation.occasion}</div>` : ''}
+          ${state.reservation.occasion ? `<div>OcasiÃ³n: ${state.reservation.occasion}</div>` : ''}
         </div>
       </div>
     `;
   }
-  ClaveAI.send(`Quiero hacer una reservación para ${state.reservation.people} personas el ${state.reservation.date} a las ${state.reservation.time}${state.reservation.occasion ? ', ocasión: ' + state.reservation.occasion : ''}`);
+  ClaveAI.send(`Quiero hacer una reservaciÃ³n para ${state.reservation.people} personas el ${state.reservation.date} a las ${state.reservation.time}${state.reservation.occasion ? ', ocasiÃ³n: ' + state.reservation.occasion : ''}`);
 }
 
 function filterSearch(query) {
@@ -1456,14 +1456,14 @@ function renderOrderTicket() {
     const subtotal = item.price * item.qty;
     return `
       <div class="ticket-item">
-        <span class="ticket-item-name">${item.qty}× ${item.name}</span>
+        <span class="ticket-item-name">${item.qty}Ã ${item.name}</span>
         <span class="ticket-item-dots"></span>
         <span class="ticket-item-price">$${subtotal}</span>
       </div>`;
   }).join('');
 
   const total = getCartTotal();
-  const botEmoji = document.getElementById('botAvatarEmoji')?.textContent || '🤖';
+  const botEmoji = document.getElementById('botAvatarEmoji')?.textContent || 'ð¤';
   const time = new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
 
   const msgDiv = document.createElement('div');
@@ -1472,7 +1472,7 @@ function renderOrderTicket() {
     <div class="msg-avatar">${botEmoji}</div>
     <div class="msg-content">
       <div class="order-ticket">
-        <div class="ticket-header"><span>🧾</span> Tu pedido</div>
+        <div class="ticket-header"><span>ð§¾</span> Tu pedido</div>
         <div class="ticket-items">${itemRows}</div>
         <div class="ticket-divider"></div>
         <div class="ticket-total">
@@ -1480,7 +1480,7 @@ function renderOrderTicket() {
           <span class="ticket-total-amount">$${total}</span>
         </div>
         <div class="ticket-actions">
-          <button class="ticket-btn-confirm" onclick="confirmFromTicket(this.closest('.order-ticket-wrap'))">✓ Confirmar pedido</button>
+          <button class="ticket-btn-confirm" onclick="confirmFromTicket(this.closest('.order-ticket-wrap'))">â Confirmar pedido</button>
           <button class="ticket-btn-edit" onclick="dismissTicket(this.closest('.order-ticket-wrap'))">Editar</button>
         </div>
       </div>
@@ -1495,10 +1495,10 @@ function renderOrderTicket() {
 
 function confirmFromTicket(ticketWrap) {
   confirmOrder();
-  // Si confirmOrder abortó por falta de datos (tipo de orden o dirección), no pintar recibo null
+  // Si confirmOrder abortÃ³ por falta de datos (tipo de orden o direcciÃ³n), no pintar recibo null
   if (!state.orderNum) return;
 
-  const botEmoji = document.getElementById('botAvatarEmoji')?.textContent || '🤖';
+  const botEmoji = document.getElementById('botAvatarEmoji')?.textContent || 'ð¤';
   const time = new Date().toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
 
   const receipt = document.createElement('div');
@@ -1508,8 +1508,8 @@ function confirmFromTicket(ticketWrap) {
     <div class="msg-content">
       <div class="order-receipt">
         <div class="receipt-folio">Pedido #${state.orderNum}</div>
-        <div class="receipt-status">Recibido — En preparación 👨‍🍳</div>
-        <div class="receipt-detail">Tiempo estimado: 15–20 min</div>
+        <div class="receipt-status">Recibido â En preparaciÃ³n ð¨âð³</div>
+        <div class="receipt-detail">Tiempo estimado: 15â20 min</div>
       </div>
       <div class="msg-time">${time}</div>
     </div>`;
@@ -1524,14 +1524,14 @@ function confirmFromTicket(ticketWrap) {
 
 function dismissTicket(ticketWrap) {
   if (ticketWrap) ticketWrap.remove();
-  ClaveAI.addBubble('Sin problema, dime qué quieres cambiar.', 'bot');
+  ClaveAI.addBubble('Sin problema, dime quÃ© quieres cambiar.', 'bot');
 }
 
 function parseAICommands(reply) {
   let clean = reply;
   const cartWasEmpty = state.cart.length === 0;
 
-  // [ADD:id], [ADD:id,id,id], [ADD:id:nota] — soporta nota opcional tras ':'
+  // [ADD:id], [ADD:id,id,id], [ADD:id:nota] â soporta nota opcional tras ':'
   clean = clean.replace(/\[ADD:([0-9,\s]+)(?::([^\]]+))?\]/gi, (_, idsStr, note) => {
     const ids = idsStr.split(',').map(s => parseInt(s.trim())).filter(n => n > 0);
     const noteClean = (note || '').trim();
@@ -1543,25 +1543,25 @@ function parseAICommands(reply) {
     ids.split(',').map(s => parseInt(s.trim())).filter(n => n > 0).forEach(id => removeFromCart(id));
     return '';
   });
-  // [NOTE:id:nota] → poner preferencia a un item YA en el carrito (no duplica)
+  // [NOTE:id:nota] â poner preferencia a un item YA en el carrito (no duplica)
   clean = clean.replace(/\[NOTE:([0-9]+):([^\]]+)\]/gi, (_, id, note) => {
     setItemNote(parseInt(id), note);
     return '';
   });
-  // [CONFIRM] legacy — el prompt nuevo no lo usa pero mantenemos parser
+  // [CONFIRM] legacy â el prompt nuevo no lo usa pero mantenemos parser
   if (/\[CONFIRM\]/i.test(clean)) {
     clean = clean.replace(/\[CONFIRM\]/gi, '');
     if (state.cart.length > 0) confirmOrder();
   }
-  // [RESUMEN] → ticket de confirmación en chat
+  // [RESUMEN] â ticket de confirmaciÃ³n en chat
   if (/\[RESUMEN\]/i.test(clean)) {
     clean = clean.replace(/\[RESUMEN\]/gi, '');
     setTimeout(() => renderOrderTicket(), 50);
   }
   // Limpia cualquier [COMANDO] residual
-  clean = clean.replace(/\[[A-ZÁÉÍÓÚÑ][^\]]*\]/g, '');
+  clean = clean.replace(/\[[A-ZÃÃÃÃÃÃ][^\]]*\]/g, '');
   clean = clean.trim();
-  if (!clean) clean = '¡Listo!';
+  if (!clean) clean = 'Â¡Listo!';
   dbSaveMessage('assistant', clean);
 
   // Swap de quick replies contextuales al primer ADD
@@ -1575,18 +1575,18 @@ function swapToPostOrderQuickReplies() {
   const qr = document.getElementById('quickReplies');
   if (!qr) return;
   qr.innerHTML = `
-    <button class="qr-btn" onclick="sendQuick('¿Qué bebida me recomiendas?')">Bebida</button>
-    <button class="qr-btn" onclick="sendQuick('¿Qué postres tienen?')">Postre</button>
-    <button class="qr-btn" onclick="sendQuick('Ya está, mándalo')">Listo, cerrar</button>
+    <button class="qr-btn" onclick="sendQuick('Â¿QuÃ© bebida me recomiendas?')">Bebida</button>
+    <button class="qr-btn" onclick="sendQuick('Â¿QuÃ© postres tienen?')">Postre</button>
+    <button class="qr-btn" onclick="sendQuick('Ya estÃ¡, mÃ¡ndalo')">Listo, cerrar</button>
     <button class="qr-btn" onclick="sendQuick('Quiero cambiar algo del pedido')">Cambiar algo</button>
   `;
   qr.style.display = 'flex';
   state.qrSwapped = true;
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// SUPABASE — Guardar datos en la base de datos
-// ═══════════════════════════════════════════════════════════════════════════════
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// SUPABASE â Guardar datos en la base de datos
+// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const SESSION_ID = crypto.randomUUID();
 
 async function dbSaveMessage(rol, mensaje) {
@@ -1642,7 +1642,7 @@ async function dbSaveReservacion(rsv) {
 document.addEventListener('DOMContentLoaded', () => {
   ClaveAI.init({
     system: getSystemPrompt,
-    welcomeMessage: `¡Bienvenido a **La Mesa Bonita**!\n\nSoy Chef IA. ¿En qué te ayudo hoy?\n\nPuedes:\n• Agregar items al carrito con el botón **+**\n• Filtrar por Vegetariano, Sin gluten o Picante\n• Hacer una reservación\n• Pedir para mesa, llevar o domicilio`,
+    welcomeMessage: `Â¡Bienvenido a **La Mesa Bonita**!\n\nSoy Chef IA. Â¿En quÃ© te ayudo hoy?\n\nPuedes:\nâ¢ Agregar items al carrito con el botÃ³n **+**\nâ¢ Filtrar por Vegetariano, Sin gluten o Picante\nâ¢ Hacer una reservaciÃ³n\nâ¢ Pedir para mesa, llevar o domicilio`,
     onReply: parseAICommands
   });
 
@@ -1690,18 +1690,18 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<!-- Bottom navigation (solo móvil) -->
+<!-- Bottom navigation (solo mÃ³vil) -->
 <nav class="mobile-nav">
   <button class="mobile-tab" data-tab="menu" onclick="switchTab('menu')">
-    <span class="mobile-tab-icon">🍽️</span>
-    <span class="mobile-tab-label">Menú</span>
+    <span class="mobile-tab-icon">ð½ï¸</span>
+    <span class="mobile-tab-label">MenÃº</span>
   </button>
   <button class="mobile-tab active" data-tab="chat" onclick="switchTab('chat')">
-    <span class="mobile-tab-icon">💬</span>
+    <span class="mobile-tab-icon">ð¬</span>
     <span class="mobile-tab-label">Chat</span>
   </button>
   <button class="mobile-tab" data-tab="carrito" onclick="switchTab('carrito')">
-    <span class="mobile-tab-icon">🛒</span>
+    <span class="mobile-tab-icon">ð</span>
     <span class="cart-badge" id="cartBadge"></span>
     <span class="mobile-tab-label">Carrito</span>
   </button>
@@ -1710,7 +1710,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <!-- Modal para notas del item -->
 <div id="notesModal" class="modal-overlay" style="display:none;">
   <div class="modal-content">
-    <h3 class="modal-title">¿Alguna nota especial?</h3>
+    <h3 class="modal-title">Â¿Alguna nota especial?</h3>
     <input type="text" id="notesInput" class="modal-input" placeholder="Ej: sin cilantro, extra salsa..." maxlength="50">
     <div class="modal-actions">
       <button class="modal-btn cancel" onclick="cancelAddToCart()">Cancelar</button>
@@ -1719,5 +1719,7 @@ document.addEventListener('DOMContentLoaded', () => {
   </div>
 </div>
 
+<script>window.MOBILE_TABS=[{i:"🍽️",l:"Menú"},{i:"💬",l:"Chat"},{i:"🛒",l:"Carrito"}];</script>
+<script src="../../assets/responsive.js"></script>
 </body>
 </html>
