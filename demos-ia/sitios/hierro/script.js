@@ -27,13 +27,13 @@ function renderCart() {
   $("[data-cart-items]").classList.toggle("hidden", !count);
   $("[data-cart-total]").classList.toggle("hidden", !count);
   $("[data-total]").textContent = formatMoney(cart.reduce((sum, item) => sum + item.price, 0));
-  $("[data-cart-items]").innerHTML = cart.map((item, index) => `<div class="cart-item"><div class="cart-thumb yellow"></div><div><h3>${item.name}</h3><p>${formatMoney(item.price)}</p></div><button data-remove="${index}" aria-label="Eliminar ${item.name}">×</button></div>`).join("");
+  $("[data-cart-items]").innerHTML = cart.map((item, index) => `<div class="cart-item"><div class="cart-thumb"><img src="${item.image}" alt=""></div><div><h3>${item.brand} ${item.name}</h3><p>${formatMoney(item.price)}</p></div><button data-remove="${index}" aria-label="Eliminar ${item.brand} ${item.name}">×</button></div>`).join("");
   $$('[data-remove]').forEach((button) => button.addEventListener('click', () => { cart.splice(Number(button.dataset.remove), 1); renderCart(); }));
 }
 
 $$('[data-add]').forEach((button) => button.addEventListener('click', () => {
   const product = button.closest('.product-card');
-  cart.push({ name: product.dataset.name, price: Number(product.dataset.price) });
+  cart.push({ brand: product.dataset.brand, name: product.dataset.name, price: Number(product.dataset.price), image: product.dataset.image });
   renderCart();
   overlay.classList.remove('hidden');
 }));
