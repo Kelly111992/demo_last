@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="es-MX">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="NAYA — hidratación cotidiana con minerales esenciales y sabores inspirados en México.">
+    <meta name="theme-color" content="#0b0d0c">
+    <title>NAYA — Tu ritmo. En equilibrio.</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+    <header class="site-header" data-header>
+      <div class="site-header__edge site-header__edge--left" aria-label="Redes sociales">
+        <a href="#" aria-label="Instagram de NAYA">IG</a>
+        <a href="#" aria-label="TikTok de NAYA">TK</a>
+      </div>
+
+      <a class="wordmark" href="#inicio" aria-label="NAYA, inicio">NAYA</a>
+
+      <nav class="site-header__edge site-header__edge--right" aria-label="Navegación principal">
+        <a href="#kit">Producto</a>
+        <a href="#ritual">Ritual</a>
+        <button class="bag-trigger" type="button" data-cart-open aria-label="Abrir bolsa de compra">
+          Bolsa <span data-cart-count>0</span>
+        </button>
+      </nav>
+
+      <button class="menu-trigger" type="button" data-menu-trigger aria-expanded="false" aria-controls="mobile-menu">
+        <span>Menú</span>
+        <span class="menu-trigger__lines" aria-hidden="true"></span>
+      </button>
+    </header>
+
+    <div class="mobile-menu" id="mobile-menu" data-mobile-menu aria-hidden="true">
+      <nav aria-label="Navegación móvil">
+        <a href="#kit">Producto <span>01</span></a>
+        <a href="#ritual">Ritual <span>02</span></a>
+        <a href="#sabores">Sabores <span>03</span></a>
+        <a href="#historia">Historia <span>04</span></a>
+      </nav>
+      <div class="mobile-menu__footer">
+        <span>Ciudad de México</span>
+        <button type="button" data-cart-open>Bolsa (<span data-cart-count>0</span>)</button>
+      </div>
+    </div>
+
+    <section class="hero" id="inicio" aria-labelledby="hero-title">
+      <video class="hero__video" autoplay muted loop playsinline poster="assets/brand/naya-hero-reference.png" data-hero-video>
+        <source src="assets/brand/naya-hero.mp4" type="video/mp4">
+      </video>
+      <div class="hero__shade" aria-hidden="true"></div>
+      <div class="grain" aria-hidden="true"></div>
+
+      <div class="hero__content">
+        <p class="eyebrow hero__eyebrow">Hidratación cotidiana · México</p>
+        <h1 id="hero-title">Tu ritmo.<br><em>En equilibrio.</em></h1>
+        <p class="hero__intro">Minerales esenciales y sabores inspirados en México para acompañar los días que no se detienen.</p>
+        <div class="hero__actions">
+          <a class="button button--light" href="#kit">Descubrir el kit</a>
+          <a class="text-link" href="#ritual">Conocer el ritual <span aria-hidden="true">↘</span></a>
+        </div>
+      </div>
+
+      <a class="hero-seal" href="#kit" aria-label="Descubrir el Kit Esencial">
+        <svg class="hero-seal__orbit" viewBox="0 0 120 120" aria-hidden="true">
+          <defs>
+            <path id="hero-seal-path" d="M 60,60 m -44,0 a 44,44 0 1,1 88,0 a 44,44 0 1,1 -88,0"></path>
+          </defs>
+          <text>
+            <textPath href="#hero-seal-path" startOffset="2%">NAYA · RITUAL MINERAL · MÉXICO ·</textPath>
+          </text>
+        </svg>
+        <span class="hero-seal__center" aria-hidden="true"><strong>01</strong><span>↓</span></span>
+      </a>
+
+      <div class="hero-bar">
+        <nav aria-label="Secciones de la página">
+          <a href="#kit">Producto</a>
+          <a href="#ritual">Ritual</a>
+          <a href="#sabores">Sabores</a>
+          <a href="#historia">Historia</a>
+        </nav>
+        <span class="hero-bar__edition">Edición esencial · 2026</span>
+        <button class="hero-bar__buy" type="button" data-add-to-cart>
+          <span>Kit esencial</span>
+          <strong>$690 MXN</strong>
+          <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </section>
+
+    <main id="contenido">
+      <section class="proof-strip" aria-label="Información del producto">
+        <div><strong>20</strong><span>Sobres individuales</span></div>
+        <div><strong>03</strong><span>Sabores surtidos</span></div>
+        <div><strong>MX</strong><span>Envío nacional</span></div>
+        <div><strong>SSL</strong><span>Pago protegido</span></div>
+      </section>
+
+      <section class="product section" id="kit" aria-labelledby="kit-title">
+        <div class="section-index" aria-hidden="true">01 / 05</div>
+        <div class="product__visual reveal">
+          <div class="product__image-wrap">
+            <img src="assets/brand/naya-hero-reference.png" alt="Sobre NAYA sobre piedra volcánica con corriente color jamaica">
+            <span class="product__caption">Fotograma de campaña · Ritual mineral</span>
+          </div>
+          <div class="product__seal" aria-hidden="true">
+            <span>20 días</span>
+            <span>·</span>
+            <span>Un ritual</span>
+          </div>
+        </div>
+
+        <div class="product__details reveal">
+          <p class="eyebrow">Kit esencial / 20 sobres</p>
+          <h2 id="kit-title">Una pausa mineral para seguir tu día.</h2>
+          <p class="product__description">Una selección de tres perfiles frescos en sobres individuales. Llévalos contigo, mézclalos con agua fría y continúa a tu propio ritmo.</p>
+
+          <ul class="product__facts" aria-label="Contenido del kit">
+            <li><span>08</span> Jamaica profunda</li>
+            <li><span>06</span> Limón mineral</li>
+            <li><span>06</span> Mandarina + jengibre</li>
+          </ul>
+
+          <div class="product__purchase">
+            <div>
+              <span>Precio del kit</span>
+              <strong>$690 <small>MXN</small></strong>
+            </div>
+            <button class="button button--dark" type="button" data-add-to-cart>
+              Agregar a la bolsa <span aria-hidden="true">＋</span>
+            </button>
+          </div>
+          <p class="product__note">Concepto de producto. La formulación y las declaraciones nutrimentales se validarán antes de comercializarse.</p>
+        </div>
+      </section>
+
+      <section class="ritual section section--dark" id="ritual" aria-labelledby="ritual-title">
+        <div class="section-index" aria-hidden="true">02 / 05</div>
+        <div class="ritual__heading reveal">
+          <p class="eyebrow">El ritual</p>
+          <h2 id="ritual-title">Tres gestos.<br><em>Un minuto.</em></h2>
+        </div>
+        <p class="ritual__intro reveal">No necesitas detener el día. Solo darle un momento distinto.</p>
+
+        <ol class="ritual__steps">
+          <li class="reveal">
+            <span class="ritual__number">01</span>
+            <div class="ritual__glyph" aria-hidden="true">╱</div>
+            <h3>Abre</h3>
+            <p>Un sobre individual, diseñado para acompañarte donde estés.</p>
+          </li>
+          <li class="reveal">
+            <span class="ritual__number">02</span>
+            <div class="ritual__glyph ritual__glyph--circle" aria-hidden="true"></div>
+            <h3>Mezcla</h3>
+            <p>Vierte el contenido en agua fría y deja que el color aparezca.</p>
+          </li>
+          <li class="reveal">
+            <span class="ritual__number">03</span>
+            <div class="ritual__glyph" aria-hidden="true">→</div>
+            <h3>Sigue</h3>
+            <p>Continúa tu día con un ritual que cabe en cualquier rutina.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="flavors section" id="sabores" aria-labelledby="flavors-title">
+        <div class="section-index" aria-hidden="true">03 / 05</div>
+        <div class="flavors__heading reveal">
+          <p class="eyebrow">Tres perfiles</p>
+          <h2 id="flavors-title">Un sabor para<br>cada <em>ritmo.</em></h2>
+        </div>
+        <div class="flavors__grid">
+          <article class="flavor flavor--jamaica reveal">
+            <span class="flavor__count">08 sobres</span>
+            <div class="flavor__orb" aria-hidden="true"></div>
+            <div>
+              <p>01 / Profundo</p>
+              <h3>Jamaica</h3>
+              <span>Ácida · floral · intensa</span>
+            </div>
+          </article>
+          <article class="flavor flavor--limon reveal">
+            <span class="flavor__count">06 sobres</span>
+            <div class="flavor__orb" aria-hidden="true"></div>
+            <div>
+              <p>02 / Limpio</p>
+              <h3>Limón mineral</h3>
+              <span>Cítrico · claro · salino</span>
+            </div>
+          </article>
+          <article class="flavor flavor--mandarina reveal">
+            <span class="flavor__count">06 sobres</span>
+            <div class="flavor__orb" aria-hidden="true"></div>
+            <div>
+              <p>03 / Cálido</p>
+              <h3>Mandarina</h3>
+              <span>Brillante · suave · especiada</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="manifesto" id="historia" aria-labelledby="manifesto-title">
+        <div class="manifesto__texture" aria-hidden="true"></div>
+        <div class="manifesto__content reveal">
+          <p class="eyebrow">Nacida en movimiento</p>
+          <h2 id="manifesto-title">La energía del día no siempre necesita más velocidad.</h2>
+          <p>A veces necesita intención. NAYA nace entre el calor de la ciudad, la memoria de los sabores mexicanos y una forma más bella de hacer espacio para ti.</p>
+          <a class="text-link text-link--light" href="#faq">Nuestra forma de pensar <span aria-hidden="true">↘</span></a>
+        </div>
+        <div class="manifesto__mark" aria-hidden="true">N</div>
+      </section>
+
+      <section class="voices section" aria-labelledby="voices-title">
+        <div class="section-index" aria-hidden="true">04 / 05</div>
+        <div class="voices__heading reveal">
+          <p class="eyebrow">Comunidad NAYA</p>
+          <h2 id="voices-title">Días distintos.<br><em>El mismo ritual.</em></h2>
+        </div>
+        <div class="voices__grid">
+          <figure class="quote reveal">
+            <blockquote>“Se siente más como un objeto que quiero llevar conmigo que como otro producto de gimnasio.”</blockquote>
+            <figcaption><span>Mariana, 31</span><span>Ciudad de México</span></figcaption>
+          </figure>
+          <figure class="quote reveal">
+            <blockquote>“El sabor jamaica convirtió mi botella de agua de la tarde en una pausa de verdad.”</blockquote>
+            <figcaption><span>Daniel, 36</span><span>Guadalajara</span></figcaption>
+          </figure>
+          <figure class="quote reveal">
+            <blockquote>“Cabe en la bolsa, no invade el escritorio y el ritual es exactamente lo que buscaba.”</blockquote>
+            <figcaption><span>Renata, 28</span><span>Monterrey</span></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="closing" aria-labelledby="closing-title">
+        <div class="closing__copy reveal">
+          <p class="eyebrow">Kit esencial</p>
+          <h2 id="closing-title">Veinte días.<br>Tres sabores.<br><em>Tu ritmo.</em></h2>
+        </div>
+        <div class="closing__purchase reveal">
+          <span>20 sobres surtidos</span>
+          <strong>$690 <small>MXN</small></strong>
+          <button class="button button--light" type="button" data-add-to-cart>Comprar el kit <span aria-hidden="true">→</span></button>
+          <p>Envío calculado al finalizar la compra.</p>
+        </div>
+      </section>
+
+      <section class="faq section" id="faq" aria-labelledby="faq-title">
+        <div class="section-index" aria-hidden="true">05 / 05</div>
+        <div class="faq__heading reveal">
+          <p class="eyebrow">Antes de comenzar</p>
+          <h2 id="faq-title">Preguntas<br><em>esenciales.</em></h2>
+        </div>
+        <div class="faq__list reveal">
+          <article class="faq-item">
+            <h3><button type="button" aria-expanded="false" aria-controls="faq-1">¿Qué contiene el Kit Esencial?<span aria-hidden="true">＋</span></button></h3>
+            <div id="faq-1" class="faq-item__answer" hidden><p>Incluye 20 sobres individuales surtidos en tres perfiles: jamaica, limón mineral y mandarina con jengibre.</p></div>
+          </article>
+          <article class="faq-item">
+            <h3><button type="button" aria-expanded="false" aria-controls="faq-2">¿Cómo preparo NAYA?<span aria-hidden="true">＋</span></button></h3>
+            <div id="faq-2" class="faq-item__answer" hidden><p>Vierte un sobre en agua fría, mezcla hasta integrar y disfrútalo en el momento que elijas.</p></div>
+          </article>
+          <article class="faq-item">
+            <h3><button type="button" aria-expanded="false" aria-controls="faq-3">¿Realizan envíos en todo México?<span aria-hidden="true">＋</span></button></h3>
+            <div id="faq-3" class="faq-item__answer" hidden><p>La experiencia está diseñada para envío nacional. Los tiempos y costos finales se integrarán con el proveedor logístico.</p></div>
+          </article>
+          <article class="faq-item">
+            <h3><button type="button" aria-expanded="false" aria-controls="faq-4">¿La formulación ya es definitiva?<span aria-hidden="true">＋</span></button></h3>
+            <div id="faq-4" class="faq-item__answer" hidden><p>No. NAYA es actualmente un concepto de marca y producto; la formulación y su etiquetado deberán validarse antes de comercializarse.</p></div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__lead">
+        <a class="wordmark wordmark--footer" href="#inicio">NAYA</a>
+        <p>Ideas para vivir el día en equilibrio, enviadas con calma.</p>
+        <form class="newsletter" data-newsletter novalidate>
+          <label for="email">Correo electrónico</label>
+          <div>
+            <input id="email" name="email" type="email" placeholder="TU CORREO" autocomplete="email" required>
+            <button type="submit" aria-label="Suscribirme">→</button>
+          </div>
+          <p class="newsletter__status" data-newsletter-status aria-live="polite"></p>
+        </form>
+      </div>
+      <div class="footer__links">
+        <div><span>Explora</span><a href="#kit">Producto</a><a href="#ritual">Ritual</a><a href="#sabores">Sabores</a></div>
+        <div><span>Ayuda</span><a href="#faq">Preguntas</a><a href="#">Envíos</a><a href="#">Contacto</a></div>
+        <div><span>Sigue</span><a href="#">Instagram</a><a href="#">TikTok</a><a href="#">Pinterest</a></div>
+      </div>
+      <div class="footer__bottom"><span>© 2026 NAYA — Concepto</span><span>Hecho con intención en México</span><a href="#inicio">Volver arriba ↑</a></div>
+    </footer>
+
+    <div class="cart-backdrop" data-cart-backdrop hidden></div>
+    <aside class="cart" data-cart aria-hidden="true" aria-labelledby="cart-title">
+      <div class="cart__header">
+        <div><p class="eyebrow">Tu selección</p><h2 id="cart-title">Bolsa</h2></div>
+        <button type="button" data-cart-close aria-label="Cerrar bolsa">×</button>
+      </div>
+      <div class="cart__content">
+        <div class="cart__empty" data-cart-empty>
+          <p>Tu bolsa está esperando su primer ritual.</p>
+          <button class="text-link" type="button" data-cart-close>Seguir explorando →</button>
+        </div>
+        <div class="cart__item" data-cart-item hidden>
+          <img src="assets/brand/naya-hero-reference.png" alt="Kit Esencial NAYA">
+          <div><span>Kit esencial</span><strong>20 sobres surtidos</strong><p>Cantidad: <span data-cart-quantity>0</span></p></div>
+          <span>$690</span>
+        </div>
+      </div>
+      <div class="cart__footer">
+        <div><span>Total conceptual</span><strong data-cart-total>$0 MXN</strong></div>
+        <button class="button button--dark" type="button" data-checkout disabled>Continuar al pago</button>
+        <p>Checkout demostrativo. No se realizará ningún cargo.</p>
+      </div>
+    </aside>
+    <div class="sr-only" data-cart-live aria-live="polite"></div>
+
+    <button class="mobile-buy" type="button" data-add-to-cart><span>Kit esencial</span><strong>$690 · Agregar</strong></button>
+  </body>
+</html>
