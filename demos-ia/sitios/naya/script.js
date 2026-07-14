@@ -14,6 +14,11 @@ const cartItem = document.querySelector("[data-cart-item]");
 const cartLive = document.querySelector("[data-cart-live]");
 const checkoutButton = document.querySelector("[data-checkout]");
 const heroVideo = document.querySelector("[data-hero-video]");
+const siteHeader = document.querySelector("[data-header]");
+const scrollProgress = document.querySelector("[data-scroll-progress]");
+const videoToggle = document.querySelector("[data-video-toggle]");
+const videoStatus = document.querySelector("[data-video-status]");
+const videoIcon = document.querySelector("[data-video-icon]");
 
 const state = {
   quantity: 0,
@@ -145,6 +150,46 @@ function applyMotionPreference() {
 
 applyMotionPreference();
 reduceMotion.addEventListener("change", applyMotionPreference);
+
+function updateVideoControl() {
+  if (!heroVideo || !videoToggle || !videoStatus || !videoIcon) return;
+  const isPaused = heroVideo.paused;
+  videoToggle.setAttribute("aria-pressed", String(isPaused));
+  videoToggle.setAttribute("aria-label", isPaused ? "Reproducir video de campaña" : "Pausar video de campaña");
+  videoStatus.textContent = isPaused ? "Video en pausa · 00:08" : "En reproducción · 00:08";
+  videoIcon.textContent = isPaused ? "▶" : "Ⅱ";
+}
+
+videoToggle?.addEventListener("click", () => {
+  if (!heroVideo) return;
+  if (heroVideo.paused) {
+    heroVideo.play().catch(() => {});
+  } else {
+    heroVideo.pause();
+  }
+});
+
+heroVideo?.addEventListener("play", updateVideoControl);
+heroVideo?.addEventListener("pause", updateVideoControl);
+updateVideoControl();
+
+let scrollTicking = false;
+
+function updateScrollInterface() {
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = maxScroll > 0 ? Math.min(window.scrollY / maxScroll, 1) : 0;
+  scrollProgress?.style.setProperty("transform", `scaleX(${progress})`);
+  siteHeader?.classList.toggle("is-scrolled", window.scrollY > 24);
+  scrollTicking = false;
+}
+
+window.addEventListener("scroll", () => {
+  if (scrollTicking) return;
+  scrollTicking = true;
+  requestAnimationFrame(updateScrollInterface);
+}, { passive: true });
+
+updateScrollInterface();
 
 const revealItems = document.querySelectorAll(".reveal");
 

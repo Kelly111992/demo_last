@@ -11,6 +11,7 @@
   </head>
   <body>
     <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <div class="scroll-progress" aria-hidden="true"><span data-scroll-progress></span></div>
 
     <header class="site-header" data-header>
       <div class="site-header__edge site-header__edge--left" aria-label="Redes sociales">
@@ -62,6 +63,14 @@
           <a class="button button--light" href="#kit">Descubrir el kit</a>
           <a class="text-link" href="#ritual">Conocer el ritual <span aria-hidden="true">↘</span></a>
         </div>
+      </div>
+
+      <div class="hero-media" aria-label="Control del video de campaña">
+        <span class="hero-media__pulse" aria-hidden="true"></span>
+        <span class="hero-media__copy"><strong>Campaña 01</strong><small data-video-status>En reproducción · 00:08</small></span>
+        <button type="button" data-video-toggle aria-pressed="false" aria-label="Pausar video de campaña">
+          <span data-video-icon aria-hidden="true">Ⅱ</span>
+        </button>
       </div>
 
       <a class="hero-seal" href="#kit" aria-label="Descubrir el Kit Esencial">
@@ -118,6 +127,12 @@
           <p class="eyebrow">Kit esencial / 20 sobres</p>
           <h2 id="kit-title">Una pausa mineral para seguir tu día.</h2>
           <p class="product__description">Una selección de tres perfiles frescos en sobres individuales. Llévalos contigo, mézclalos con agua fría y continúa a tu propio ritmo.</p>
+
+          <div class="product__benefits" aria-label="Características del producto">
+            <span>Formato portátil</span>
+            <span>Tres perfiles</span>
+            <span>Listo en un minuto</span>
+          </div>
 
           <ul class="product__facts" aria-label="Contenido del kit">
             <li><span>08</span> Jamaica profunda</li>
