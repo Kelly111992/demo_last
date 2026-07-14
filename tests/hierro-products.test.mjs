@@ -17,6 +17,9 @@ test("static HIERRO uses the approved real catalog", async () => {
   assert.match(html, /class="product-photo"/);
   assert.doesNotMatch(html, /mini-tool/);
   assert.match(css, /\.product-card:hover\s+\.product-photo/);
+  assert.match(html, /class="category-photo"/);
+  assert.doesNotMatch(html, /category-visual drill/);
+  assert.match(css, /\.category-card:hover\s+\.category-photo/);
   assert.match(script, /item\.image/);
 
   await Promise.all([
@@ -25,4 +28,11 @@ test("static HIERRO uses the approved real catalog", async () => {
     "makita-dhp485.png",
     "bosch-gsb-18v-50.png",
   ].map((name) => access(new URL(`demos-ia/sitios/hierro/assets/products/${name}`, root))));
+
+  await Promise.all([
+    "real-drill.jpg",
+    "real-hammer.jpg",
+    "real-hard-hat.jpg",
+    "real-plumbing.jpg",
+  ].map((name) => access(new URL(`demos-ia/sitios/hierro/assets/categories/${name}`, root))));
 });
