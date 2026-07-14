@@ -21,6 +21,10 @@ test("static HIERRO uses the approved real catalog", async () => {
   assert.doesNotMatch(html, /category-visual drill/);
   assert.match(css, /\.category-card:hover\s+\.category-photo/);
   assert.match(script, /item\.image/);
+  assert.match(html, /class="manifesto-photo"/);
+  assert.match(html, /assets\/manifesto\/tool-in-action\.jpg/);
+  assert.doesNotMatch(html, /saw-blade|angle-tool/);
+  assert.match(css, /\.manifesto-photo\s*\{[^}]*object-fit:cover/);
 
   await Promise.all([
     "dewalt-dch133b.jpg",
@@ -35,4 +39,6 @@ test("static HIERRO uses the approved real catalog", async () => {
     "real-hard-hat.jpg",
     "real-plumbing.jpg",
   ].map((name) => access(new URL(`demos-ia/sitios/hierro/assets/categories/${name}`, root))));
+
+  await access(new URL("demos-ia/sitios/hierro/assets/manifesto/tool-in-action.jpg", root));
 });
