@@ -6,7 +6,7 @@
       "use": "@vercel/node"
     },
     {
-      "src": "demos-ia/**/*.{html,css,js,png,jpg,svg,ico}",
+      "src": "demos-ia/**/*.{html,css,js,png,jpg,jpeg,svg,ico,mp4,webm}",
       "use": "@vercel/static"
     }
   ],
