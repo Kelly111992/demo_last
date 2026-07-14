@@ -28,7 +28,7 @@ test("static HIERRO uses the approved real catalog", async () => {
 
   await Promise.all([
     "dewalt-dch133b.jpg",
-    "milwaukee-2953-20.webp",
+    "milwaukee-2953-20.png",
     "makita-dhp485.png",
     "bosch-gsb-18v-50.png",
   ].map((name) => access(new URL(`demos-ia/sitios/hierro/assets/products/${name}`, root))));
