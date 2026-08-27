@@ -17,7 +17,7 @@
     },
     {
       "src": "/",
-      "dest": "/demos-ia/portada/index.html"
+      "dest": "/demos-ia/index.html"
     },
     {
       "src": "/(.*)",
