@@ -1,5 +1,5 @@
 /**
- * ClaveAI Backend — Google Gemini 2.5 Flash
+ * ClaveAI Backend — OpenRouter (GPT-5.6 Luna)
  */
 
 const http  = require('http');
@@ -19,9 +19,9 @@ if (fs.existsSync(envPath)) {
 }
 
 const CONFIG = {
-  GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || '',
+  OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY || '',
   PORT:       3000,
-  MODEL:      'gemini-2.5-flash-preview-04-17',
+  MODEL:      process.env.MODEL || 'openai/gpt-5.6-luna',
   MAX_TOKENS: 800,
 };
 
@@ -55,7 +55,7 @@ const server = http.createServer((req, res) => {
       try {
         const { messages, system } = JSON.parse(body);
         console.log('\nMensaje:', messages[messages.length-1]?.content?.slice(0, 60));
-        callGemini(messages, system, res);
+        callLLM(messages, system, res);
       } catch (e) {
         console.error('Error:', e.message);
         res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -80,7 +80,7 @@ const server = http.createServer((req, res) => {
   });
 });
 
-function callGemini(messages, system, res) {
+function callLLM(messages, system, res) {
   // OpenAI-compatible endpoint: system/user/assistant igual que OpenAI
   const fullMessages = [
     { role: 'system', content: system || 'Eres un asistente útil.' },
@@ -94,17 +94,19 @@ function callGemini(messages, system, res) {
   });
 
   const options = {
-    hostname: 'generativelanguage.googleapis.com',
-    path:     `/v1beta/openai/chat/completions`,
+    hostname: 'openrouter.ai',
+    path:     `/api/v1/chat/completions`,
     method:   'POST',
     headers: {
       'Content-Type':   'application/json',
-      'Authorization':  `Bearer ${CONFIG.GOOGLE_API_KEY}`,
+      'Authorization':  `Bearer ${CONFIG.OPENROUTER_API_KEY}`,
+      'HTTP-Referer':   'http://localhost:' + CONFIG.PORT,
+      'X-Title':        'ClaveAI Demos',
       'Content-Length': Buffer.byteLength(payload),
     },
   };
 
-  console.log('Enviando a Gemini, modelo:', CONFIG.MODEL);
+  console.log('Enviando a OpenRouter, modelo:', CONFIG.MODEL);
 
   const apiReq = https.request(options, (apiRes) => {
     let data = '';
@@ -114,9 +116,9 @@ function callGemini(messages, system, res) {
       try {
         const json = JSON.parse(data);
         if (json.error) {
-          console.error('Error Gemini:', json.error.message || JSON.stringify(json.error));
+          console.error('Error OpenRouter:', json.error.message || JSON.stringify(json.error));
           res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ error: json.error.message || 'Error de Gemini' }));
+          res.end(JSON.stringify({ error: json.error.message || 'Error de OpenRouter' }));
           return;
         }
         const text = json.choices?.[0]?.message?.content || '';
@@ -142,8 +144,8 @@ function callGemini(messages, system, res) {
 }
 
 server.listen(CONFIG.PORT, () => {
-  console.log('\nClaveAI Backend — Google Gemini 2.5 Flash');
+  console.log('\nClaveAI Backend — OpenRouter (GPT-5.6 Luna)');
   console.log('URL:    http://localhost:' + CONFIG.PORT);
   console.log('Modelo: ' + CONFIG.MODEL);
-  console.log('Key:    ' + (CONFIG.GOOGLE_API_KEY ? '✓ configurada' : '✗ FALTA GOOGLE_API_KEY') + '\n');
+  console.log('Key:    ' + (CONFIG.OPENROUTER_API_KEY ? '✓ configurada' : '✗ FALTA OPENROUTER_API_KEY') + '\n');
 });

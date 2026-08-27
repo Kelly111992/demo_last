@@ -1,33 +1,23 @@
 /**
  * ClaveAI — Vercel Serverless Function
- * Proxy a un LLM vía endpoint OpenAI-compatible.
- * Proveedor por prioridad: Groq (si GROQ_API_KEY) → Gemini (si GOOGLE_API_KEY).
- * Así el cambio a Groq es sin downtime: en cuanto exista GROQ_API_KEY, se usa.
+ * Proxy a un LLM vía OpenRouter (endpoint OpenAI-compatible).
+ * Modelo por defecto: GPT-5.6 Luna (openai/gpt-5.6-luna).
+ *
+ * Configura OPENROUTER_API_KEY en Vercel (y en demos-ia/.env para local).
  */
 
 const https = require('https');
 
-const GROQ_KEY   = (process.env.GROQ_API_KEY || '').trim();
-const GOOGLE_KEY = (process.env.GOOGLE_API_KEY || '').trim();
+const OPENROUTER_KEY = (process.env.OPENROUTER_API_KEY || '').trim();
 
-// Selección de proveedor
-const PROVIDER = GROQ_KEY
-  ? {
-      name:     'groq',
-      key:      GROQ_KEY,
-      hostname: 'api.groq.com',
-      path:     '/openai/v1/chat/completions',
-      model:    process.env.MODEL || 'llama-3.3-70b-versatile',
-      extra:    {},
-    }
-  : {
-      name:     'gemini',
-      key:      GOOGLE_KEY,
-      hostname: 'generativelanguage.googleapis.com',
-      path:     '/v1beta/openai/chat/completions',
-      model:    process.env.MODEL || 'gemini-2.5-flash',
-      extra:    { reasoning_effort: 'none' },
-    };
+const PROVIDER = {
+  name:     'openrouter',
+  key:      OPENROUTER_KEY,
+  hostname: 'openrouter.ai',
+  path:     '/api/v1/chat/completions',
+  model:    process.env.MODEL || 'openai/gpt-5.6-luna',
+  extra:    {},
+};
 
 const MAX_TOKENS = 2048;
 
@@ -40,7 +30,7 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST')    { res.status(405).json({ error: 'Método no permitido' }); return; }
 
   if (!PROVIDER.key) {
-    res.status(500).json({ error: 'Falta API key: configura GROQ_API_KEY (o GOOGLE_API_KEY) en Vercel' });
+    res.status(500).json({ error: 'Falta API key: configura OPENROUTER_API_KEY en Vercel' });
     return;
   }
 
@@ -71,6 +61,8 @@ module.exports = async function handler(req, res) {
       headers: {
         'Content-Type':   'application/json',
         'Authorization':  `Bearer ${PROVIDER.key}`,
+        'HTTP-Referer':   'https://demos-claveai.vercel.app',
+        'X-Title':        'ClaveAI Demos',
         'Content-Length': Buffer.byteLength(payload),
       },
     };
