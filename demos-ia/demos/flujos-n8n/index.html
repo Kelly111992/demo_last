@@ -234,7 +234,7 @@ h1 .g{background:linear-gradient(100deg,var(--accent),var(--accent2));-webkit-ba
   <div class="cards">
     <div class="fcard"><div class="ic">🧠</div><h3>Entiende, no solo responde</h3><p>La IA lee el mensaje en lenguaje natural y extrae nombre, servicio y fecha, aunque el cliente escriba informal.</p></div>
     <div class="fcard"><div class="ic">⚡</div><h3>Actúa en tus apps</h3><p>Crea el evento en Calendar, guarda el lead en Sheets/CRM y responde al cliente — todo en segundos.</p></div>
-    <div class="fcard"><div class="ic">🔔</div><h3>Mantiene a tu equipo al día</h3><p>Cada cita, pago o reseña llega a tu equipo por correo o WhatsApp interno. Nadie se entera tarde, nada se pierde.</p></div>
+    <div class="fcard"><div class="ic">🔔</div><h3>Mantiene a tu equipo al día</h3><p>Cada cita, pago o factura llega a tu equipo por correo o WhatsApp interno. Nadie se entera tarde, nada se pierde.</p></div>
   </div>
 </section>
 
@@ -248,7 +248,7 @@ h1 .g{background:linear-gradient(100deg,var(--accent),var(--accent2));-webkit-ba
     <div class="logo-chip"><span>📅</span>Calendar</div>
     <div class="logo-chip"><span>📧</span>Gmail</div>
     <div class="logo-chip"><span>💳</span>Stripe</div>
-    <div class="logo-chip"><span>🧠</span>IA · Gemini</div>
+    <div class="logo-chip"><span>🧠</span>IA · Luna</div>
     <div class="logo-chip"><span>📸</span>Instagram</div>
     <div class="logo-chip"><span>🌐</span>APIs / Webhooks</div>
   </div>
@@ -275,7 +275,8 @@ const WA='<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:#04310f"><
 const KIND={
   wa:{bg:'var(--wa)',av:WA,tint:'rgba(37,211,102,0.05)',tag:'#25d366'},
   clock:{bg:'rgba(251,191,36,.9)',av:'⏰',tint:'rgba(251,191,36,0.05)',tag:'#fbbf24'},
-  check:{bg:'var(--green)',av:'✅',tint:'rgba(74,222,128,0.05)',tag:'#4ade80'}
+  check:{bg:'var(--green)',av:'✅',tint:'rgba(74,222,128,0.05)',tag:'#4ade80'},
+  mail:{bg:'#ea4335',av:'📧',tint:'rgba(234,67,53,0.05)',tag:'#ea4335'}
 };
 
 const FLOWS=[
@@ -285,7 +286,7 @@ const FLOWS=[
   trigger:{kind:'wa',from:'+52 33 1847 2210 · WhatsApp Business',text:'Hola! Me das cita para corte y barba el viernes a las 5 de la tarde? Soy Juan Pérez 🙌',tag:'Mensaje entrante'},
   nodes:[
     {ic:'💬',bg:'rgba(37,211,102,.15)',name:'WhatsApp',op:'Trigger · mensaje',badge:'b-trigger',bt:'Trigger'},
-    {ic:'🧠',bg:'rgba(192,132,252,.15)',name:'IA · Gemini',op:'Extraer datos',badge:'b-ai',bt:'IA'},
+    {ic:'🧠',bg:'rgba(192,132,252,.15)',name:'IA · Luna',op:'Extraer datos',badge:'b-ai',bt:'IA'},
     {ic:'📅',bg:'rgba(96,165,250,.15)',name:'Google Calendar',op:'Crear evento',badge:'b-action',bt:'Acción'},
     {ic:'📊',bg:'rgba(74,222,128,.15)',name:'Google Sheets',op:'Guardar lead',badge:'b-action',bt:'Acción'},
     {ic:'💬',bg:'rgba(37,211,102,.15)',name:'WhatsApp',op:'Responder',badge:'b-action',bt:'Acción'},
@@ -293,7 +294,7 @@ const FLOWS=[
   ],
   steps:[
     {tag:'[WhatsApp]',color:'#25d366',log:'Mensaje de <b>+52 33 1847 2210</b> recibido',out:'from: <b>+52 33 1847 2210</b><br>"Hola! Me das cita…"'},
-    {tag:'[IA·Gemini]',color:'#c084fc',log:'Intención: <b>agendar cita</b> · confianza 0.97',out:'👤 <b>Juan Pérez</b><br>✂ Corte + barba<br>📆 Vie 14 mar · 17:00'},
+    {tag:'[IA·Luna]',color:'#c084fc',log:'Intención: <b>agendar cita</b> · confianza 0.97',out:'👤 <b>Juan Pérez</b><br>✂ Corte + barba<br>📆 Vie 14 mar · 17:00'},
     {tag:'[Calendar]',color:'#60a5fa',log:'Evento creado: <b>Corte + barba</b> · Vie 14 mar 17:00',out:'evt_1128 ✓<br>Vie 14 mar · 17:00'},
     {tag:'[Sheets]',color:'#4ade80',log:'Fila <b>#128</b> agregada en "Citas · Marzo"',out:'hoja: Citas · Marzo<br>fila <b>#128</b> ✓'},
     {tag:'[WhatsApp]',color:'#25d366',log:'Confirmación enviada a <b>Juan Pérez</b>',out:'status: <b>sent</b> ✓<br>to: +52 33 1847 2210'},
@@ -314,7 +315,7 @@ const FLOWS=[
     {ic:'⏰',bg:'rgba(251,191,36,.15)',name:'Programación',op:'Diario · 9:00 am',badge:'b-trigger',bt:'Trigger'},
     {ic:'📊',bg:'rgba(74,222,128,.15)',name:'Google Sheets',op:'Leer facturas',badge:'b-action',bt:'Acción'},
     {ic:'🔎',bg:'rgba(96,165,250,.15)',name:'Filtro',op:'Solo vencidas',badge:'b-logic',bt:'Lógica'},
-    {ic:'🧠',bg:'rgba(192,132,252,.15)',name:'IA · Gemini',op:'Redacta mensaje',badge:'b-ai',bt:'IA'},
+    {ic:'🧠',bg:'rgba(192,132,252,.15)',name:'IA · Luna',op:'Redacta mensaje',badge:'b-ai',bt:'IA'},
     {ic:'💬',bg:'rgba(37,211,102,.15)',name:'WhatsApp',op:'Recordatorio',badge:'b-action',bt:'Acción'},
     {ic:'📊',bg:'rgba(74,222,128,.15)',name:'Google Sheets',op:'Marca "recordado"',badge:'b-action',bt:'Acción'}
   ],
@@ -322,7 +323,7 @@ const FLOWS=[
     {tag:'[Cron]',color:'#fbbf24',log:'Disparo programado · <b>9:00 am</b>',out:'trigger: <b>diario</b><br>09:00 am ✓'},
     {tag:'[Sheets]',color:'#4ade80',log:'Leídas <b>48</b> filas de "Cuentas por cobrar"',out:'48 facturas leídas'},
     {tag:'[Filtro]',color:'#60a5fa',log:'<b>3</b> facturas vencidas encontradas',out:'vencidas: <b>3</b><br>$28,900 total'},
-    {tag:'[IA·Gemini]',color:'#c084fc',log:'Redacta recordatorio cordial personalizado',out:'tono: cordial<br>3 mensajes listos'},
+    {tag:'[IA·Luna]',color:'#c084fc',log:'Redacta recordatorio cordial personalizado',out:'tono: cordial<br>3 mensajes listos'},
     {tag:'[WhatsApp]',color:'#25d366',log:'Recordatorio enviado a <b>Comercial López</b> (+2)',out:'enviados: <b>3</b> ✓'},
     {tag:'[Sheets]',color:'#4ade80',log:'3 filas marcadas como <b>"recordado hoy"</b>',out:'actualizadas: 3 ✓'}
   ],
@@ -333,29 +334,84 @@ const FLOWS=[
   ]
 },
 {
-  sel:'⭐ Reseñas Google (reputación)',
-  name:'Reseñas de Google post-servicio',
-  trigger:{kind:'check',from:'Evento del sistema · servicio completado',text:'Se cerró el servicio "Corte de Juan Pérez". Dispara el seguimiento para pedir una reseña.',tag:'Disparador'},
+  sel:'📄 Facturas por correo → contabilidad',
+  name:'Captura de facturas recibidas por correo',
+  trigger:{kind:'mail',from:'facturacion@papeleriauribe.mx · Gmail',text:'Nuevo correo con la factura A-4471 adjunta (PDF + XML). Asunto: "Factura marzo · AutoPartes del Centro".',tag:'Correo entrante'},
   nodes:[
-    {ic:'✅',bg:'rgba(74,222,128,.15)',name:'Servicio cerrado',op:'Trigger · evento',badge:'b-trigger',bt:'Trigger'},
-    {ic:'⏳',bg:'rgba(251,191,36,.15)',name:'Espera 2 h',op:'Delay',badge:'b-logic',bt:'Espera'},
-    {ic:'💬',bg:'rgba(37,211,102,.15)',name:'WhatsApp',op:'Pide opinión',badge:'b-action',bt:'Acción'},
-    {ic:'🧠',bg:'rgba(192,132,252,.15)',name:'IA · Gemini',op:'Analiza respuesta',badge:'b-ai',bt:'IA'},
-    {ic:'🔎',bg:'rgba(96,165,250,.15)',name:'Filtro',op:'¿Contento?',badge:'b-logic',bt:'Lógica'},
-    {ic:'💬',bg:'rgba(37,211,102,.15)',name:'WhatsApp',op:'Envía link Google',badge:'b-action',bt:'Acción'}
+    {ic:'📧',bg:'rgba(234,67,53,.15)',name:'Gmail',op:'Trigger · factura',badge:'b-trigger',bt:'Trigger'},
+    {ic:'🧠',bg:'rgba(192,132,252,.15)',name:'IA · Luna',op:'Lee PDF y XML',badge:'b-ai',bt:'IA'},
+    {ic:'🔎',bg:'rgba(96,165,250,.15)',name:'Validación',op:'RFC y totales',badge:'b-logic',bt:'Lógica'},
+    {ic:'📊',bg:'rgba(74,222,128,.15)',name:'Google Sheets',op:'Registra gasto',badge:'b-action',bt:'Acción'},
+    {ic:'🗂️',bg:'rgba(251,191,36,.15)',name:'Google Drive',op:'Archiva por proveedor',badge:'b-action',bt:'Acción'},
+    {ic:'📧',bg:'rgba(234,67,53,.15)',name:'Gmail',op:'Avisa a contabilidad',badge:'b-action',bt:'Acción'}
   ],
   steps:[
-    {tag:'[Evento]',color:'#4ade80',log:'Servicio <b>"Corte de Juan Pérez"</b> cerrado',out:'cliente: Juan Pérez<br>servicio ✓'},
-    {tag:'[Espera]',color:'#fbbf24',log:'Espera <b>2 h</b> para no ser invasivo',out:'delay: 2h ✓'},
-    {tag:'[WhatsApp]',color:'#25d366',log:'Mensaje de seguimiento enviado a <b>Juan</b>',out:'¿Qué tal tu visita?<br>enviado ✓'},
-    {tag:'[IA·Gemini]',color:'#c084fc',log:'Respuesta analizada · sentimiento <b>positivo 0.94</b>',out:'😊 positivo<br>score 0.94'},
-    {tag:'[Filtro]',color:'#60a5fa',log:'Cliente <b>contento</b> → pedir reseña pública',out:'rama: <b>feliz</b> ✓'},
-    {tag:'[WhatsApp]',color:'#25d366',log:'Link de <b>Google Reviews</b> enviado a Juan',out:'link enviado ✓<br>g.page/…'}
+    {tag:'[Gmail]',color:'#ea4335',log:'Correo de <b>Papelería Uribe</b> con 2 adjuntos',out:'de: facturacion@…<br>adjuntos: <b>PDF + XML</b>'},
+    {tag:'[IA·Luna]',color:'#c084fc',log:'CFDI leído · folio <b>A-4471</b> por <b>$18,560.00</b>',out:'🏢 Papelería Uribe<br>💵 $18,560.00<br>📅 Vence 12 abr'},
+    {tag:'[Validación]',color:'#60a5fa',log:'RFC válido · subtotal + IVA <b>cuadran</b> · sin duplicados',out:'RFC ✓ · totales ✓<br>no duplicada ✓'},
+    {tag:'[Sheets]',color:'#4ade80',log:'Fila <b>#212</b> agregada en "Gastos · Marzo"',out:'hoja: Gastos · Marzo<br>fila <b>#212</b> ✓'},
+    {tag:'[Drive]',color:'#fbbf24',log:'PDF y XML archivados en <b>/Facturas/2026-03/</b>',out:'2 archivos ✓<br>Papelería Uribe'},
+    {tag:'[Gmail]',color:'#ea4335',log:'Resumen enviado a <b>contabilidad@autopartes.mx</b>',out:'to: contabilidad@…<br>status: <b>enviado</b> ✓'}
   ],
   results:[
-    {icon:'💬',bg:'rgba(37,211,102,.15)',title:'Seguimiento enviado (2h después)',body:'<div class="wa-bubble">¡Hola Juan! 👋 Gracias por visitarnos hoy en <b>Studio Glam</b>. ¿Qué tal quedó tu corte? Tu opinión nos ayuda muchísimo 🙌</div>'},
-    {icon:'🧠',bg:'rgba(192,132,252,.15)',title:'IA analizó la respuesta',body:'Cliente respondió: <i>"Quedó excelente, muy recomendable!"</i><div class="kvs"><span class="kv">Sentimiento: <b>Positivo</b></span><span class="kv">Score: <b>0.94</b></span><span class="kv">Acción: <b>pedir reseña</b></span></div>'},
-    {icon:'⭐',bg:'rgba(251,191,36,.15)',title:'Link de reseña Google enviado',body:'<div class="wa-bubble">¡Nos encanta, Juan! 🌟 ¿Nos regalas 30 segundos para dejar tu reseña? Ayuda a que más gente nos conozca 👉 g.page/StudioGlam/review</div><div style="margin-top:7px;font-size:12px;color:var(--yellow)">⭐ Clientes felices → más reseñas de 5★, en automático</div>'}
+    {icon:'🧠',bg:'rgba(192,132,252,.15)',title:'IA leyó la factura · sin capturar nada a mano',body:'<div class="kvs"><span class="kv">Proveedor: <b>Papelería Uribe SA de CV</b></span><span class="kv">RFC: <b>PUR980413K21</b></span><span class="kv">Folio: <b>A-4471</b></span><span class="kv">Subtotal: <b>$16,000.00</b></span><span class="kv">IVA 16%: <b>$2,560.00</b></span><span class="kv">Total: <b>$18,560.00</b></span><span class="kv">Vence: <b>12 abr</b></span></div>'},
+    {icon:'🔎',bg:'rgba(96,165,250,.15)',title:'Validada antes de registrarse',body:'<div class="kvs"><span class="kv">RFC en lista de proveedores <b>✓</b></span><span class="kv">Subtotal + IVA = Total <b>✓</b></span><span class="kv">Folio no duplicado <b>✓</b></span></div><div style="margin-top:7px;font-size:12px;color:var(--blue)">Si algo no cuadra, el flujo se detiene y avisa en vez de registrar un error.</div>'},
+    {icon:'📊',bg:'rgba(74,222,128,.15)',title:'Gasto registrado · Gastos · Marzo',body:'<div class="kvs"><span class="kv">Fila <b>#212</b></span><span class="kv">Papelería Uribe</span><span class="kv">$18,560.00</span><span class="kv">Cuenta: <b>Papelería y oficina</b></span><span class="kv">Estatus: <b>Por pagar</b></span></div>'},
+    {icon:'🗂️',bg:'rgba(251,191,36,.15)',title:'Archivada y equipo avisado',body:'<div class="tg-bubble" style="background:rgba(234,67,53,.08);border-color:rgba(234,67,53,.25)">📧 <b>Factura nueva capturada</b><br>Papelería Uribe · A-4471 · $18,560.00 · vence 12 abr<br><span style="color:var(--muted);font-size:12px">PDF y XML en Drive/Facturas/2026-03/</span></div><div style="margin-top:7px;font-size:12px;color:var(--green)">✓ De la bandeja al registro contable sin teclear una cifra</div>'}
+  ]
+},
+{
+  sel:'📥 Triaje de bandeja compartida',
+  name:'Triaje y asignación de correos entrantes',
+  trigger:{kind:'mail',from:'info@autopartesdelcentro.mx · Bandeja compartida',text:'"Buenas tardes, necesito cotización de 40 balatas para flotilla. ¿Manejan factura? Urge para el viernes." — Ferretería Uribe',tag:'Correo entrante'},
+  nodes:[
+    {ic:'📧',bg:'rgba(234,67,53,.15)',name:'Gmail',op:'Trigger · info@',badge:'b-trigger',bt:'Trigger'},
+    {ic:'🧠',bg:'rgba(192,132,252,.15)',name:'IA · Luna',op:'Clasifica y prioriza',badge:'b-ai',bt:'IA'},
+    {ic:'🔀',bg:'rgba(96,165,250,.15)',name:'Router',op:'Ventas / soporte / admin',badge:'b-logic',bt:'Lógica'},
+    {ic:'🗂️',bg:'rgba(255,122,89,.15)',name:'HubSpot CRM',op:'Crea y asigna ticket',badge:'b-action',bt:'Acción'},
+    {ic:'📧',bg:'rgba(234,67,53,.15)',name:'Gmail',op:'Acuse al cliente',badge:'b-action',bt:'Acción'},
+    {ic:'💬',bg:'rgba(37,211,102,.15)',name:'WhatsApp',op:'Avisa al responsable',badge:'b-action',bt:'Acción'}
+  ],
+  steps:[
+    {tag:'[Gmail]',color:'#ea4335',log:'Correo nuevo en <b>info@</b> · 7 sin leer en cola',out:'de: Ferretería Uribe<br>asunto: "Cotización flotilla"'},
+    {tag:'[IA·Luna]',color:'#c084fc',log:'Tipo: <b>cotización</b> · urgencia <b>alta</b> · confianza 0.96',out:'🏷️ Cotización<br>🔥 Alta · 0.96'},
+    {tag:'[Router]',color:'#60a5fa',log:'Rama <b>ventas</b> → reparte por carga de trabajo',out:'rama: <b>ventas</b><br>menor carga: Mayelín'},
+    {tag:'[HubSpot]',color:'#ff7a59',log:'Ticket <b>#4417</b> creado y asignado a <b>Mayelín A.</b>',out:'#4417 ✓<br>SLA: 4 h'},
+    {tag:'[Gmail]',color:'#ea4335',log:'Acuse automático enviado al cliente',out:'status: <b>enviado</b> ✓<br>ref: #4417'},
+    {tag:'[WhatsApp]',color:'#25d366',log:'Aviso interno a <b>Mayelín</b> con el resumen',out:'notificada ✓<br>+52 33 …'}
+  ],
+  results:[
+    {icon:'🧠',bg:'rgba(192,132,252,.15)',title:'Correo clasificado por la IA',body:'<div class="kvs"><span class="kv">Tipo: <b>Cotización</b></span><span class="kv">Urgencia: <b>Alta</b></span><span class="kv">Confianza: <b>0.96</b></span><span class="kv">Requiere factura: <b>Sí</b></span><span class="kv">Fecha límite: <b>viernes</b></span></div>'},
+    {icon:'🗂️',bg:'rgba(255,122,89,.15)',title:'Ticket creado y asignado',body:'<b>#4417</b> — Cotización 40 balatas (flotilla)<div class="kvs"><span class="kv">Dueño: <b>Mayelín A.</b></span><span class="kv">Cola: <b>Ventas</b></span><span class="kv">SLA: <b>4 h</b></span></div><div style="margin-top:7px;font-size:12px;color:var(--muted)">Se asignó a quien tenía menos tickets abiertos.</div>'},
+    {icon:'📧',bg:'rgba(234,67,53,.15)',title:'Acuse enviado al cliente',body:'<div class="tg-bubble" style="background:rgba(234,67,53,.08);border-color:rgba(234,67,53,.25)">Gracias por escribirnos. Recibimos su solicitud de <b>cotización</b> y la estamos preparando. Su folio es <b>#4417</b> y le respondemos hoy mismo.<br><span style="color:var(--muted);font-size:12px">AutoPartes del Centro · Ventas</span></div>'},
+    {icon:'💬',bg:'rgba(37,211,102,.15)',title:'Responsable notificada',body:'<div class="wa-bubble">🔥 <b>Ticket #4417 · urgencia alta</b><br>Ferretería Uribe pide cotización de 40 balatas para flotilla, con factura. La necesitan el <b>viernes</b>. SLA 4 h ⏱️</div><div style="margin-top:7px;font-size:12px;color:var(--green)">✓ Ningún correo se queda sin dueño en la bandeja compartida</div>'}
+  ]
+},
+{
+  sel:'📊 Reporte ejecutivo semanal',
+  name:'Reporte ejecutivo de los lunes',
+  trigger:{kind:'clock',from:'Programación · lunes 8:00 am',text:'Arma el reporte de la semana: lee el pipeline del CRM y las ventas de la hoja, redacta el resumen y mándalo a dirección.',tag:'Se ejecuta solo'},
+  nodes:[
+    {ic:'⏰',bg:'rgba(251,191,36,.15)',name:'Programación',op:'Lunes · 8:00 am',badge:'b-trigger',bt:'Trigger'},
+    {ic:'🗂️',bg:'rgba(255,122,89,.15)',name:'HubSpot CRM',op:'Lee pipeline',badge:'b-action',bt:'Acción'},
+    {ic:'📊',bg:'rgba(74,222,128,.15)',name:'Google Sheets',op:'Lee ventas',badge:'b-action',bt:'Acción'},
+    {ic:'🧠',bg:'rgba(192,132,252,.15)',name:'IA · Luna',op:'Redacta y detecta alertas',badge:'b-ai',bt:'IA'},
+    {ic:'📧',bg:'rgba(234,67,53,.15)',name:'Gmail',op:'Envía a dirección',badge:'b-action',bt:'Acción'},
+    {ic:'💬',bg:'rgba(37,211,102,.15)',name:'WhatsApp',op:'Resumen al equipo',badge:'b-action',bt:'Acción'}
+  ],
+  steps:[
+    {tag:'[Cron]',color:'#fbbf24',log:'Disparo programado · <b>lunes 8:00 am</b>',out:'trigger: <b>semanal</b><br>lun 08:00 ✓'},
+    {tag:'[HubSpot]',color:'#ff7a59',log:'<b>34</b> tratos leídos del pipeline',out:'34 tratos<br>$1.28 M en cartera'},
+    {tag:'[Sheets]',color:'#4ade80',log:'Ventas de la semana: <b>$412,800</b> en 61 tickets',out:'$412,800<br>61 tickets'},
+    {tag:'[IA·Luna]',color:'#c084fc',log:'Resumen redactado · <b>3 alertas</b> detectadas',out:'+14% vs semana previa<br>⚠ 3 alertas'},
+    {tag:'[Gmail]',color:'#ea4335',log:'Reporte enviado a <b>dirección@autopartes.mx</b>',out:'status: <b>enviado</b> ✓<br>1 adjunto'},
+    {tag:'[WhatsApp]',color:'#25d366',log:'Resumen corto enviado al grupo de gerentes',out:'grupo: Gerencia<br>enviado ✓'}
+  ],
+  results:[
+    {icon:'📊',bg:'rgba(74,222,128,.15)',title:'Números de la semana',body:'<div class="kvs"><span class="kv">Ventas: <b>$412,800</b></span><span class="kv">vs semana previa: <b style="color:var(--green)">+14%</b></span><span class="kv">Tickets: <b>61</b></span><span class="kv">Ticket promedio: <b>$6,767</b></span><span class="kv">Pipeline: <b>$1.28 M</b></span></div>'},
+    {icon:'🧠',bg:'rgba(192,132,252,.15)',title:'La IA no solo resume: detecta lo que hay que atender',body:'<div class="kvs"><span class="kv">⚠ <b>3 tratos</b> estancados +15 días</span><span class="kv">⚠ Balatas: <b>rotación baja</b></span><span class="kv">⚠ <b>2 clientes</b> sin recompra en 60 días</span></div><div style="margin-top:7px;font-size:12px;color:var(--muted)">Las alertas salen de comparar contra las semanas anteriores.</div>'},
+    {icon:'📧',bg:'rgba(234,67,53,.15)',title:'Reporte en la bandeja de dirección',body:'<div class="tg-bubble" style="background:rgba(234,67,53,.08);border-color:rgba(234,67,53,.25)">📧 <b>Reporte semanal · 9–15 de marzo</b><br>Cerramos en <b>$412,800</b>, 14% arriba de la semana pasada, con 61 tickets. El pipeline trae $1.28 M, aunque hay 3 tratos detenidos más de 15 días que conviene empujar…<br><span style="color:var(--muted);font-size:12px">Para: dirección@autopartes.mx · 1 adjunto</span></div>'},
+    {icon:'💬',bg:'rgba(37,211,102,.15)',title:'Versión corta para el equipo',body:'<div class="wa-bubble">📊 <b>Semana 9–15 mar</b><br>Ventas <b>$412,800</b> (+14%) · 61 tickets<br>⚠ 3 tratos estancados +15 días<br>El reporte completo ya está en el correo 📬</div><div style="margin-top:7px;font-size:12px;color:var(--green)">✓ Cada lunes, sin que nadie arme la hoja a mano</div>'}
   ]
 }
 ];
