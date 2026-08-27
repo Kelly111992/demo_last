@@ -72,65 +72,82 @@ h1 .g{background:linear-gradient(100deg,var(--accent),#6ee7b7);-webkit-backgroun
 .code{margin:0;padding:22px;font-family:var(--font-mono);font-size:12.5px;line-height:1.7;color:#cfe;overflow-x:auto;background:#04120c;min-height:440px}
 .code .k{color:#f0abfc}.code .s{color:#6ee7b7}.code .c{color:#6f9585}.code .f{color:#93c5fd}.code .n{color:#fbbf24}
 
-/* ── Cotizador ── */
-.cotz{display:grid;grid-template-columns:1fr 1fr;gap:26px}
-@media(max-width:760px){.cotz{grid-template-columns:1fr}}
-.ctrl{margin-bottom:20px}
-.ctrl-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:8px}
-.ctrl-top b{color:var(--accent);font-family:var(--font-mono)}
-.ctrl input[type=range]{width:100%;accent-color:var(--accent);height:6px}
-.result{background:linear-gradient(135deg,rgba(52,211,153,.1),rgba(16,185,129,.04));border:1px solid var(--border2);border-radius:14px;padding:22px}
-.res-row{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-bottom:1px solid var(--border)}
-.res-row:last-child{border-bottom:none}
-.res-row .l{font-size:13px;color:var(--sub)}
-.res-row .v{font-family:var(--font-display);font-weight:800;font-size:26px}
-.res-hi{background:var(--surface3);border-radius:12px;padding:16px;margin-top:14px;text-align:center}
-.res-hi .v{font-family:var(--font-display);font-weight:800;font-size:38px;color:var(--accent);line-height:1}
-.res-hi .l{font-size:12px;color:var(--sub);margin-top:6px}
+/* ── KPIs (tarjetas de cifra) ── */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+@media(max-width:860px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--surface2);border:1px solid var(--border);border-radius:13px;padding:15px 16px}
+.kpi .k-lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:9px}
+.kpi .k-val{font-family:var(--font-display);font-weight:800;font-size:27px;line-height:1;letter-spacing:-.5px}
+.kpi .k-sub{font-size:11.5px;color:var(--muted);margin-top:7px}
+.kpi.is-warn{border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.05)}
+.kpi.is-warn .k-val{color:var(--yellow)}
+.kpi.is-crit{border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.05)}
+.kpi.is-crit .k-val{color:var(--red)}
+.kpi.is-good .k-val{color:var(--accent)}
 
 /* ── Inventario ── */
 .inv-alert{display:flex;align-items:center;gap:10px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:var(--red);border-radius:12px;padding:12px 16px;font-size:14px;font-weight:600;margin-bottom:16px}
 .inv-alert.ok{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.3);color:var(--accent)}
-.inv-table{width:100%;border-collapse:collapse}
-.inv-table th{text-align:left;font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--border)}
-.inv-table td{padding:11px 10px;border-bottom:1px solid var(--border);font-size:14px}
-.inv-table tr.low td{background:rgba(248,113,113,.06)}
-.inv-bar{height:7px;border-radius:4px;background:var(--surface3);overflow:hidden;width:120px}
-.inv-bar i{display:block;height:100%;border-radius:4px;background:var(--accent);transition:width .25s}
+.inv-wrap{border:1px solid var(--border);border-radius:13px;overflow:hidden;background:var(--surface2)}
+.inv-scroll{overflow-x:auto}
+.inv-table{width:100%;border-collapse:collapse;min-width:660px}
+.inv-table th{text-align:left;font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:11px 14px;background:var(--surface3);border-bottom:1px solid var(--border2);white-space:nowrap}
+.inv-table th.num,.inv-table td.num{text-align:right;font-variant-numeric:tabular-nums}
+.inv-table td{padding:13px 14px;border-bottom:1px solid var(--border);font-size:14px;vertical-align:middle}
+.inv-table tbody tr:last-child td{border-bottom:none}
+.inv-table tbody tr{transition:background .12s}
+.inv-table tbody tr:hover td{background:rgba(52,211,153,.04)}
+.inv-prod{display:flex;flex-direction:column;gap:3px}
+.inv-prod b{font-weight:600}
+.inv-prod small{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);letter-spacing:.4px}
+.inv-bar{height:6px;border-radius:3px;background:var(--surface3);overflow:hidden;width:110px;position:relative}
+.inv-bar i{display:block;height:100%;border-radius:3px;background:var(--accent);transition:width .3s cubic-bezier(.3,.8,.4,1)}
 .inv-bar i.warn{background:var(--yellow)}.inv-bar i.crit{background:var(--red)}
-.st-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
+.inv-bar .min{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--sub);opacity:.5}
+.st-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap}
 .st-ok{background:rgba(52,211,153,.14);color:var(--accent)}
 .st-low{background:rgba(251,191,36,.14);color:var(--yellow)}
 .st-out{background:rgba(248,113,113,.14);color:var(--red)}
-.qty{display:flex;align-items:center;gap:8px}
-.qbtn{width:26px;height:26px;border-radius:7px;border:1px solid var(--border2);background:var(--surface3);color:var(--text);font-size:15px;cursor:pointer;transition:.12s}
-.qbtn:hover{border-color:var(--accent);color:var(--accent)}
+.qty{display:flex;align-items:center;gap:7px;justify-content:flex-end}
+.qbtn{width:27px;height:27px;border-radius:8px;border:1px solid var(--border2);background:var(--surface3);color:var(--text);font-size:15px;cursor:pointer;transition:.12s;line-height:1}
+.qbtn:hover{border-color:var(--accent);color:var(--accent);background:rgba(52,211,153,.1)}
 .qn{min-width:26px;text-align:center;font-family:var(--font-mono);font-weight:600}
 
-/* ── Agenda ── */
-.agenda{display:grid;grid-template-columns:1fr 1.2fr;gap:24px}
-@media(max-width:760px){.agenda{grid-template-columns:1fr}}
-.ag-field{margin-bottom:16px}
-.ag-field label{font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:9px}
-.ag-sel{width:100%;background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:11px 13px;font-family:var(--font-body);font-size:14px;cursor:pointer}
-.days{display:flex;gap:7px;flex-wrap:wrap}
-.day{background:var(--surface2);border:1px solid var(--border2);color:var(--sub);border-radius:10px;padding:9px 13px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;text-align:center}
-.day.on{border-color:var(--accent);background:rgba(52,211,153,.12);color:var(--text)}
-.day small{display:block;font-size:10px;color:var(--muted);font-weight:500}
-.slots-lbl{font-family:var(--font-mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
-.slots{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
-@media(max-width:520px){.slots{grid-template-columns:repeat(3,1fr)}}
-.slot{background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:12px 6px;font-size:14px;font-weight:600;cursor:pointer;transition:.15s;text-align:center}
-.slot:hover:not(.taken){border-color:var(--accent);background:rgba(52,211,153,.1)}
-.slot.taken{opacity:.32;cursor:not-allowed;text-decoration:line-through}
-.slot.sel{background:var(--accent);color:#04231a;border-color:var(--accent)}
-.ag-conf{margin-top:18px;background:linear-gradient(135deg,rgba(52,211,153,.12),rgba(16,185,129,.04));border:1px solid var(--border2);border-radius:14px;padding:18px;display:none}
-.ag-conf.show{display:block;animation:pop .4s cubic-bezier(.2,.7,.3,1.3)}
-@keyframes pop{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
-.ag-conf .h{font-family:var(--font-display);font-weight:700;font-size:17px;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:8px}
-.ag-conf .kv{display:flex;flex-wrap:wrap;gap:7px}
-.ag-conf .kv span{font-family:var(--font-mono);font-size:11px;background:var(--surface3);border:1px solid var(--border2);padding:4px 9px;border-radius:6px;color:var(--sub)}
-.ag-conf .kv b{color:var(--accent)}
+/* ── Mini-CRM (pipeline) ── */
+.crm-cols{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:900px){.crm-cols{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.crm-cols{grid-template-columns:1fr}}
+.crm-col{background:var(--surface2);border:1px solid var(--border);border-radius:13px;padding:12px;min-height:210px}
+.crm-col-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid var(--border)}
+.crm-col-head .t{font-family:var(--font-mono);font-size:10px;letter-spacing:1.1px;text-transform:uppercase;color:var(--muted)}
+.crm-col-head .m{font-family:var(--font-mono);font-size:11.5px;color:var(--sub);font-variant-numeric:tabular-nums}
+.crm-card{background:var(--surface3);border:1px solid var(--border2);border-left:3px solid var(--accent);border-radius:10px;padding:11px 12px;margin-bottom:9px;cursor:pointer;transition:.15s}
+.crm-card:hover{border-color:var(--accent);transform:translateX(2px)}
+.crm-card:last-child{margin-bottom:0}
+.crm-card .cli{font-weight:600;font-size:13.5px;margin-bottom:5px}
+.crm-card .val{font-family:var(--font-mono);font-weight:700;font-size:14px;color:var(--accent);font-variant-numeric:tabular-nums}
+.crm-card .meta{display:flex;align-items:center;justify-content:space-between;margin-top:7px}
+.crm-card .age{font-size:10.5px;color:var(--muted)}
+.crm-card .age.stale{color:var(--yellow)}
+.crm-card.won{border-left-color:var(--accent);opacity:.85}
+.crm-empty{font-size:11.5px;color:var(--muted);text-align:center;padding:16px 6px;font-style:italic}
+.crm-hint{font-size:12px;color:var(--muted);margin-top:14px}
+
+/* ── Órdenes de trabajo ── */
+.ot-list{display:flex;flex-direction:column;gap:9px}
+.ot{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--border2);border-radius:12px;padding:13px 15px;transition:.15s}
+.ot:hover{border-color:var(--border2)}
+.ot.risk{border-left-color:var(--yellow);background:rgba(251,191,36,.04)}
+.ot.late{border-left-color:var(--red);background:rgba(248,113,113,.05)}
+.ot.done{border-left-color:var(--accent);opacity:.7}
+.ot-main .folio{font-family:var(--font-mono);font-size:10.5px;color:var(--muted);letter-spacing:.5px}
+.ot-main .desc{font-weight:600;font-size:14px;margin:3px 0 6px}
+.ot-tags{display:flex;flex-wrap:wrap;gap:6px}
+.ot-tag{font-family:var(--font-mono);font-size:10.5px;background:var(--surface3);border:1px solid var(--border2);color:var(--sub);padding:3px 8px;border-radius:6px}
+.ot-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.ot-btn{font-size:12px;font-weight:600;background:var(--surface3);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:7px 12px;cursor:pointer;transition:.14s;white-space:nowrap}
+.ot-btn:hover{border-color:var(--accent);color:var(--accent);background:rgba(52,211,153,.1)}
+.ot-btn:disabled{opacity:.4;cursor:default}
 
 /* sections */
 .section{max-width:1240px;margin:0 auto;padding:clamp(40px,6vw,68px) clamp(16px,4vw,40px)}
@@ -177,9 +194,9 @@ h1 .g{background:linear-gradient(100deg,var(--accent),#6ee7b7);-webkit-backgroun
   <div class="ide">
     <div class="ide-bar">
       <div class="tabs" id="tabs">
-        <button class="tab on" data-t="cotz"><span class="e">🧮</span>Cotizador / ROI</button>
-        <button class="tab" data-t="inv"><span class="e">📦</span>Dashboard inventario</button>
-        <button class="tab" data-t="agenda"><span class="e">📅</span>Agenda / reservas</button>
+        <button class="tab on" data-t="inv"><span class="e">📦</span>Dashboard inventario</button>
+        <button class="tab" data-t="crm"><span class="e">🧭</span>Mini-CRM de ventas</button>
+        <button class="tab" data-t="ot"><span class="e">🔧</span>Órdenes de trabajo</button>
       </div>
       <div class="ide-spacer"></div>
       <div class="toggle" id="toggle"><button class="on" data-v="preview">▷ Preview</button><button data-v="code">{ } Código</button></div>
@@ -191,7 +208,7 @@ h1 .g{background:linear-gradient(100deg,var(--accent),#6ee7b7);-webkit-backgroun
 <section class="section">
   <div class="sec-lbl">// Lo que construimos</div>
   <h2 class="sec-h">Apps internas que resuelven tu operación real</h2>
-  <p class="sec-sub">Cotizadores, dashboards, mini-CRMs, portales de reservas, paneles de inventario. Lo que hoy haces en Excel a mano, lo convertimos en una herramienta que tu equipo usa a diario.</p>
+  <p class="sec-sub">Paneles de inventario, mini-CRMs, tableros de órdenes de trabajo, control de gastos. Lo que hoy haces en Excel a mano, lo convertimos en una herramienta que tu equipo usa a diario.</p>
   <div class="cards3">
     <div class="fcard"><div class="ic">⚡</div><h3>En días, no meses</h3><p>Con IA y componentes probados construimos y desplegamos tu herramienta en una fracción del tiempo.</p></div>
     <div class="fcard"><div class="ic">🎯</div><h3>Para tu problema real</h3><p>No plantillas genéricas: la app resuelve exactamente el proceso que hoy te cuesta tiempo y errores.</p></div>
@@ -216,181 +233,218 @@ h1 .g{background:linear-gradient(100deg,var(--accent),#6ee7b7);-webkit-backgroun
 
 <script>
 const $=id=>document.getElementById(id);
-let curTab='cotz', curView='preview';
-
-// ---------- COTIZADOR ----------
-function cotzPreview(){
-  return `<div class="pane on"><div class="badge-app">🧮 Cotizador de ahorro con automatización · app en vivo</div>
-  <div class="cotz">
-    <div>
-      <div class="ctrl"><div class="ctrl-top"><span>Personas en la tarea</span><b id="cP">3</b></div><input type="range" id="rP" min="1" max="20" value="3"></div>
-      <div class="ctrl"><div class="ctrl-top"><span>Horas/semana por persona</span><b id="cH">8</b></div><input type="range" id="rH" min="1" max="40" value="8"></div>
-      <div class="ctrl"><div class="ctrl-top"><span>Costo por hora (MXN)</span><b id="cC">$120</b></div><input type="range" id="rC" min="50" max="500" step="10" value="120"></div>
-      <div class="ctrl"><div class="ctrl-top"><span>% del trabajo automatizable</span><b id="cA">80%</b></div><input type="range" id="rA" min="40" max="95" value="80"></div>
-    </div>
-    <div class="result">
-      <div class="res-row"><span class="l">Horas ahorradas / mes</span><span class="v" id="oH">0</span></div>
-      <div class="res-row"><span class="l">Ahorro mensual</span><span class="v" id="oM">$0</span></div>
-      <div class="res-hi"><div class="v" id="oY">$0</div><div class="l">de ahorro al año 🚀</div></div>
-    </div>
-  </div></div>`;
-}
-function cotzInit(){
-  const f=v=>v.toLocaleString('es-MX');
-  function calc(){
-    const P=+$('rP').value,H=+$('rH').value,C=+$('rC').value,A=+$('rA').value;
-    $('cP').textContent=P;$('cH').textContent=H;$('cC').textContent='$'+f(C);$('cA').textContent=A+'%';
-    const horas=Math.round(P*H*4.33*(A/100));
-    const mes=horas*C, anio=mes*12;
-    $('oH').textContent=f(horas)+' h';
-    $('oM').textContent='$'+f(mes);
-    $('oY').textContent='$'+f(anio);
-  }
-  ['rP','rH','rC','rA'].forEach(id=>$(id).addEventListener('input',calc));
-  calc();
-}
+let curTab='inv', curView='preview';
 
 // ---------- INVENTARIO ----------
 let INV=[
-  {n:'Playera negra',s:42,min:20},{n:'Sudadera gris',s:8,min:15},
-  {n:'Gorra logo',s:0,min:10},{n:'Termo acero',s:31,min:12},
-  {n:'Calcetines pack',s:14,min:20}
+  {n:'Playera negra',sku:'PLY-NEG-M',s:42,min:20,p:180},
+  {n:'Sudadera gris',sku:'SUD-GRI-L',s:8,min:15,p:520},
+  {n:'Gorra logo',sku:'GOR-LOG-U',s:0,min:10,p:240},
+  {n:'Termo acero 750ml',sku:'TER-ACE-750',s:31,min:12,p:390},
+  {n:'Calcetines pack 3',sku:'CAL-PK3-U',s:14,min:20,p:130}
 ];
-function invStatus(it){ if(it.s===0)return['out','Agotado']; if(it.s<it.min)return['low','Bajo']; return['ok','OK']; }
+const money=v=>'$'+v.toLocaleString('es-MX');
+function invStatus(it){ if(it.s===0)return['out','Agotado','⛔']; if(it.s<it.min)return['low','Bajo','⚠️']; return['ok','OK','✓']; }
 function invPreview(){
   return `<div class="pane on"><div class="badge-app">📦 Panel de inventario · app en vivo</div>
+    <div class="kpis" id="invKpis"></div>
     <div id="invAlert" class="inv-alert"></div>
-    <table class="inv-table"><thead><tr><th>Producto</th><th>Stock</th><th>Nivel</th><th>Estatus</th><th>Ajustar</th></tr></thead>
-    <tbody id="invBody"></tbody></table>
-    <div style="font-size:12px;color:var(--muted);margin-top:12px">Ajusta el stock con + / − y mira cómo cambian las alertas en tiempo real.</div></div>`;
+    <div class="inv-wrap"><div class="inv-scroll">
+    <table class="inv-table"><thead><tr>
+      <th>Producto</th><th class="num">Stock</th><th>Nivel vs mínimo</th><th>Estatus</th><th class="num">Valor</th><th class="num">Ajustar</th>
+    </tr></thead>
+    <tbody id="invBody"></tbody></table></div></div>
+    <div style="font-size:12px;color:var(--muted);margin-top:12px">Ajusta el stock con + / − y mira cómo se recalculan los indicadores y las alertas en tiempo real.</div></div>`;
 }
 function invRender(){
-  const max=50, body=$('invBody'); if(!body)return;
+  const body=$('invBody'); if(!body)return;
+  const max=Math.max(50,...INV.map(i=>i.s));
   body.innerHTML=INV.map((it,i)=>{
-    const [cls,lbl]=invStatus(it);
+    const [cls,lbl,ico]=invStatus(it);
     const pct=Math.min(100,Math.round(it.s/max*100));
+    const minPct=Math.min(100,Math.round(it.min/max*100));
     const barCls=it.s===0?'crit':it.s<it.min?'warn':'';
-    return `<tr class="${it.s<it.min?'low':''}"><td>${it.n}</td>
-      <td><span class="qn">${it.s}</span> <small style="color:var(--muted)">/ mín ${it.min}</small></td>
-      <td><div class="inv-bar"><i class="${barCls}" style="width:${pct}%"></i></div></td>
-      <td><span class="st-badge st-${cls}">${lbl}</span></td>
-      <td><div class="qty"><button class="qbtn" onclick="invAdj(${i},-1)">−</button><button class="qbtn" onclick="invAdj(${i},1)">+</button></div></td></tr>`;
+    return `<tr>
+      <td><div class="inv-prod"><b>${it.n}</b><small>${it.sku}</small></div></td>
+      <td class="num"><span class="qn">${it.s}</span> <small style="color:var(--muted)">/ mín ${it.min}</small></td>
+      <td><div class="inv-bar"><i class="${barCls}" style="width:${pct}%"></i><span class="min" style="left:${minPct}%"></span></div></td>
+      <td><span class="st-badge st-${cls}">${ico} ${lbl}</span></td>
+      <td class="num">${money(it.s*it.p)}</td>
+      <td class="num"><div class="qty"><button class="qbtn" onclick="invAdj(${i},-1)">−</button><button class="qbtn" onclick="invAdj(${i},1)">+</button></div></td></tr>`;
   }).join('');
-  const low=INV.filter(it=>it.s<it.min).length;
-  const al=$('invAlert');
-  if(low>0){al.className='inv-alert';al.innerHTML=`⚠️ <b>${low}</b> producto(s) por debajo del mínimo — reponer pronto`;}
+
+  const bajos=INV.filter(it=>it.s>0&&it.s<it.min).length;
+  const agotados=INV.filter(it=>it.s===0).length;
+  const valor=INV.reduce((a,it)=>a+it.s*it.p,0);
+  const piezas=INV.reduce((a,it)=>a+it.s,0);
+  $('invKpis').innerHTML=`
+    <div class="kpi"><div class="k-lbl">SKUs activos</div><div class="k-val">${INV.length}</div><div class="k-sub">${piezas} piezas en piso</div></div>
+    <div class="kpi is-good"><div class="k-lbl">Valor de inventario</div><div class="k-val">${money(valor)}</div><div class="k-sub">a precio de venta</div></div>
+    <div class="kpi ${bajos?'is-warn':''}"><div class="k-lbl">Por reponer</div><div class="k-val">${bajos}</div><div class="k-sub">debajo del mínimo</div></div>
+    <div class="kpi ${agotados?'is-crit':''}"><div class="k-lbl">Agotados</div><div class="k-val">${agotados}</div><div class="k-sub">sin existencia</div></div>`;
+
+  const al=$('invAlert'), faltan=bajos+agotados;
+  if(faltan>0){al.className='inv-alert';al.innerHTML=`⚠️ <b>${faltan}</b> producto(s) requieren reposición — ${agotados?`${agotados} agotado(s), `:''}${bajos} bajo el mínimo`;}
   else{al.className='inv-alert ok';al.innerHTML=`✓ Todo el inventario está por encima del mínimo`;}
 }
 function invAdj(i,d){INV[i].s=Math.max(0,INV[i].s+d);invRender();}
 window.invAdj=invAdj;
 
-// ---------- AGENDA ----------
-const AG_SERV={corte:'Corte de cabello · 45 min',tinte:'Tinte completo · 2h',mani:'Manicure · 1h',barba:'Barba y perfilado · 30 min'};
-const AG_DAYS=[['Hoy','14 mar'],['Mañana','15 mar'],['Sáb','16 mar'],['Lun','18 mar']];
-const AG_SLOTS=['10:00','11:00','12:00','13:00','16:00','17:00','18:00','19:00'];
-let agTaken={}; // key: day index -> array of taken slots
-AG_DAYS.forEach((d,i)=>{agTaken[i]=[AG_SLOTS[(i+1)%8],AG_SLOTS[(i+4)%8]];}); // algunos ocupados
-let agState={serv:'corte',day:0,slot:null};
-function agPreview(){
-  return `<div class="pane on"><div class="badge-app">📅 Portal de reservas · app en vivo</div>
-    <div class="agenda">
-      <div>
-        <div class="ag-field"><label>Servicio</label>
-          <select class="ag-sel" id="agServ">${Object.entries(AG_SERV).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select></div>
-        <div class="ag-field"><label>Día</label><div class="days" id="agDays"></div></div>
-        <div class="ag-conf" id="agConf"></div>
-      </div>
-      <div>
-        <div class="slots-lbl">Horarios disponibles</div>
-        <div class="slots" id="agSlots"></div>
-      </div>
-    </div></div>`;
+// ---------- MINI-CRM ----------
+const CRM_ETAPAS=[['nuevo','Nuevo'],['contactado','Contactado'],['cotizado','Cotizado'],['cerrado','Ganado']];
+let CRM=[
+  {c:'Ferretería Uribe',v:48000,e:0,d:2},
+  {c:'Taller Don Beto',v:16500,e:0,d:9},
+  {c:'Refaccionaria Sur',v:92000,e:1,d:4},
+  {c:'Flotilla Trans-GDL',v:210000,e:2,d:6},
+  {c:'Dulcería Mari',v:12800,e:2,d:18},
+  {c:'Comercial López',v:64000,e:3,d:1}
+];
+function crmPreview(){
+  return `<div class="pane on"><div class="badge-app">🧭 Mini-CRM · pipeline de ventas · app en vivo</div>
+    <div class="kpis" id="crmKpis"></div>
+    <div class="crm-cols" id="crmCols"></div>
+    <div class="crm-hint">Haz clic en un trato para avanzarlo de etapa. Los totales y la tasa de cierre se recalculan solos.</div></div>`;
 }
-function agInit(){
-  $('agServ').addEventListener('change',e=>{agState.serv=e.target.value;});
-  agRenderDays();agRenderSlots();
-}
-function agRenderDays(){
-  $('agDays').innerHTML=AG_DAYS.map((d,i)=>`<div class="day ${i===agState.day?'on':''}" data-d="${i}">${d[0]}<small>${d[1]}</small></div>`).join('');
-  $('agDays').querySelectorAll('.day').forEach(el=>el.addEventListener('click',()=>{agState.day=+el.dataset.d;agState.slot=null;$('agConf').classList.remove('show');agRenderDays();agRenderSlots();}));
-}
-function agRenderSlots(){
-  const taken=agTaken[agState.day]||[];
-  $('agSlots').innerHTML=AG_SLOTS.map(s=>{
-    const isTaken=taken.includes(s);
-    const sel=agState.slot===s;
-    return `<div class="slot ${isTaken?'taken':''} ${sel?'sel':''}" data-s="${s}">${s}</div>`;
+function crmRender(){
+  const cols=$('crmCols'); if(!cols)return;
+  cols.innerHTML=CRM_ETAPAS.map(([k,lbl],i)=>{
+    const tratos=CRM.filter(t=>t.e===i);
+    const total=tratos.reduce((a,t)=>a+t.v,0);
+    const cards=tratos.length? tratos.map(t=>{
+      const idx=CRM.indexOf(t);
+      const stale=t.d>14;
+      return `<div class="crm-card ${i===3?'won':''}" onclick="crmAdv(${idx})">
+        <div class="cli">${t.c}</div>
+        <div class="meta"><span class="val">${money(t.v)}</span><span class="age ${stale?'stale':''}">${stale?'⚠️ ':''}${t.d} d</span></div>
+      </div>`;
+    }).join('') : '<div class="crm-empty">Sin tratos</div>';
+    return `<div class="crm-col">
+      <div class="crm-col-head"><span class="t">${lbl}</span><span class="m">${tratos.length} · ${money(total)}</span></div>
+      ${cards}</div>`;
   }).join('');
-  $('agSlots').querySelectorAll('.slot').forEach(el=>{
-    if(el.classList.contains('taken'))return;
-    el.addEventListener('click',()=>{agState.slot=el.dataset.s;agRenderSlots();agConfirm();});
-  });
+
+  const abiertos=CRM.filter(t=>t.e<3);
+  const ganados=CRM.filter(t=>t.e===3);
+  const pipeline=abiertos.reduce((a,t)=>a+t.v,0);
+  const cerrado=ganados.reduce((a,t)=>a+t.v,0);
+  const tasa=CRM.length?Math.round(ganados.length/CRM.length*100):0;
+  const estancados=CRM.filter(t=>t.e<3&&t.d>14).length;
+  $('crmKpis').innerHTML=`
+    <div class="kpi"><div class="k-lbl">Pipeline abierto</div><div class="k-val">${money(pipeline)}</div><div class="k-sub">${abiertos.length} tratos activos</div></div>
+    <div class="kpi is-good"><div class="k-lbl">Ganado</div><div class="k-val">${money(cerrado)}</div><div class="k-sub">${ganados.length} cerrados</div></div>
+    <div class="kpi"><div class="k-lbl">Tasa de cierre</div><div class="k-val">${tasa}%</div><div class="k-sub">del total en el tablero</div></div>
+    <div class="kpi ${estancados?'is-warn':''}"><div class="k-lbl">Estancados</div><div class="k-val">${estancados}</div><div class="k-sub">más de 14 días sin mover</div></div>`;
 }
-function agConfirm(){
-  const c=$('agConf');
-  c.innerHTML=`<div class="h">✅ ¡Reservado!</div><div class="kv"><span>Servicio: <b>${AG_SERV[agState.serv].split(' · ')[0]}</b></span><span>Día: <b>${AG_DAYS[agState.day][0]} ${AG_DAYS[agState.day][1]}</b></span><span>Hora: <b>${agState.slot}</b></span></div>`;
-  c.classList.add('show');
-  // marcar el horario como ocupado
-  if(!agTaken[agState.day].includes(agState.slot))agTaken[agState.day].push(agState.slot);
-  setTimeout(agRenderSlots,600);
+function crmAdv(i){ if(CRM[i].e<3){CRM[i].e++;CRM[i].d=0;} crmRender(); }
+window.crmAdv=crmAdv;
+
+// ---------- ÓRDENES DE TRABAJO ----------
+const OT_ESTADOS=['Recibida','En proceso','Lista','Entregada'];
+let OT=[
+  {f:'OT-1042',d:'Cambio de balatas + rectificado',cli:'Flotilla Trans-GDL',tec:'Beto R.',e:1,h:3},
+  {f:'OT-1043',d:'Servicio mayor 40 mil km',cli:'Ferretería Uribe',tec:'Diana M.',e:0,h:22},
+  {f:'OT-1044',d:'Diagnóstico eléctrico',cli:'Taller Don Beto',tec:'Beto R.',e:2,h:1},
+  {f:'OT-1045',d:'Reemplazo de clutch',cli:'Refaccionaria Sur',tec:'Sin asignar',e:0,h:31},
+  {f:'OT-1041',d:'Alineación y balanceo',cli:'Comercial López',tec:'Diana M.',e:3,h:0}
+];
+const OT_SLA=24; // horas comprometidas
+function otPreview(){
+  return `<div class="pane on"><div class="badge-app">🔧 Órdenes de trabajo · app en vivo</div>
+    <div class="kpis" id="otKpis"></div>
+    <div class="ot-list" id="otList"></div>
+    <div class="crm-hint">Cada orden avanza con un clic. El compromiso es de ${OT_SLA} h: el tablero marca en ámbar las que van al límite y en rojo las vencidas.</div></div>`;
 }
+function otRender(){
+  const list=$('otList'); if(!list)return;
+  list.innerHTML=OT.map((o,i)=>{
+    const abierta=o.e<3;
+    const vencida=abierta&&o.h>OT_SLA;
+    const riesgo=abierta&&!vencida&&o.h>OT_SLA*0.75;
+    const cls=!abierta?'done':vencida?'late':riesgo?'risk':'';
+    const tiempo=!abierta?'Entregada':vencida?`⛔ Vencida · ${o.h} h`:riesgo?`⚠️ ${o.h} h de ${OT_SLA}`:`${o.h} h de ${OT_SLA}`;
+    return `<div class="ot ${cls}">
+      <div class="ot-main">
+        <div class="folio">${o.f} · ${o.cli}</div>
+        <div class="desc">${o.d}</div>
+        <div class="ot-tags"><span class="ot-tag">${OT_ESTADOS[o.e]}</span><span class="ot-tag">👷 ${o.tec}</span><span class="ot-tag">${tiempo}</span></div>
+      </div>
+      <div class="ot-right">
+        <button class="ot-btn" onclick="otAdv(${i})" ${abierta?'':'disabled'}>${abierta?'Avanzar →':'✓ Cerrada'}</button>
+      </div></div>`;
+  }).join('');
+
+  const abiertas=OT.filter(o=>o.e<3);
+  const vencidas=abiertas.filter(o=>o.h>OT_SLA).length;
+  const riesgo=abiertas.filter(o=>o.h<=OT_SLA&&o.h>OT_SLA*0.75).length;
+  const entregadas=OT.filter(o=>o.e===3).length;
+  const sinAsignar=abiertas.filter(o=>o.tec==='Sin asignar').length;
+  $('otKpis').innerHTML=`
+    <div class="kpi"><div class="k-lbl">Órdenes abiertas</div><div class="k-val">${abiertas.length}</div><div class="k-sub">${sinAsignar} sin técnico asignado</div></div>
+    <div class="kpi ${vencidas?'is-crit':''}"><div class="k-lbl">Fuera de compromiso</div><div class="k-val">${vencidas}</div><div class="k-sub">pasaron las ${OT_SLA} h</div></div>
+    <div class="kpi ${riesgo?'is-warn':''}"><div class="k-lbl">En riesgo</div><div class="k-val">${riesgo}</div><div class="k-sub">arriba del 75% del plazo</div></div>
+    <div class="kpi is-good"><div class="k-lbl">Entregadas</div><div class="k-val">${entregadas}</div><div class="k-sub">cerradas en el tablero</div></div>`;
+}
+function otAdv(i){ if(OT[i].e<3){OT[i].e++; if(OT[i].e===3)OT[i].h=0;} otRender(); }
+window.otAdv=otAdv;
 
 // ---------- CÓDIGO (representativo) ----------
 const CODE={
-cotz:`<span class="c">// Cotizador de ahorro — React</span>
-<span class="k">function</span> <span class="f">Cotizador</span>() {
-  <span class="k">const</span> [p, setP] = <span class="f">useState</span>(<span class="n">3</span>)   <span class="c">// personas</span>
-  <span class="k">const</span> [h, setH] = <span class="f">useState</span>(<span class="n">8</span>)   <span class="c">// horas/sem</span>
-  <span class="k">const</span> [c, setC] = <span class="f">useState</span>(<span class="n">120</span>) <span class="c">// $/hora</span>
-  <span class="k">const</span> [a, setA] = <span class="f">useState</span>(<span class="n">80</span>)  <span class="c">// % automatizable</span>
-
-  <span class="k">const</span> horas = <span class="f">Math</span>.<span class="f">round</span>(p * h * <span class="n">4.33</span> * (a/<span class="n">100</span>))
-  <span class="k">const</span> ahorroMes  = horas * c
-  <span class="k">const</span> ahorroAnio = ahorroMes * <span class="n">12</span>
-
-  <span class="k">return</span> (
-    &lt;<span class="f">Panel</span>&gt;
-      &lt;<span class="f">Slider</span> label=<span class="s">"Personas"</span> value={p} onChange={setP} /&gt;
-      &lt;<span class="f">Slider</span> label=<span class="s">"Horas/sem"</span> value={h} onChange={setH} /&gt;
-      &lt;<span class="f">Metric</span> label=<span class="s">"Ahorro / año"</span> value={<span class="f">money</span>(ahorroAnio)} /&gt;
-    &lt;/<span class="f">Panel</span>&gt;
-  )
-}`,
-inv:`<span class="c">// Panel de inventario — alerta de bajo mínimo</span>
+inv:`<span class="c">// Panel de inventario — alerta y valuación</span>
 <span class="k">function</span> <span class="f">Inventario</span>({ productos }) {
-  <span class="k">const</span> bajos = productos.<span class="f">filter</span>(p =&gt; p.stock &lt; p.min)
+  <span class="k">const</span> agotados = productos.<span class="f">filter</span>(p =&gt; p.stock === <span class="n">0</span>)
+  <span class="k">const</span> bajos    = productos.<span class="f">filter</span>(p =&gt; p.stock &gt; <span class="n">0</span> &amp;&amp; p.stock &lt; p.min)
+  <span class="k">const</span> valor    = productos.<span class="f">reduce</span>(
+    (a, p) =&gt; a + p.stock * p.precio, <span class="n">0</span>)
 
   <span class="k">return</span> (
     &lt;&gt;
-      {bajos.length &gt; <span class="n">0</span> &amp;&amp;
-        &lt;<span class="f">Alert</span> tipo=<span class="s">"warning"</span>&gt;
-          {bajos.length} productos bajo mínimo
-        &lt;/<span class="f">Alert</span>&gt;}
-      &lt;<span class="f">Tabla</span>&gt;
-        {productos.<span class="f">map</span>(p =&gt; (
-          &lt;<span class="f">Fila</span> alerta={p.stock &lt; p.min} key={p.id}&gt;
-            &lt;<span class="f">Barra</span> valor={p.stock} max={<span class="n">50</span>} /&gt;
-            &lt;<span class="f">Estatus</span> stock={p.stock} min={p.min} /&gt;
-          &lt;/<span class="f">Fila</span>&gt;
-        ))}
-      &lt;/<span class="f">Tabla</span>&gt;
+      &lt;<span class="f">KpiRow</span>&gt;
+        &lt;<span class="f">Kpi</span> label=<span class="s">"Valor de inventario"</span> value={<span class="f">money</span>(valor)} /&gt;
+        &lt;<span class="f">Kpi</span> label=<span class="s">"Por reponer"</span> value={bajos.length} tono=<span class="s">"warn"</span> /&gt;
+        &lt;<span class="f">Kpi</span> label=<span class="s">"Agotados"</span> value={agotados.length} tono=<span class="s">"crit"</span> /&gt;
+      &lt;/<span class="f">KpiRow</span>&gt;
+      &lt;<span class="f">Tabla</span> filas={productos} onAjuste={ajustarStock} /&gt;
     &lt;/&gt;
   )
 }`,
-agenda:`<span class="c">// Portal de reservas — Supabase</span>
-<span class="k">async function</span> <span class="f">reservar</span>({ servicio, dia, hora }) {
-  <span class="c">// evita doble reserva del mismo horario</span>
-  <span class="k">const</span> { data: ocupado } = <span class="k">await</span> supabase
-    .<span class="f">from</span>(<span class="s">'citas'</span>)
-    .<span class="f">select</span>(<span class="s">'id'</span>)
-    .<span class="f">eq</span>(<span class="s">'dia'</span>, dia).<span class="f">eq</span>(<span class="s">'hora'</span>, hora)
+crm:`<span class="c">// Mini-CRM — avanzar trato de etapa</span>
+<span class="k">const</span> ETAPAS = [<span class="s">'nuevo'</span>, <span class="s">'contactado'</span>, <span class="s">'cotizado'</span>, <span class="s">'ganado'</span>]
 
-  <span class="k">if</span> (ocupado?.length) <span class="k">return</span> { error: <span class="s">'Horario ocupado'</span> }
+<span class="k">async function</span> <span class="f">avanzarTrato</span>(id) {
+  <span class="k">const</span> trato = <span class="k">await</span> db.tratos.<span class="f">find</span>(id)
+  <span class="k">const</span> i = ETAPAS.<span class="f">indexOf</span>(trato.etapa)
+  <span class="k">if</span> (i === ETAPAS.length - <span class="n">1</span>) <span class="k">return</span> trato
 
-  <span class="k">return</span> <span class="k">await</span> supabase.<span class="f">from</span>(<span class="s">'citas'</span>).<span class="f">insert</span>({
-    servicio, dia, hora, estado: <span class="s">'confirmada'</span>
+  <span class="k">return</span> <span class="k">await</span> db.tratos.<span class="f">update</span>(id, {
+    etapa:      ETAPAS[i + <span class="n">1</span>],
+    movido_en:  <span class="k">new</span> <span class="f">Date</span>(),
+    <span class="c">// reinicia el contador de dias sin movimiento</span>
+    dias_quieto: <span class="n">0</span>
   })
-}`
+}
+
+<span class="c">// Alerta a ventas si un trato lleva 14 dias sin moverse</span>
+<span class="f">cron</span>(<span class="s">'0 9 * * *'</span>, () =&gt; <span class="f">avisarEstancados</span>({ dias: <span class="n">14</span> }))`,
+ot:`<span class="c">// Ordenes de trabajo — control de SLA</span>
+<span class="k">const</span> SLA_HORAS = <span class="n">24</span>
+
+<span class="k">function</span> <span class="f">estadoSla</span>(orden) {
+  <span class="k">if</span> (orden.estado === <span class="s">'entregada'</span>) <span class="k">return</span> <span class="s">'ok'</span>
+  <span class="k">const</span> h = <span class="f">horasDesde</span>(orden.recibida_en)
+
+  <span class="k">if</span> (h &gt; SLA_HORAS)        <span class="k">return</span> <span class="s">'vencida'</span>
+  <span class="k">if</span> (h &gt; SLA_HORAS * <span class="n">0.75</span>) <span class="k">return</span> <span class="s">'en_riesgo'</span>
+  <span class="k">return</span> <span class="s">'a_tiempo'</span>
+}
+
+<span class="c">// Cada hora avisa por WhatsApp al encargado</span>
+<span class="f">cron</span>(<span class="s">'0 * * * *'</span>, <span class="k">async</span> () =&gt; {
+  <span class="k">const</span> riesgo = (<span class="k">await</span> db.ordenes.<span class="f">abiertas</span>())
+    .<span class="f">filter</span>(o =&gt; <span class="f">estadoSla</span>(o) !== <span class="s">'a_tiempo'</span>)
+
+  <span class="k">if</span> (riesgo.length) <span class="k">await</span> <span class="f">avisarEncargado</span>(riesgo)
+})`
 };
 
 // ---------- Router ----------
@@ -400,9 +454,9 @@ function render(){
     body.innerHTML=`<pre class="code">${CODE[curTab]}</pre>`;
     return;
   }
-  if(curTab==='cotz'){body.innerHTML=cotzPreview();cotzInit();}
-  else if(curTab==='inv'){body.innerHTML=invPreview();invRender();}
-  else{body.innerHTML=agPreview();agInit();}
+  if(curTab==='inv'){body.innerHTML=invPreview();invRender();}
+  else if(curTab==='crm'){body.innerHTML=crmPreview();crmRender();}
+  else{body.innerHTML=otPreview();otRender();}
 }
 $('tabs').querySelectorAll('.tab').forEach(el=>el.addEventListener('click',()=>{
   curTab=el.dataset.t;$('tabs').querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t===el));render();
